@@ -1,0 +1,22 @@
+<div #workSheetView class="work-sheet-view" (scroll)="onScroll()">
+  <div class="work-sheet-area" [style.width.px]="_areaWidth" [style.height.px]="_areaHeight">
+    <canvas #sheetViewCanvas class="work-sheet-canvas"
+    [attr.width]="_sheetViewWidthAttr"
+    [attr.height]="_sheetViewHeightAttr"
+    [style.width.px]="_sheetViewWidthStyle"
+    [style.height.px]="_sheetViewHeightStyle"
+    [style.top.px]="_sheetViewTop" 
+    [style.left.px]="_sheetViewLeft">
+    </canvas>
+    <ng-container *ngFor="let colNum of _sheetViewColumnList">
+      <ng-container *ngFor="let rowNum of _sheetViewRowList">
+        <div *ngIf="sheetViewStoreService.getCell(colNum, rowNum).value"
+        class="cell-value"
+        [style.top.px]="_sheetViewTop" 
+        [style.left.px]="_sheetViewLeft">
+          {{sheetViewStoreService.getCell(colNum, rowNum).value}}
+        </div>
+      </ng-container>
+    </ng-container>
+  </div>
+</div>

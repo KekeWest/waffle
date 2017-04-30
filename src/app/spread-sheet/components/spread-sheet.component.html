@@ -1,0 +1,7 @@
+<wf-sheet-edit></wf-sheet-edit>
+<div class="sheets-container">
+  <ng-container *ngFor="let sheetName of sheetOrder">
+    <wf-sheet [sheetName]="sheetName"></wf-sheet>
+  </ng-container>
+</div>
+<wf-sheet-tab></wf-sheet-tab>
