@@ -33,6 +33,10 @@ export class WorkSheetComponent implements OnInit, AfterViewInit, AfterViewCheck
 
   private _sheetViewRowList: number[];
 
+  private _textPosTopList: number[];
+
+  private _textPosLeftList: number[];
+
   private _sheetViewTop: number;
 
   private _sheetViewLeft: number;
@@ -114,6 +118,29 @@ export class WorkSheetComponent implements OnInit, AfterViewInit, AfterViewCheck
     this._sheetViewHeightStyle = this.sheetViewStoreService.sheetViewHeight;
     this._sheetViewTop = this.sheetViewStoreService.sheetViewTop;
     this._sheetViewLeft = this.sheetViewStoreService.sheetViewLeft;
+
+    this.updateTextPos();
+  }
+
+  private updateTextPos() {
+    this._textPosLeftList = [];
+    this._textPosTopList = [];
+
+    var topSum: number = 0;
+    for (var rowNum of this._sheetViewRowList) {
+      this._textPosTopList.push(this._sheetViewTop + topSum + Border.MAX_BORDER_WIDRH / 2);
+      topSum += this.sheetViewStoreService.getRow(rowNum).height;
+    }
+
+    var leftSum: number = 0;
+    for (var colNum of this._sheetViewColumnList) {
+      this._textPosLeftList.push(this._sheetViewLeft + leftSum + Border.MAX_BORDER_WIDRH / 2);
+      leftSum += this.sheetViewStoreService.getColumn(colNum).width;
+    }
+  }
+
+  private getCellHeight(rowNum: number): number {
+    return this.sheetViewStoreService.getRow(rowNum).height - Border.MAX_BORDER_WIDRH;
   }
 
   private onScroll() {
@@ -132,10 +159,10 @@ export class WorkSheetComponent implements OnInit, AfterViewInit, AfterViewCheck
     this._sheetViewStage.addChild(shape);
 
     var posY: number = 0;
-    for (var rowNum of this.sheetViewStoreService.sheetViewRowList) {
+    for (var rowNum of this._sheetViewRowList) {
       var height: number = this.sheetViewStoreService.getRow(rowNum).height;
       var posX: number = 0;
-      for (var colNum of this.sheetViewStoreService.sheetViewColumnList) {
+      for (var colNum of this._sheetViewColumnList) {
         var width: number = this.sheetViewStoreService.getColumn(colNum).width;
         this.setCellBackgroundColor(colNum, rowNum, shape.graphics);
         shape.graphics.drawRect(posX, posY, width, height);
@@ -151,10 +178,10 @@ export class WorkSheetComponent implements OnInit, AfterViewInit, AfterViewCheck
     var shape = new createjs.Shape();
     this._sheetViewStage.addChild(shape);
 
-    for (var rowNum of this.sheetViewStoreService.sheetViewRowList) {
+    for (var rowNum of this._sheetViewRowList) {
       var height: number = this.sheetViewStoreService.getRow(rowNum).height;
       posX = 0;
-      for (var colNum of this.sheetViewStoreService.sheetViewColumnList) {
+      for (var colNum of this._sheetViewColumnList) {
         var width: number = this.sheetViewStoreService.getColumn(colNum).width;
         this.drawCellBorderBottom(colNum, rowNum, posX, posX + width, posY + height, shape.graphics);
         this.drawCellBorderRight(colNum, rowNum, posY, posY + height, posX + width, shape.graphics);

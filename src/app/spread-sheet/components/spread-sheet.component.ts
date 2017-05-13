@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
-import { SpreadSheetDispatcherService, SpreadSheetActionService, SpreadSheetStoreService } from '../services/index'
+import { Component, OnInit, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
+import { SpreadSheetDispatcherService, SpreadSheetActionService, SpreadSheetStoreService } from '../services/index';
+import { Sheet } from '../sheet';
 
 @Component({
   selector: 'wf-spread-sheet',
@@ -11,7 +12,7 @@ import { SpreadSheetDispatcherService, SpreadSheetActionService, SpreadSheetStor
     SpreadSheetStoreService
   ]
 })
-export class SpreadSheetComponent implements OnInit {
+export class SpreadSheetComponent implements OnInit, AfterViewInit {
 
   sheetOrder: string[];
 
@@ -20,7 +21,15 @@ export class SpreadSheetComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.sheetOrder = this.spreadSheetStoreService.spreadSheet.sheetOrder;
+    this.sheetOrder = this.spreadSheetStoreService.sheetOrder;
+  }
+
+  ngAfterViewInit() {
+    this.cacheTextSize();
+  }
+
+  private cacheTextSize() {
+    var selectedSheet: Sheet = this.spreadSheetStoreService.selectedSheet;
   }
 
 }

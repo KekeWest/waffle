@@ -6,7 +6,7 @@ import { SpreadSheetDispatcherService } from './spread-sheet-dispatcher.service'
 @Injectable()
 export class SpreadSheetStoreService extends EventEmitterBase {
 
-  spreadSheet: SpreadSheet;
+  private _spreadSheet: SpreadSheet;
 
   constructor(private spreadSheetDispatcherService: SpreadSheetDispatcherService) {
     super();
@@ -14,7 +14,7 @@ export class SpreadSheetStoreService extends EventEmitterBase {
   }
 
   getInitialSpreadSheet() {
-    this.spreadSheet = new SpreadSheet("book1", { "sheet1": new Sheet() }, ["sheet1"]);
+    this._spreadSheet = new SpreadSheet("book1", { "sheet1": new Sheet() }, ["sheet1"], "sheet1");
 
     var cell1: Cell = new Cell();
     cell1.value = "200 200";
@@ -32,7 +32,7 @@ export class SpreadSheetStoreService extends EventEmitterBase {
     cell2.backgroundColor = new RGBAColor(255, 255, 0, 1);
 
     var cell3: Cell = new Cell();
-    cell3.value = "KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK";
+    cell3.value = "KKKKKKK";
     cell3.border.borderBottom = true;
     cell3.border.borderBottomWidth = 1;
     cell3.border.borderBottomStyle = "solid";
@@ -60,58 +60,27 @@ export class SpreadSheetStoreService extends EventEmitterBase {
     this.setCell("sheet1", 5, 3, cell3);
     this.setCell("sheet1", 5, 4, cell4);
     this.setCell("sheet1", 6, 3, cell4);
-    for (var i = 1; i < 100; i++) {
-      for (var j = 1; j < 10000; j++) {
-        this.setCell("sheet1", i, j, cell3);
-      }
-    }
+    // for (var i = 1; i < 10000; i++) {
+    //   for (var j = 1; j < 10000; j++) {
+    //     this.setCell("sheet1", i, j, cell3);
+    //   }
+    // }
   }
 
   getSheet(sheetName: string): Sheet {
-    return this.spreadSheet.sheets[sheetName];
+    return this._spreadSheet.sheets[sheetName];
   }
 
-  getColumns(sheetName: string): { [colIndex: number]: Column } {
-    return this.getSheet(sheetName).columns;
+  get sheetOrder(): string[] {
+    return this._spreadSheet.sheetOrder;
   }
 
-  getColumn(sheetName: string, colIndex: number): Column {
-    var col: Column = this.getColumns(sheetName)[colIndex];
-    if (!col) {
-      return null;
-    }
-    return col;
+  get selectedSheetName(): string {
+    return this._spreadSheet.selectedSheetName;
   }
 
-  getRows(sheetName: string): { [rowIndex: number]: Row } {
-    return this.getSheet(sheetName).rows;
-  }
-
-  getRow(sheetName: string, rowIndex: number): Row {
-    var row: Row = this.getRows(sheetName)[rowIndex];
-    if (!row) {
-      return null;
-    }
-    return row;
-  }
-
-  getCells(sheetName: string): { [colIndex: number]: { [rowIndex: number]: Cell } } {
-    return this.getSheet(sheetName).cells;
-  }
-
-  getCell(sheetName: string, colIndex: number, rowIndex: number): Cell {
-    var colObj: { [rowIndex: number]: Cell } = this.getColumnObject(sheetName, colIndex, false);
-
-    if (!colObj) {
-      return null;
-    }
-
-    var cell: Cell = colObj[rowIndex];
-    if (!cell) {
-      return null;
-    }
-
-    return cell;
+  get selectedSheet(): Sheet {
+    return this._spreadSheet.sheets[this.selectedSheetName];
   }
 
   setCell(sheetName: string, colIndex: number, rowIndex: number, cell: Cell) {

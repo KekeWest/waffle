@@ -8,12 +8,13 @@
     [style.top.px]="_sheetViewTop" 
     [style.left.px]="_sheetViewLeft">
     </canvas>
-    <ng-container *ngFor="let colNum of _sheetViewColumnList">
-      <ng-container *ngFor="let rowNum of _sheetViewRowList">
+    <ng-container *ngFor="let colNum of _sheetViewColumnList; let colIndex = index;">
+      <ng-container *ngFor="let rowNum of _sheetViewRowList; let rowIndex = index;">
         <div *ngIf="sheetViewStoreService.getCell(colNum, rowNum).value"
         class="cell-value"
-        [style.top.px]="_sheetViewTop" 
-        [style.left.px]="_sheetViewLeft">
+        [style.top.px]="_textPosTopList[rowIndex]" 
+        [style.left.px]="_textPosLeftList[colIndex]"
+        [style.height.px]="getCellHeight(rowNum)">
           {{sheetViewStoreService.getCell(colNum, rowNum).value}}
         </div>
       </ng-container>
