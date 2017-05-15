@@ -145,9 +145,9 @@ export class SheetViewStoreService extends EventEmitterBase {
     return cell;
   }
 
-  getTextMetrics(colIndex: number, rowIndex: number, updateCache: boolean): { height: number, width: number } {
+  getTextMetrics(colIndex: number, rowIndex: number, updateCache: boolean = false): { height: number, width: number } {
     var colObj: { [rowIndex: number]: { height: number, width: number } } = this._textMetricsCache[colIndex];
-    if (updateCache && colObj) {
+    if (!updateCache && colObj) {
       var metrics: { height: number, width: number } = colObj[rowIndex];
       if (metrics) {
         return metrics;
@@ -156,8 +156,8 @@ export class SheetViewStoreService extends EventEmitterBase {
 
     var newMetrics: { height: number, width: number };
     var cell: Cell = this.getCell(colIndex, rowIndex);
-    
-    if (cell.value === null || cell.value === "") {
+
+    if (cell.value === null) {
       newMetrics = { height: 0, width: 0 };
       if (colObj) {
         delete colObj[rowIndex];
