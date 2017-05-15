@@ -22,7 +22,9 @@
         "styles.scss"
       ],
       "scripts": [
-        "../node_modules/createjs-easeljs/lib/easeljs-0.8.2.min.js"
+        "../node_modules/createjs-easeljs/lib/easeljs-0.8.2.min.js",
+        "../node_modules/lodash/lodash.min.js",
+        "../node_modules/underscore.string/dist/underscore.string.min.js"
       ],
       "environmentSource": "environments/environment.ts",
       "environments": {

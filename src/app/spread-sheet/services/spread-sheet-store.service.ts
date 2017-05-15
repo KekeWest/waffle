@@ -32,7 +32,7 @@ export class SpreadSheetStoreService extends EventEmitterBase {
     cell2.backgroundColor = new RGBAColor(255, 255, 0, 1);
 
     var cell3: Cell = new Cell();
-    cell3.value = "KKKKKKK";
+    cell3.value = "KKKKKKK\nKKK";
     cell3.border.borderBottom = true;
     cell3.border.borderBottomWidth = 1;
     cell3.border.borderBottomStyle = "solid";

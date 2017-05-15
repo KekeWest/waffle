@@ -8,4 +8,6 @@ export class Font {
 
   fontColor: RGBAColor = new RGBAColor(0, 0, 0, 1);
 
+  bold: boolean = false;
+
 }

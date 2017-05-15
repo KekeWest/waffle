@@ -3,6 +3,7 @@ import { EventEmitterBase } from '../../utils/event-emitter-base';
 import { SheetViewDispatcherService } from './sheet-view-dispatcher.service';
 import { InitSheetAction } from './sheet-view-action.service';
 import { Sheet, Column, Row, Cell } from '../../spread-sheet/index';
+import { s, _ } from '../../index';
 
 @Injectable()
 export class SheetViewStoreService extends EventEmitterBase {
@@ -39,13 +40,17 @@ export class SheetViewStoreService extends EventEmitterBase {
 
   private _sheetViewLeft: number;
 
+  private _textRuler: createjs.Text = new createjs.Text();
+
+  private _textMetricsCache: { [colIndex: number]: { [rowIndex: number]: { height: number, width: number } } } = {};
+
   constructor(
     private sheetViewDispatcherService: SheetViewDispatcherService
   ) {
     super();
     this.sheetViewDispatcherService.register(
       (actionType: string, action: any) => {
-        switch(actionType) {
+        switch (actionType) {
           case "init-sheet":
             this.initSheet(<InitSheetAction>action);
             break;
@@ -58,7 +63,7 @@ export class SheetViewStoreService extends EventEmitterBase {
   }
 
   set sheet(sheet: Sheet) {
-      this._sheet = sheet;
+    this._sheet = sheet;
   }
 
   get sheetViewColumnList(): number[] {
@@ -138,6 +143,49 @@ export class SheetViewStoreService extends EventEmitterBase {
     }
 
     return cell;
+  }
+
+  getTextMetrics(colIndex: number, rowIndex: number, updateCache: boolean): { height: number, width: number } {
+    var colObj: { [rowIndex: number]: { height: number, width: number } } = this._textMetricsCache[colIndex];
+    if (updateCache && colObj) {
+      var metrics: { height: number, width: number } = colObj[rowIndex];
+      if (metrics) {
+        return metrics;
+      }
+    }
+
+    var newMetrics: { height: number, width: number };
+    var cell: Cell = this.getCell(colIndex, rowIndex);
+    
+    if (cell.value === null || cell.value === "") {
+      newMetrics = { height: 0, width: 0 };
+      if (colObj) {
+        delete colObj[rowIndex];
+      }
+      return newMetrics;
+    }
+
+    var height: number = 0;
+    var width: number = 0;
+    this._textRuler.font = (cell.font.bold ? "bold " : "") + cell.font.fontSize + "pt " + cell.font.fontFamily;
+    var values: string[] = cell.value.split("\n");
+    _.forEach(values, (v) => {
+      this._textRuler.text = v;
+      var metrics: any = this._textRuler.getMetrics();
+      height += metrics.height;
+      if (width < metrics.width) {
+        width = metrics.width;
+      }
+    });
+    newMetrics = { height: height, width: width };
+
+    if (!colObj) {
+      colObj = {};
+      this._textMetricsCache[colIndex] = colObj;
+    }
+    colObj[rowIndex] = newMetrics;
+
+    return newMetrics;
   }
 
   private initSheet(action: InitSheetAction) {
@@ -301,7 +349,7 @@ export class SheetViewStoreService extends EventEmitterBase {
 
     var rowIdx: number = null;
     var rowHeight: number = null;
-    while((this._sheetViewTop + this._sheetViewHeight) - (this._viewScrollTop + this._viewHeight) > 0) {
+    while ((this._sheetViewTop + this._sheetViewHeight) - (this._viewScrollTop + this._viewHeight) > 0) {
       rowIdx = this._sheetViewRowList.pop();
       row = this._sheet.rows[rowIdx];
       if (row) {
@@ -338,7 +386,7 @@ export class SheetViewStoreService extends EventEmitterBase {
 
     var rowIdx: number = null;
     var rowHeight: number = null;
-    while(this._viewScrollTop - this._sheetViewTop > 0) {
+    while (this._viewScrollTop - this._sheetViewTop > 0) {
       rowIdx = this._sheetViewRowList.shift();
       row = this._sheet.rows[rowIdx];
       if (row) {
@@ -379,7 +427,7 @@ export class SheetViewStoreService extends EventEmitterBase {
 
     var colIdx: number = null;
     var colWidth: number = null;
-    while((this._sheetViewLeft + this._sheetViewWidth) - (this._viewScrollLeft + this._viewWidth) > 0) {
+    while ((this._sheetViewLeft + this._sheetViewWidth) - (this._viewScrollLeft + this._viewWidth) > 0) {
       colIdx = this._sheetViewColumnList.pop();
       col = this._sheet.columns[colIdx];
       if (col) {
@@ -416,7 +464,7 @@ export class SheetViewStoreService extends EventEmitterBase {
 
     var colIdx: number = null;
     var colWidth: number = null;
-    while(this._viewScrollLeft - this._sheetViewLeft > 0) {
+    while (this._viewScrollLeft - this._sheetViewLeft > 0) {
       colIdx = this._sheetViewColumnList.shift();
       col = this._sheet.columns[colIdx];
       if (col) {
