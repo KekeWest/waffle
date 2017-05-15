@@ -7,16 +7,3 @@
   width: 100%;
   height: calc(100% - 120px);
 }
-
-.text-ruler-wrapper {
-  overflow: hidden;
-  visibility: hidden;
-  position: relative;
-  width: 0;
-  height: 0;
-
-  .text-ruler {
-    white-space: pre;
-    position: absolute;
-  }
-}
