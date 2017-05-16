@@ -10,4 +10,8 @@ export class Font {
 
   bold: boolean = false;
 
+  toString(): string {
+    return (this.bold ? "bold " : "") + this.fontSize + "pt " + this.fontFamily;
+  }
+
 }

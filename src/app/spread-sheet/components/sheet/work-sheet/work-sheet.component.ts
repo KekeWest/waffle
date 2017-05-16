@@ -1,5 +1,5 @@
 import { Component, OnInit, AfterViewInit, AfterViewChecked, ViewChild, ElementRef } from '@angular/core';
-import { Sheet, Column, Row, Cell, Border, RGBAColor } from '../../../../spread-sheet/index';
+import { Sheet, Column, Row, Cell, Border, RGBAColor, SpreadSheetConsts } from '../../../../spread-sheet/index';
 import { SheetViewActionService, SheetViewStoreService } from '../../../services/index';
 
 @Component({
@@ -119,28 +119,28 @@ export class WorkSheetComponent implements OnInit, AfterViewInit, AfterViewCheck
     this._sheetViewTop = this.sheetViewStoreService.sheetViewTop;
     this._sheetViewLeft = this.sheetViewStoreService.sheetViewLeft;
 
-    this.updateTextPos();
+    this.updateTextStyleInfo();
   }
 
-  private updateTextPos() {
+  private updateTextStyleInfo() {
     this._textPosLeftList = [];
     this._textPosTopList = [];
 
     var topSum: number = 0;
     for (var rowNum of this._sheetViewRowList) {
-      this._textPosTopList.push(this._sheetViewTop + topSum + Border.MAX_BORDER_WIDRH / 2);
+      this._textPosTopList.push(this._sheetViewTop + topSum + SpreadSheetConsts.MAX_BORDER_WIDRH / 2);
       topSum += this.sheetViewStoreService.getRow(rowNum).height;
     }
 
     var leftSum: number = 0;
     for (var colNum of this._sheetViewColumnList) {
-      this._textPosLeftList.push(this._sheetViewLeft + leftSum + Border.MAX_BORDER_WIDRH / 2);
+      this._textPosLeftList.push(this._sheetViewLeft + leftSum + SpreadSheetConsts.MAX_BORDER_WIDRH / 2);
       leftSum += this.sheetViewStoreService.getColumn(colNum).width;
     }
   }
 
   private getCellHeight(rowNum: number): number {
-    return this.sheetViewStoreService.getRow(rowNum).height - Border.MAX_BORDER_WIDRH;
+    return this.sheetViewStoreService.getRow(rowNum).height - SpreadSheetConsts.MAX_BORDER_WIDRH;
   }
 
   private onScroll() {
@@ -175,23 +175,40 @@ export class WorkSheetComponent implements OnInit, AfterViewInit, AfterViewCheck
   private drawCellBorder() {
     var posX: number = 0;
     var posY: number = 0;
+    var textWidthStack: number = 0;
+    var isDisplayedLeftBorder: boolean = false;
     var shape = new createjs.Shape();
     this._sheetViewStage.addChild(shape);
 
     for (var rowNum of this._sheetViewRowList) {
       var height: number = this.sheetViewStoreService.getRow(rowNum).height;
       posX = 0;
+      textWidthStack = 0;
+      isDisplayedLeftBorder = false;
       for (var colNum of this._sheetViewColumnList) {
         var width: number = this.sheetViewStoreService.getColumn(colNum).width;
-        this.drawCellBorderBottom(colNum, rowNum, posX, posX + width, posY + height, shape.graphics);
-        this.drawCellBorderRight(colNum, rowNum, posY, posY + height, posX + width, shape.graphics);
+
+        if (this.sheetViewStoreService.getCell(colNum, rowNum).value) {
+          textWidthStack = this.sheetViewStoreService.getTextMetrics(colNum, rowNum).width + SpreadSheetConsts.MAX_BORDER_WIDRH;
+        }
+        textWidthStack -= width;
+        if (textWidthStack <= 0) {
+          this.drawCellBorderRight(colNum, rowNum, posY, posY + height, posX + width, shape.graphics);
+          this.drawCellBorderBottom(colNum, rowNum, posX, posX + width, posY + height, shape.graphics, isDisplayedLeftBorder, true);
+          textWidthStack = 0;
+          isDisplayedLeftBorder = true;
+        } else {
+          this.drawCellBorderBottom(colNum, rowNum, posX, posX + width, posY + height, shape.graphics, isDisplayedLeftBorder, false);
+          isDisplayedLeftBorder = false;
+        }
+
         posX += width;
       }
       posY += height;
     }
   }
 
-  private drawCellBorderBottom(colNum: number, rowNum: number, leftX: number, rightX: number, y: number, graphics: createjs.Graphics) {
+  private drawCellBorderBottom(colNum: number, rowNum: number, leftX: number, rightX: number, y: number, graphics: createjs.Graphics, isDisplayedLeftBorder: boolean, isDisplayedRightBorder: boolean) {
     var border: Border = this.getCellBorderBottom(colNum, rowNum);
     if (!border.borderBottom) {
       return;
@@ -204,8 +221,8 @@ export class WorkSheetComponent implements OnInit, AfterViewInit, AfterViewCheck
 
     graphics.beginStroke(border.borderBottomColor.toString());
     graphics.setStrokeStyle(border.borderBottomWidth);
-    graphics.moveTo(leftX - this.getBorderBottomShiftLeft(colNum, rowNum, border.borderBottomWidth) + shift, y + shift);
-    graphics.lineTo(rightX + this.getBorderBottomShiftRight(colNum, rowNum, border.borderBottomWidth) + shift, y + shift);
+    graphics.moveTo(leftX - (isDisplayedLeftBorder ? this.getBorderBottomShiftLeft(colNum, rowNum, border.borderBottomWidth) : 0) + shift, y + shift);
+    graphics.lineTo(rightX + (isDisplayedRightBorder ? this.getBorderBottomShiftRight(colNum, rowNum, border.borderBottomWidth) : 0) + shift, y + shift);
     graphics.endStroke();
   }
 

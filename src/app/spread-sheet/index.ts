@@ -6,3 +6,4 @@ export * from './cell';
 export * from './style/border';
 export * from './style/font';
 export * from './style/rgba-color';
+export * from './spread-sheet-consts';

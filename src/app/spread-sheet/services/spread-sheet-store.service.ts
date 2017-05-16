@@ -20,7 +20,7 @@ export class SpreadSheetStoreService extends EventEmitterBase {
     cell1.value = "200 200";
 
     var cell2: Cell = new Cell();
-    cell2.value = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+    cell2.value = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
     cell2.border.borderBottom = true;
     cell2.border.borderBottomWidth = 3;
     cell2.border.borderBottomStyle = "solid";
@@ -32,9 +32,9 @@ export class SpreadSheetStoreService extends EventEmitterBase {
     cell2.backgroundColor = new RGBAColor(255, 255, 0, 1);
 
     var cell3: Cell = new Cell();
-    cell3.value = "KKKKKKK\nKKK";
+    cell3.value = "KKKKKKKKKKKK";
     cell3.border.borderBottom = true;
-    cell3.border.borderBottomWidth = 1;
+    cell3.border.borderBottomWidth = 3;
     cell3.border.borderBottomStyle = "solid";
     cell3.border.borderBottomColor = new RGBAColor(255, 0, 0, 1);
     cell3.border.borderRight = true;

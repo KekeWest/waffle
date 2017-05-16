@@ -14,7 +14,8 @@
         class="cell-value"
         [style.top.px]="_textPosTopList[rowIndex]" 
         [style.left.px]="_textPosLeftList[colIndex]"
-        [style.height.px]="getCellHeight(rowNum)">
+        [style.height.px]="getCellHeight(rowNum)"
+        [style.font]="sheetViewStoreService.getCell(colNum, rowNum).font.toString()">
           {{sheetViewStoreService.getCell(colNum, rowNum).value}}
         </div>
       </ng-container>
