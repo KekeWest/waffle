@@ -33,15 +33,17 @@ export class WorkSheetComponent implements OnInit, AfterViewInit, AfterViewCheck
 
   private _sheetViewRowList: number[];
 
-  private _textPosTopList: number[];
+  private _cellPosTopList: number[];
 
-  private _textPosLeftList: number[];
+  private _cellPosLeftList: number[];
 
   private _sheetViewTop: number;
 
   private _sheetViewLeft: number;
 
   private _defaultBorder: Border;
+
+  private _onMouseDown: boolean = false;
 
   constructor(
     private elementRef: ElementRef,
@@ -119,24 +121,32 @@ export class WorkSheetComponent implements OnInit, AfterViewInit, AfterViewCheck
     this._sheetViewTop = this.sheetViewStoreService.sheetViewTop;
     this._sheetViewLeft = this.sheetViewStoreService.sheetViewLeft;
 
-    this.updateTextStyleInfo();
+    this.updateCellPos();
   }
 
-  private updateTextStyleInfo() {
-    this._textPosLeftList = [];
-    this._textPosTopList = [];
+  private updateCellPos() {
+    this._cellPosLeftList = [];
+    this._cellPosTopList = [];
 
     var topSum: number = 0;
     for (var rowNum of this._sheetViewRowList) {
-      this._textPosTopList.push(this._sheetViewTop + topSum + SpreadSheetConsts.MAX_BORDER_WIDRH / 2);
+      this._cellPosTopList.push(this._sheetViewTop + topSum);
       topSum += this.sheetViewStoreService.getRow(rowNum).height;
     }
 
     var leftSum: number = 0;
     for (var colNum of this._sheetViewColumnList) {
-      this._textPosLeftList.push(this._sheetViewLeft + leftSum + SpreadSheetConsts.MAX_BORDER_WIDRH / 2);
+      this._cellPosLeftList.push(this._sheetViewLeft + leftSum);
       leftSum += this.sheetViewStoreService.getColumn(colNum).width;
     }
+  }
+
+  private getTextPosTop(rowNum: number) {
+    return this._cellPosTopList[rowNum] + SpreadSheetConsts.MAX_BORDER_WIDRH / 2;
+  }
+
+  private getTextPosLeft(colNum: number) {
+    return this._cellPosLeftList[colNum] + SpreadSheetConsts.MAX_BORDER_WIDRH / 2;
   }
 
   private getCellHeight(rowNum: number): number {
@@ -145,6 +155,48 @@ export class WorkSheetComponent implements OnInit, AfterViewInit, AfterViewCheck
 
   private onScroll() {
     this.sheetViewActionService.scrollSheet();
+  }
+
+  private onMouseBoardMove(e: MouseEvent) {
+    if (!this._onMouseDown) {
+      return;
+    }
+    this.getMouseOverCell(e);
+  }
+
+  private onMouseBoardDown(e: MouseEvent) {
+    this._onMouseDown = true;
+    this.getMouseOverCell(e);
+  }
+
+  private onMouseBoardUp(e: MouseEvent) {
+    this._onMouseDown = false;
+  }
+
+  private onMouseBoardOut(e: MouseEvent) {
+    this._onMouseDown = false;
+  }
+
+  private getMouseOverCell(e: MouseEvent): {colNum: number, rowNum: number} {
+    var rowNum: number = this._sheetViewRowList[this._cellPosTopList.length - 1];
+    for (var i: number = 0; i < this._cellPosTopList.length; i++) {
+      if (e.offsetY < this._cellPosTopList[i] - this._sheetViewTop) {
+        rowNum = this._sheetViewRowList[i - 1];
+        break;
+      }
+    }
+
+    var colNum: number = this._sheetViewColumnList[this._cellPosLeftList.length - 1];
+    for (var i: number = 0; i < this._cellPosLeftList.length; i++) {
+      if (e.offsetX < this._cellPosLeftList[i] - this._sheetViewLeft) {
+        colNum = this._sheetViewColumnList[i - 1];
+        break;
+      }
+    }
+
+    console.log(colNum + " " + rowNum);
+
+    return {colNum: colNum, rowNum: rowNum};
   }
 
   private drawSheetView() {
