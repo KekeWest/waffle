@@ -1,6 +1,6 @@
-import { Component, OnInit, AfterViewInit, AfterViewChecked, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, AfterViewInit, AfterViewChecked, ViewChild, ElementRef, HostListener } from '@angular/core';
 import { Sheet, Column, Row, Cell, Border, RGBAColor, SpreadSheetConsts } from '../../../../spread-sheet/index';
-import { SheetViewActionService, SheetViewStoreService } from '../../../services/index';
+import { SpreadSheetActionService, SheetViewActionService, SheetViewStoreService } from '../../../services/index';
 
 @Component({
   selector: 'wf-work-sheet',
@@ -45,8 +45,10 @@ export class WorkSheetComponent implements OnInit, AfterViewInit, AfterViewCheck
 
   private _onMouseDown: boolean = false;
 
+  private _startSelectedCellPos: { colNum: number, rowNum: number };
+
   constructor(
-    private elementRef: ElementRef,
+    private spreadSheetActionService: SpreadSheetActionService,
     private sheetViewActionService: SheetViewActionService,
     private sheetViewStoreService: SheetViewStoreService
   ) { }
@@ -64,14 +66,7 @@ export class WorkSheetComponent implements OnInit, AfterViewInit, AfterViewCheck
 
     this.sheetViewStoreService.register(
       (changeType: string, data: any) => {
-        switch (changeType) {
-          case "init-sheet-view":
-            this.updateSheetView();
-            break;
-          case "update-sheet-view":
-            this.updateSheetView();
-            break;
-        }
+        this.updateSheetView();
       }
     );
   }
@@ -157,27 +152,38 @@ export class WorkSheetComponent implements OnInit, AfterViewInit, AfterViewCheck
     this.sheetViewActionService.scrollSheet();
   }
 
+  private onMouseBoardDown(e: MouseEvent) {
+    this._onMouseDown = true;
+    this._startSelectedCellPos = this.getMouseOverCell(e);
+    this.spreadSheetActionService.selectCell(
+      this.sheetViewStoreService.sheetName,
+      this._startSelectedCellPos.colNum,
+      this._startSelectedCellPos.rowNum,
+      this._startSelectedCellPos.colNum,
+      this._startSelectedCellPos.rowNum
+    );
+  }
+
   private onMouseBoardMove(e: MouseEvent) {
     if (!this._onMouseDown) {
       return;
     }
-    this.getMouseOverCell(e);
+    var endSelectedCellPos: { colNum: number, rowNum: number } = this.getMouseOverCell(e);
+    this.spreadSheetActionService.selectCell(
+      this.sheetViewStoreService.sheetName,
+      this._startSelectedCellPos.colNum,
+      this._startSelectedCellPos.rowNum,
+      endSelectedCellPos.colNum,
+      endSelectedCellPos.rowNum
+    );
   }
 
-  private onMouseBoardDown(e: MouseEvent) {
-    this._onMouseDown = true;
-    this.getMouseOverCell(e);
-  }
-
+  @HostListener('window:mouseup', ['$event'])
   private onMouseBoardUp(e: MouseEvent) {
     this._onMouseDown = false;
   }
 
-  private onMouseBoardOut(e: MouseEvent) {
-    this._onMouseDown = false;
-  }
-
-  private getMouseOverCell(e: MouseEvent): {colNum: number, rowNum: number} {
+  private getMouseOverCell(e: MouseEvent): { colNum: number, rowNum: number } {
     var rowNum: number = this._sheetViewRowList[this._cellPosTopList.length - 1];
     for (var i: number = 0; i < this._cellPosTopList.length; i++) {
       if (e.offsetY < this._cellPosTopList[i] - this._sheetViewTop) {
@@ -194,9 +200,7 @@ export class WorkSheetComponent implements OnInit, AfterViewInit, AfterViewCheck
       }
     }
 
-    console.log(colNum + " " + rowNum);
-
-    return {colNum: colNum, rowNum: rowNum};
+    return { colNum: colNum, rowNum: rowNum };
   }
 
   private drawSheetView() {

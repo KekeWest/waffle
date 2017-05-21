@@ -1,19 +1,23 @@
 import { Injectable } from '@angular/core';
 import { EventEmitterBase } from '../../utils/index';
-import { SheetViewDispatcherService, InitSheetAction } from './index';
-import { Sheet, Column, Row, Cell, SpreadSheetConsts } from '../../spread-sheet/index';
+import { SpreadSheetStoreService, SheetViewDispatcherService, InitSheetAction } from './index';
+import { Sheet, Column, Row, Cell, SpreadSheetConsts, SelectedCellPosition } from '../../spread-sheet/index';
 import { s, _ } from '../../index';
 
 @Injectable()
 export class SheetViewStoreService extends EventEmitterBase {
 
-  private _edgeColIndex: number;
+  private _spreadSheetStoreRegisterId: string;
 
-  private _edgeRowIndex: number;
+  private _sheetName: string;
 
   private _sheet: Sheet;
 
   private _workSheetViewEl: HTMLElement;
+
+  private _edgeColIndex: number;
+
+  private _edgeRowIndex: number;
 
   private _viewWidth: number;
 
@@ -43,8 +47,11 @@ export class SheetViewStoreService extends EventEmitterBase {
 
   private _textMetricsCache: { [colIndex: number]: { [rowIndex: number]: { height: number, width: number } } } = {};
 
+  private _selectedCellPos: SelectedCellPosition;
+
   constructor(
-    private sheetViewDispatcherService: SheetViewDispatcherService
+    private sheetViewDispatcherService: SheetViewDispatcherService,
+    private spreadSheetStoreService: SpreadSheetStoreService
   ) {
     super();
     this.sheetViewDispatcherService.register(
@@ -59,10 +66,32 @@ export class SheetViewStoreService extends EventEmitterBase {
         }
       }
     );
+
+    this._spreadSheetStoreRegisterId = this.spreadSheetStoreService.register(
+      (actionType: string, action: any) => {
+        switch (actionType) {
+          case "update-selected-cell":
+            this.updateSelectedCell(<string>action);
+            break;
+        }
+      }
+    );
+  }
+
+  onDestroy() {
+    this.spreadSheetStoreService.unregister(this._spreadSheetStoreRegisterId);
+  }
+
+  set sheetName(sheetName: string) {
+    this._sheetName = sheetName;
   }
 
   set sheet(sheet: Sheet) {
     this._sheet = sheet;
+  }
+
+  get sheetName(): string {
+    return this._sheetName;
   }
 
   get sheetViewColumnList(): number[] {
@@ -440,6 +469,13 @@ export class SheetViewStoreService extends EventEmitterBase {
       this._sheetViewWidth += colWidth;
       this._sheetViewLeft -= colWidth;
     }
+  }
+
+  private updateSelectedCell(sheetName: string) {
+    if (sheetName !== this._sheetName) {
+      return;
+    }
+    this._selectedCellPos = this.spreadSheetStoreService.getSelectedCellPosition(this.sheetName);
   }
 
 }

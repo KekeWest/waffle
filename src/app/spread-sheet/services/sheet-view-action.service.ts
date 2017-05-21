@@ -1,10 +1,13 @@
 import { Injectable } from '@angular/core';
-import { SheetViewDispatcherService } from './sheet-view-dispatcher.service';
+import { SheetViewDispatcherService } from './index';
+import { SelectedCellPosition } from '../index';
 
 @Injectable()
 export class SheetViewActionService {
 
-  constructor(private sheetViewDispatcherService: SheetViewDispatcherService) { }
+  constructor(
+    private sheetViewDispatcherService: SheetViewDispatcherService,
+  ) { }
 
   initSheet(workSheetViewEl: HTMLElement) {
     var action: InitSheetAction = {

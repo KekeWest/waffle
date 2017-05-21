@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input } from '@angular/core';
 import { SpreadSheetStoreService, SheetViewDispatcherService, SheetViewActionService, SheetViewStoreService } from '../../services/index';
 
 @Component({
@@ -11,7 +11,7 @@ import { SpreadSheetStoreService, SheetViewDispatcherService, SheetViewActionSer
     SheetViewStoreService
   ]
 })
-export class SheetComponent implements OnInit {
+export class SheetComponent implements OnInit, OnDestroy {
 
   @Input()
   private sheetName: string;
@@ -22,7 +22,12 @@ export class SheetComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.sheetViewStoreService.sheetName = this.sheetName;
     this.sheetViewStoreService.sheet = this.spreadSheetStoreService.getSheet(this.sheetName);
+  }
+
+  ngOnDestroy() {
+    this.sheetViewStoreService.onDestroy();
   }
 
 }

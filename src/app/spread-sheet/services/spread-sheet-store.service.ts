@@ -1,16 +1,40 @@
 import { Injectable } from '@angular/core';
 import { EventEmitterBase } from '../../utils/index';
-import { SpreadSheet, Sheet, Column, Row, Cell, RGBAColor } from '../../spread-sheet/index';
-import { SpreadSheetDispatcherService } from './spread-sheet-dispatcher.service';
+import { SpreadSheet, Sheet, Column, Row, Cell, RGBAColor, SelectedCellPosition } from '../../spread-sheet/index';
+import { SpreadSheetDispatcherService, SelectCellAction } from './index';
 
 @Injectable()
 export class SpreadSheetStoreService extends EventEmitterBase {
 
   private _spreadSheet: SpreadSheet;
 
+  private _selectedCellPos: { [sheetName: string]: SelectedCellPosition } = {};
+
   constructor(private spreadSheetDispatcherService: SpreadSheetDispatcherService) {
     super();
+    this.spreadSheetDispatcherService.register(
+      (actionType: string, action: any) => {
+        switch (actionType) {
+          case "select-cell":
+            this.selectSheet(<SelectCellAction>action);
+            break;
+        }
+      }
+    );
+
     this.getInitialSpreadSheet();
+  }
+
+  get sheetOrder(): string[] {
+    return this._spreadSheet.sheetOrder;
+  }
+
+  get selectedSheetName(): string {
+    return this._spreadSheet.selectedSheetName;
+  }
+
+  get selectedSheet(): Sheet {
+    return this._spreadSheet.sheets[this.selectedSheetName];
   }
 
   getInitialSpreadSheet() {
@@ -71,16 +95,8 @@ export class SpreadSheetStoreService extends EventEmitterBase {
     return this._spreadSheet.sheets[sheetName];
   }
 
-  get sheetOrder(): string[] {
-    return this._spreadSheet.sheetOrder;
-  }
-
-  get selectedSheetName(): string {
-    return this._spreadSheet.selectedSheetName;
-  }
-
-  get selectedSheet(): Sheet {
-    return this._spreadSheet.sheets[this.selectedSheetName];
+  getSelectedCellPosition(sheetName: string): SelectedCellPosition {
+    return this._selectedCellPos[sheetName];
   }
 
   setCell(sheetName: string, colIndex: number, rowIndex: number, cell: Cell) {
@@ -103,6 +119,11 @@ export class SpreadSheetStoreService extends EventEmitterBase {
     }
 
     return null;
+  }
+
+  private selectSheet(action: SelectCellAction) {
+    this._selectedCellPos[action.sheetName] = action.selectedCellPos;
+    this.emit("update-selected-cell", action.sheetName);
   }
 
 }
