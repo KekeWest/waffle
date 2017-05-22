@@ -1,5 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { SheetViewActionService, SheetViewStoreService } from '../../../services/index';
+import { Payload } from '../../../../base/index';
 
 @Component({
   selector: 'wf-row-grid',
@@ -19,15 +20,8 @@ export class RowGridComponent implements OnInit {
 
   ngOnInit() {
     this.sheetViewStoreService.register(
-      (changeType: string, data: any) => {
-        switch(changeType) {
-          case "init-sheet-view":
-            this.updateRowView();
-            break;
-          case "update-sheet-view":
-            this.updateRowView();
-            break;
-        }
+      (payload: Payload) => {
+        this.updateRowView();
       }
     );
   }

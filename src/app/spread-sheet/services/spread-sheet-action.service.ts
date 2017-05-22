@@ -19,15 +19,17 @@ export class SpreadSheetActionService {
     }
 
     this.spreadSheetDispatcherService.emit(
-      "select-cell",
-      action
+      {
+        eventType: "select-cell",
+        data: action
+      }
     );
   }
 
 }
 
 export interface SelectCellAction {
-  
+
   sheetName: string;
 
   selectedCellPos: SelectedCellPosition;

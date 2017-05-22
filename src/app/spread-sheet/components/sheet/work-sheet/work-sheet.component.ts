@@ -1,6 +1,7 @@
 import { Component, OnInit, AfterViewInit, AfterViewChecked, ViewChild, ElementRef, HostListener } from '@angular/core';
 import { Sheet, Column, Row, Cell, Border, RGBAColor, SpreadSheetConsts } from '../../../../spread-sheet/index';
 import { SpreadSheetActionService, SheetViewActionService, SheetViewStoreService } from '../../../services/index';
+import { Payload } from '../../../../base/index';
 
 @Component({
   selector: 'wf-work-sheet',
@@ -65,7 +66,7 @@ export class WorkSheetComponent implements OnInit, AfterViewInit, AfterViewCheck
     this._defaultBorder.borderRightWidth = 1;
 
     this.sheetViewStoreService.register(
-      (changeType: string, data: any) => {
+      (payload: Payload) => {
         this.updateSheetView();
       }
     );

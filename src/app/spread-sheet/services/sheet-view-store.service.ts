@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
-import { EventEmitterBase } from '../../utils/index';
+import { Emitter, Payload } from '../../base/index';
 import { SpreadSheetStoreService, SheetViewDispatcherService, InitSheetAction } from './index';
 import { Sheet, Column, Row, Cell, SpreadSheetConsts, SelectedCellPosition } from '../../spread-sheet/index';
 import { s, _ } from '../../index';
 
 @Injectable()
-export class SheetViewStoreService extends EventEmitterBase {
+export class SheetViewStoreService extends Emitter<Payload> {
 
   private _spreadSheetStoreRegisterId: string;
 
@@ -55,10 +55,10 @@ export class SheetViewStoreService extends EventEmitterBase {
   ) {
     super();
     this.sheetViewDispatcherService.register(
-      (actionType: string, action: any) => {
-        switch (actionType) {
+      (payload: Payload)  => {
+        switch (payload.eventType) {
           case "init-sheet":
-            this.initSheet(<InitSheetAction>action);
+            this.initSheet(<InitSheetAction>payload.data);
             break;
           case "scroll-sheet":
             this.updateSheetView();
@@ -68,10 +68,10 @@ export class SheetViewStoreService extends EventEmitterBase {
     );
 
     this._spreadSheetStoreRegisterId = this.spreadSheetStoreService.register(
-      (actionType: string, action: any) => {
-        switch (actionType) {
+      (payload: Payload) => {
+        switch (payload.eventType) {
           case "update-selected-cell":
-            this.updateSelectedCell(<string>action);
+            this.updateSelectedCell(<string>payload.data);
             break;
         }
       }
@@ -221,7 +221,7 @@ export class SheetViewStoreService extends EventEmitterBase {
 
     this.initAreaRect();
     this.initSheetView();
-    this.emit("init-sheet-view");
+    this.emit({eventType: "init-sheet-view"});
   }
 
   private initAreaRect() {
@@ -346,7 +346,7 @@ export class SheetViewStoreService extends EventEmitterBase {
       this.moveColumnRight();
     }
 
-    this.emit("update-sheet-view");
+    this.emit({eventType: "update-sheet-view"});
   }
 
   private moveRowUp() {

@@ -15,14 +15,18 @@ export class SheetViewActionService {
     }
 
     this.sheetViewDispatcherService.emit(
-      "init-sheet",
-      action
+      {
+        eventType: "init-sheet",
+        data: action
+      }
     );
   }
 
   scrollSheet() {
     this.sheetViewDispatcherService.emit(
-      "scroll-sheet"
+      {
+        eventType: "scroll-sheet"
+      }
     );
   }
 

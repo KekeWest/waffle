@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
-import { EventEmitterBase } from '../../utils/index';
+import { Emitter, Payload } from '../../base/index';
 import { SpreadSheet, Sheet, Column, Row, Cell, RGBAColor, SelectedCellPosition } from '../../spread-sheet/index';
 import { SpreadSheetDispatcherService, SelectCellAction } from './index';
 
 @Injectable()
-export class SpreadSheetStoreService extends EventEmitterBase {
+export class SpreadSheetStoreService extends Emitter<Payload> {
 
   private _spreadSheet: SpreadSheet;
 
@@ -13,10 +13,10 @@ export class SpreadSheetStoreService extends EventEmitterBase {
   constructor(private spreadSheetDispatcherService: SpreadSheetDispatcherService) {
     super();
     this.spreadSheetDispatcherService.register(
-      (actionType: string, action: any) => {
-        switch (actionType) {
+      (payload: Payload) => {
+        switch (payload.eventType) {
           case "select-cell":
-            this.selectSheet(<SelectCellAction>action);
+            this.selectSheet(<SelectCellAction>payload.data);
             break;
         }
       }
@@ -123,7 +123,7 @@ export class SpreadSheetStoreService extends EventEmitterBase {
 
   private selectSheet(action: SelectCellAction) {
     this._selectedCellPos[action.sheetName] = action.selectedCellPos;
-    this.emit("update-selected-cell", action.sheetName);
+    this.emit({eventType: "update-selected-cell", data: action.sheetName});
   }
 
 }

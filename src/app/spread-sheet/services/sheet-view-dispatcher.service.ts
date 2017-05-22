@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { EventEmitterBase } from '../../utils/event-emitter-base';
+import { Emitter, Payload } from '../../base/index';
 
 @Injectable()
-export class SheetViewDispatcherService extends EventEmitterBase {
+export class SheetViewDispatcherService extends Emitter<Payload> {
 }
