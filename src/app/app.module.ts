@@ -12,7 +12,7 @@ import { ColumnGridComponent } from './spread-sheet/components/sheet/column-grid
 import { RowGridComponent } from './spread-sheet/components/sheet/row-grid/row-grid.component';
 import { WorkSheetComponent } from './spread-sheet/components/sheet/work-sheet/work-sheet.component';
 import { AllCellComponent } from './spread-sheet/components/sheet/all-cell/all-cell.component';
-import { SheetViewCanvasDirective } from './spread-sheet/directives/sheet/work-sheet/sheet-view-canvas.directive';
+import { SheetViewCanvasComponent } from './spread-sheet/components/sheet/work-sheet/sheet-view-canvas/sheet-view-canvas.component';
 
 @NgModule({
   declarations: [
@@ -25,7 +25,7 @@ import { SheetViewCanvasDirective } from './spread-sheet/directives/sheet/work-s
     RowGridComponent,
     WorkSheetComponent,
     AllCellComponent,
-    SheetViewCanvasDirective
+    SheetViewCanvasComponent
   ],
   imports: [
     BrowserModule,

@@ -1,6 +1,6 @@
 <div #workSheetView class="work-sheet-view" (scroll)="onScroll()">
   <div class="work-sheet-area" [style.width.px]="_areaWidth" [style.height.px]="_areaHeight">
-    <canvas wfSheetViewCanvas></canvas>
+    <canvas wf-sheet-view-canvas></canvas>
     <ng-container *ngFor="let colNum of _sheetViewColumnList; let colIndex = index;">
       <ng-container *ngFor="let rowNum of _sheetViewRowList; let rowIndex = index;">
         <div *ngIf="sheetViewStoreService.getCell(colNum, rowNum).value"

@@ -1,7 +1,6 @@
-import { Component, OnInit, AfterViewInit, AfterViewChecked, ViewChild, ContentChild, ElementRef, HostListener } from '@angular/core';
-import { Sheet, Column, Row, Cell, Border, RGBAColor, SpreadSheetConsts } from '../../../../spread-sheet/index';
+import { Component, OnInit, AfterViewInit, ViewChild, ElementRef, HostListener } from '@angular/core';
+import { SpreadSheetConsts } from '../../../../spread-sheet/index';
 import { SpreadSheetActionService, SheetViewActionService, SheetViewStoreService } from '../../../services/index';
-import { SheetViewCanvasDirective } from '../../../directives/sheet/work-sheet/sheet-view-canvas.directive';
 import { Payload } from '../../../../base/index';
 
 @Component({
@@ -9,13 +8,10 @@ import { Payload } from '../../../../base/index';
   templateUrl: './work-sheet.component.html',
   styleUrls: ['./work-sheet.component.scss'],
 })
-export class WorkSheetComponent implements OnInit, AfterViewInit, AfterViewChecked {
+export class WorkSheetComponent implements OnInit, AfterViewInit {
 
   @ViewChild("workSheetView")
   private _workSheetViewRef: ElementRef;
-
-  @ViewChild(SheetViewCanvasDirective)
-  private _sheetViewCanvasDirective: SheetViewCanvasDirective;
 
   private _areaWidth: number;
 
@@ -59,10 +55,6 @@ export class WorkSheetComponent implements OnInit, AfterViewInit, AfterViewCheck
     this.sheetViewActionService.initSheet(
       this._workSheetViewRef.nativeElement
     );
-  }
-
-  ngAfterViewChecked() {
-    this._sheetViewCanvasDirective.updateCanvas();
   }
 
   private updateSheetView() {

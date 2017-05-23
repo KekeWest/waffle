@@ -1,15 +1,14 @@
-import { Directive, ElementRef, OnInit, HostBinding } from '@angular/core';
-import { SheetViewStoreService } from '../../../services/index';
-import { Column, Row, Cell, Border, RGBAColor, SpreadSheetConsts } from '../../../index';
-import { Payload } from '../../../../base/index';
+import { Component, ElementRef, OnInit, AfterViewChecked, HostBinding } from '@angular/core';
+import { SheetViewStoreService } from '../../../../services/index';
+import { Column, Row, Cell, Border, RGBAColor, SpreadSheetConsts } from '../../../../index';
+import { Payload } from '../../../../../base/index';
 
-@Directive({
-  selector: '[wfSheetViewCanvas]',
-  host: {
-    '[style.position]': '"absolute"'
-  }
+@Component({
+  selector: '[wf-sheet-view-canvas]',
+  templateUrl: './sheet-view-canvas.component.html',
+  styleUrls: ['./sheet-view-canvas.component.scss']
 })
-export class SheetViewCanvasDirective implements OnInit {
+export class SheetViewCanvasComponent implements OnInit, AfterViewChecked {
 
   @HostBinding('attr.width')
   private _sheetViewWidthAttr: number;
@@ -37,9 +36,17 @@ export class SheetViewCanvasDirective implements OnInit {
 
   ngOnInit() {
     this.initDefaultBorder();
-    this._sheetViewStage = new createjs.Stage(this.el.nativeElement);
-    if (window.devicePixelRatio) {
-      this._sheetViewStage.scaleX = this._sheetViewStage.scaleY = window.devicePixelRatio;
+
+    this.sheetViewStoreService.register(
+      (payload: Payload) => {
+        this.updateCanvasStyle();
+      }
+    );
+  }
+
+  ngAfterViewChecked() {
+    if (this._sheetViewStage) {
+      this.drawSheetView();
     }
   }
 
@@ -55,7 +62,14 @@ export class SheetViewCanvasDirective implements OnInit {
     this._defaultBorder.borderRightWidth = 1;
   }
 
-  updateCanvas() {
+  updateCanvasStyle() {
+    if (!this._sheetViewStage) {
+      this._sheetViewStage = new createjs.Stage(this.el.nativeElement);
+    }
+    if (window.devicePixelRatio) {
+      this._sheetViewStage.scaleX = this._sheetViewStage.scaleY = window.devicePixelRatio;
+    }
+
     this._sheetViewWidthStyle = this.sheetViewStoreService.sheetViewWidth;
     this._sheetViewHeightStyle = this.sheetViewStoreService.sheetViewHeight;
     if (window.devicePixelRatio) {
@@ -67,8 +81,6 @@ export class SheetViewCanvasDirective implements OnInit {
     }
     this._sheetViewTop = this.sheetViewStoreService.sheetViewTop;
     this._sheetViewLeft = this.sheetViewStoreService.sheetViewLeft;
-
-    this.drawSheetView();
   }
 
   private drawSheetView() {
