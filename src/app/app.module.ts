@@ -13,6 +13,7 @@ import { RowGridComponent } from './spread-sheet/components/sheet/row-grid/row-g
 import { WorkSheetComponent } from './spread-sheet/components/sheet/work-sheet/work-sheet.component';
 import { AllCellComponent } from './spread-sheet/components/sheet/all-cell/all-cell.component';
 import { SheetViewCanvasComponent } from './spread-sheet/components/sheet/work-sheet/sheet-view-canvas/sheet-view-canvas.component';
+import { MouseEventBoardComponent } from './spread-sheet/components/sheet/work-sheet/mouse-event-board/mouse-event-board.component';
 
 @NgModule({
   declarations: [
@@ -25,7 +26,8 @@ import { SheetViewCanvasComponent } from './spread-sheet/components/sheet/work-s
     RowGridComponent,
     WorkSheetComponent,
     AllCellComponent,
-    SheetViewCanvasComponent
+    SheetViewCanvasComponent,
+    MouseEventBoardComponent
   ],
   imports: [
     BrowserModule,

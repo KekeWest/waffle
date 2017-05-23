@@ -39,7 +39,7 @@ export class SheetViewCanvasComponent implements OnInit, AfterViewChecked {
 
     this.sheetViewStoreService.register(
       (payload: Payload) => {
-        this.updateCanvasStyle();
+        this.updateSheetView();
       }
     );
   }
@@ -62,7 +62,7 @@ export class SheetViewCanvasComponent implements OnInit, AfterViewChecked {
     this._defaultBorder.borderRightWidth = 1;
   }
 
-  updateCanvasStyle() {
+  updateSheetView() {
     if (!this._sheetViewStage) {
       this._sheetViewStage = new createjs.Stage(this.el.nativeElement);
     }

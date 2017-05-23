@@ -35,6 +35,10 @@ export class SheetViewStoreService extends Emitter<Payload> {
 
   private _sheetViewRowList: number[];
 
+  private _cellPosTopList: number[];
+
+  private _cellPosLeftList: number[];
+
   private _sheetViewWidth: number;
 
   private _sheetViewHeight: number;
@@ -100,6 +104,14 @@ export class SheetViewStoreService extends Emitter<Payload> {
 
   get sheetViewRowList(): number[] {
     return this._sheetViewRowList;
+  }
+
+  get cellPosTopList(): number[] {
+    return this._cellPosTopList;
+  }
+
+  get cellPosLeftList(): number[] {
+    return this._cellPosLeftList;
   }
 
   get viewWidth(): number {
@@ -323,6 +335,8 @@ export class SheetViewStoreService extends Emitter<Payload> {
         break;
       }
     }
+
+    this.updateCellPos();
   }
 
   private updateViewRect() {
@@ -346,6 +360,7 @@ export class SheetViewStoreService extends Emitter<Payload> {
       this.moveColumnRight();
     }
 
+    this.updateCellPos();
     this.emit({eventType: "update-sheet-view"});
   }
 
@@ -476,6 +491,23 @@ export class SheetViewStoreService extends Emitter<Payload> {
       return;
     }
     this._selectedCellPos = this.spreadSheetStoreService.getSelectedCellPosition(this.sheetName);
+  }
+
+  private updateCellPos() {
+    this._cellPosLeftList = [];
+    this._cellPosTopList = [];
+
+    var topSum: number = 0;
+    for (var rowNum of this._sheetViewRowList) {
+      this._cellPosTopList.push(this._sheetViewTop + topSum);
+      topSum += this.getRow(rowNum).height;
+    }
+
+    var leftSum: number = 0;
+    for (var colNum of this._sheetViewColumnList) {
+      this._cellPosLeftList.push(this._sheetViewLeft + leftSum);
+      leftSum += this.getColumn(colNum).width;
+    }
   }
 
 }
