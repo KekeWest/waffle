@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { SpreadSheetDispatcherService } from './index';
+import { SpreadSheetDispatcherService, SpreadSheetAction } from './index';
 import { SelectedCellPosition } from '../index';
 
 @Injectable()
@@ -7,15 +7,10 @@ export class SpreadSheetActionService {
 
   constructor(private spreadSheetDispatcherService: SpreadSheetDispatcherService) { }
 
-  selectCell(sheetName: string, startColNum: number, startRowNum: number, endColNum: number, endRowNum: number) {
-    var action: SelectCellAction = {
+  selectCell(sheetName: string, selectedCellPos: SelectedCellPosition) {
+    var action: SpreadSheetAction.SelectCell = {
       sheetName: sheetName,
-      selectedCellPos: {
-        startColNum: startColNum,
-        startRowNum: startRowNum,
-        endColNum: endColNum,
-        endRowNum: endRowNum
-      }
+      selectedCellPos: selectedCellPos
     }
 
     this.spreadSheetDispatcherService.emit(
@@ -25,13 +20,5 @@ export class SpreadSheetActionService {
       }
     );
   }
-
-}
-
-export interface SelectCellAction {
-
-  sheetName: string;
-
-  selectedCellPos: SelectedCellPosition;
 
 }

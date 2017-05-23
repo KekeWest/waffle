@@ -4,3 +4,5 @@ export * from './spread-sheet-store.service';
 export * from './sheet-view-dispatcher.service';
 export * from './sheet-view-action.service';
 export * from './sheet-view-store.service';
+export * from './sheet-view-action';
+export * from './spread-sheet-action';

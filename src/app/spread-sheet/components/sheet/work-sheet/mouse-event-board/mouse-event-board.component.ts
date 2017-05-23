@@ -1,5 +1,5 @@
 import { Component, OnInit, HostListener, HostBinding } from '@angular/core';
-import { SheetViewStoreService, SpreadSheetActionService } from '../../../../services/index';
+import { SheetViewStoreService, SheetViewActionService } from '../../../../services/index';
 import { Payload } from '../../../../../base/index';
 
 @Component({
@@ -35,7 +35,7 @@ export class MouseEventBoardComponent implements OnInit {
 
   constructor(
     private sheetViewStoreService: SheetViewStoreService,
-    private spreadSheetActionService: SpreadSheetActionService) { }
+    private sheetViewActionService: SheetViewActionService) { }
 
   ngOnInit() {
     this.sheetViewStoreService.register(
@@ -60,8 +60,7 @@ export class MouseEventBoardComponent implements OnInit {
   private onMouseBoardDown(e: MouseEvent) {
     this._onMouseDown = true;
     this._startSelectedCellPos = this.getMouseOverCell(e);
-    this.spreadSheetActionService.selectCell(
-      this.sheetViewStoreService.sheetName,
+    this.sheetViewActionService.selectCell(
       this._startSelectedCellPos.colNum,
       this._startSelectedCellPos.rowNum,
       this._startSelectedCellPos.colNum,
@@ -75,8 +74,7 @@ export class MouseEventBoardComponent implements OnInit {
       return;
     }
     var endSelectedCellPos: { colNum: number, rowNum: number } = this.getMouseOverCell(e);
-    this.spreadSheetActionService.selectCell(
-      this.sheetViewStoreService.sheetName,
+    this.sheetViewActionService.selectCell(
       this._startSelectedCellPos.colNum,
       this._startSelectedCellPos.rowNum,
       endSelectedCellPos.colNum,

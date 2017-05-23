@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { SheetViewDispatcherService } from './index';
+import { SheetViewDispatcherService, SheetViewAction } from './index';
 import { SelectedCellPosition } from '../index';
 
 @Injectable()
@@ -10,7 +10,7 @@ export class SheetViewActionService {
   ) { }
 
   initSheet(workSheetViewEl: HTMLElement) {
-    var action: InitSheetAction = {
+    var action: SheetViewAction.InitSheet = {
       workSheetViewEl: workSheetViewEl
     }
 
@@ -30,8 +30,22 @@ export class SheetViewActionService {
     );
   }
 
-}
+  selectCell(startColNum: number, startRowNum: number, endColNum: number, endRowNum: number) {
+    var action: SheetViewAction.SelectCell = {
+      selectedCellPos: {
+        startColNum: startColNum,
+        startRowNum: startRowNum,
+        endColNum: endColNum,
+        endRowNum: endRowNum
+      }
+    }
 
-export interface InitSheetAction {
-  workSheetViewEl: HTMLElement;
+    this.sheetViewDispatcherService.emit(
+      {
+        eventType: "select-cell",
+        data: action
+      }
+    );
+  }
+
 }

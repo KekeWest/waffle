@@ -1,13 +1,11 @@
 import { Injectable } from '@angular/core';
 import { Emitter, Payload } from '../../base/index';
-import { SpreadSheetStoreService, SheetViewDispatcherService, InitSheetAction } from './index';
+import { SpreadSheetActionService, SheetViewDispatcherService, SheetViewAction } from './index';
 import { Sheet, Column, Row, Cell, SpreadSheetConsts, SelectedCellPosition } from '../../spread-sheet/index';
 import { s, _ } from '../../index';
 
 @Injectable()
 export class SheetViewStoreService extends Emitter<Payload> {
-
-  private _spreadSheetStoreRegisterId: string;
 
   private _sheetName: string;
 
@@ -55,35 +53,25 @@ export class SheetViewStoreService extends Emitter<Payload> {
 
   constructor(
     private sheetViewDispatcherService: SheetViewDispatcherService,
-    private spreadSheetStoreService: SpreadSheetStoreService
+    private spreadSheetActionService: SpreadSheetActionService
   ) {
     super();
     this.sheetViewDispatcherService.register(
       (payload: Payload)  => {
         switch (payload.eventType) {
           case "init-sheet":
-            this.initSheet(<InitSheetAction>payload.data);
+            this.initSheet(<SheetViewAction.InitSheet>payload.data);
             break;
           case "scroll-sheet":
             this.updateSheetView();
             break;
-        }
-      }
-    );
-
-    this._spreadSheetStoreRegisterId = this.spreadSheetStoreService.register(
-      (payload: Payload) => {
-        switch (payload.eventType) {
-          case "update-selected-cell":
-            this.updateSelectedCell(<string>payload.data);
+          case "select-cell":
+            this.updateSelectedCell(<SheetViewAction.SelectCell>payload.data);
             break;
         }
       }
     );
-  }
 
-  onDestroy() {
-    this.spreadSheetStoreService.unregister(this._spreadSheetStoreRegisterId);
   }
 
   set sheetName(sheetName: string) {
@@ -228,7 +216,7 @@ export class SheetViewStoreService extends Emitter<Payload> {
     return newMetrics;
   }
 
-  private initSheet(action: InitSheetAction) {
+  private initSheet(action: SheetViewAction.InitSheet) {
     this._workSheetViewEl = action.workSheetViewEl;
 
     this.initAreaRect();
@@ -486,11 +474,9 @@ export class SheetViewStoreService extends Emitter<Payload> {
     }
   }
 
-  private updateSelectedCell(sheetName: string) {
-    if (sheetName !== this._sheetName) {
-      return;
-    }
-    this._selectedCellPos = this.spreadSheetStoreService.getSelectedCellPosition(this.sheetName);
+  private updateSelectedCell(action: SheetViewAction.SelectCell) {
+    this._selectedCellPos = action.selectedCellPos;
+    this.spreadSheetActionService.selectCell(this._sheetName, this._selectedCellPos);
   }
 
   private updateCellPos() {
