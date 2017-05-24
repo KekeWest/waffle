@@ -1,6 +1,6 @@
 import { Component, OnInit, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
 import { SpreadSheetConsts } from '../../../../spread-sheet/index';
-import { SpreadSheetActionService, SheetViewActionService, SheetViewStoreService } from '../../../services/index';
+import { SheetViewActionService, SheetViewStoreService } from '../../../services/index';
 import { Payload } from '../../../../base/index';
 
 @Component({
