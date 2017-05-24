@@ -1,18 +1,7 @@
 <div #workSheetView class="work-sheet-view" (scroll)="onScroll()">
   <div class="work-sheet-area" [style.width.px]="_areaWidth" [style.height.px]="_areaHeight">
     <canvas wf-sheet-view-canvas></canvas>
-    <ng-container *ngFor="let colNum of _sheetViewColumnList; let colIndex = index;">
-      <ng-container *ngFor="let rowNum of _sheetViewRowList; let rowIndex = index;">
-        <div *ngIf="sheetViewStoreService.getCell(colNum, rowNum).value"
-        class="cell-value"
-        [style.top.px]="getTextPosTop(rowIndex)" 
-        [style.left.px]="getTextPosLeft(colIndex)"
-        [style.height.px]="getCellHeight(rowNum)"
-        [style.font]="sheetViewStoreService.getCell(colNum, rowNum).font.toString()">
-          {{sheetViewStoreService.getCell(colNum, rowNum).value}}
-        </div>
-      </ng-container>
-    </ng-container>
+    <wf-text-board></wf-text-board>
     <wf-mouse-event-board></wf-mouse-event-board>
   </div>
 </div>
