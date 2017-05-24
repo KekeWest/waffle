@@ -1,5 +1,6 @@
 import { Component, OnInit, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
-import { SheetViewActionService, SheetViewStoreService } from '../../../services/index';
+import { SpreadSheetConsts } from '../../../../spread-sheet/index';
+import { SpreadSheetActionService, SheetViewActionService, SheetViewStoreService } from '../../../services/index';
 import { Payload } from '../../../../base/index';
 
 @Component({
@@ -15,6 +16,10 @@ export class WorkSheetComponent implements OnInit, AfterViewInit {
   private _areaWidth: number;
 
   private _areaHeight: number;
+
+  private _sheetViewColumnList: number[];
+
+  private _sheetViewRowList: number[];
 
   constructor(
     private sheetViewActionService: SheetViewActionService,
@@ -34,6 +39,9 @@ export class WorkSheetComponent implements OnInit, AfterViewInit {
   }
 
   private updateSheetView() {
+    this._sheetViewColumnList = this.sheetViewStoreService.sheetViewColumnList;
+    this._sheetViewRowList = this.sheetViewStoreService.sheetViewRowList;
+
     if (this.sheetViewStoreService.areaWidth < this.sheetViewStoreService.viewScrollLeft + this.sheetViewStoreService.viewWidth) {
       this._areaWidth = this.sheetViewStoreService.viewScrollLeft + this.sheetViewStoreService.viewWidth * 2;
     } else {
@@ -44,6 +52,18 @@ export class WorkSheetComponent implements OnInit, AfterViewInit {
     } else {
       this._areaHeight = this.sheetViewStoreService.areaHeight + this.sheetViewStoreService.viewHeight;
     }
+  }
+
+  private getTextPosTop(rowNum: number) {
+    return this.sheetViewStoreService.cellPosTopList[rowNum] + SpreadSheetConsts.MAX_BORDER_WIDRH / 2;
+  }
+
+  private getTextPosLeft(colNum: number) {
+    return this.sheetViewStoreService.cellPosLeftList[colNum] + SpreadSheetConsts.MAX_BORDER_WIDRH / 2;
+  }
+
+  private getCellHeight(rowNum: number): number {
+    return this.sheetViewStoreService.getRow(rowNum).height - SpreadSheetConsts.MAX_BORDER_WIDRH;
   }
 
   private onScroll() {
