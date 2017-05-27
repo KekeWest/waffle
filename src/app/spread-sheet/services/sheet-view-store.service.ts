@@ -142,6 +142,10 @@ export class SheetViewStoreService extends Emitter<Payload> {
     return this._sheetViewLeft;
   }
 
+  get selectedCellPos(): SelectedCellPosition {
+    return this._selectedCellPos;
+  }
+
   getColumn(colIndex: number): Column {
     var col: Column = this._sheet.columns[colIndex];
     if (!col) {
