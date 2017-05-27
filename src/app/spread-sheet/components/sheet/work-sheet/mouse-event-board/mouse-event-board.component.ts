@@ -1,4 +1,4 @@
-import { Component, OnInit, HostListener, HostBinding } from '@angular/core';
+import { Component, OnInit, HostListener, HostBinding, ElementRef } from '@angular/core';
 import { SheetViewStoreService, SheetViewActionService } from '../../../../services/index';
 import { Payload } from '../../../../../base/index';
 
@@ -34,6 +34,7 @@ export class MouseEventBoardComponent implements OnInit {
   private _startSelectedCellPos: { colNum: number, rowNum: number };
 
   constructor(
+    private el: ElementRef,
     private sheetViewStoreService: SheetViewStoreService,
     private sheetViewActionService: SheetViewActionService) { }
 
@@ -88,9 +89,11 @@ export class MouseEventBoardComponent implements OnInit {
   }
 
   private getMouseOverCell(e: MouseEvent): { colNum: number, rowNum: number } {
+    var pos: {x: number, y: number} = this.getBoardPos(e);
+
     var rowNum: number = this._sheetViewRowList[this._cellPosTopList.length - 1];
     for (var i: number = 0; i < this._cellPosTopList.length; i++) {
-      if (e.offsetY < this._cellPosTopList[i] - this._sheetViewTop) {
+      if (pos.y < this._cellPosTopList[i] - this._sheetViewTop) {
         rowNum = this._sheetViewRowList[i - 1];
         break;
       }
@@ -98,13 +101,33 @@ export class MouseEventBoardComponent implements OnInit {
 
     var colNum: number = this._sheetViewColumnList[this._cellPosLeftList.length - 1];
     for (var i: number = 0; i < this._cellPosLeftList.length; i++) {
-      if (e.offsetX < this._cellPosLeftList[i] - this._sheetViewLeft) {
+      if (pos.x < this._cellPosLeftList[i] - this._sheetViewLeft) {
         colNum = this._sheetViewColumnList[i - 1];
         break;
       }
     }
 
     return { colNum: colNum, rowNum: rowNum };
+  }
+
+  getBoardPos(e: MouseEvent): {x: number, y: number} {
+    var x: number = e.offsetX;
+    var y: number = e.offsetY;
+
+    var element: HTMLElement = <HTMLElement>e.target;
+    while (true) {
+      if (element.tagName === this.el.nativeElement.tagName) {
+        break;
+      }
+      x += element.offsetLeft;
+      y += element.offsetTop;
+      element = element.parentElement;
+      if (!element) {
+        break;
+      }
+    }
+
+    return {x: x, y: y};
   }
 
 }

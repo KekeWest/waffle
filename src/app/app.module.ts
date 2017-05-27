@@ -14,6 +14,7 @@ import { WorkSheetComponent } from './spread-sheet/components/sheet/work-sheet/w
 import { AllCellComponent } from './spread-sheet/components/sheet/all-cell/all-cell.component';
 import { SheetViewCanvasComponent } from './spread-sheet/components/sheet/work-sheet/sheet-view-canvas/sheet-view-canvas.component';
 import { MouseEventBoardComponent } from './spread-sheet/components/sheet/work-sheet/mouse-event-board/mouse-event-board.component';
+import { SelectedCellAreaComponent } from './spread-sheet/components/sheet/work-sheet/mouse-event-board/selected-cell-area/selected-cell-area.component';
 
 @NgModule({
   declarations: [
@@ -27,7 +28,8 @@ import { MouseEventBoardComponent } from './spread-sheet/components/sheet/work-s
     WorkSheetComponent,
     AllCellComponent,
     SheetViewCanvasComponent,
-    MouseEventBoardComponent
+    MouseEventBoardComponent,
+    SelectedCellAreaComponent
   ],
   imports: [
     BrowserModule,
