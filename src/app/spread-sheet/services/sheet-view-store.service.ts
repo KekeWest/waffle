@@ -57,7 +57,7 @@ export class SheetViewStoreService extends Emitter<Payload> {
   ) {
     super();
     this.sheetViewDispatcherService.register(
-      (payload: Payload)  => {
+      (payload: Payload) => {
         switch (payload.eventType) {
           case "init-sheet":
             this.initSheet(<SheetViewAction.InitSheet>payload.data);
@@ -225,7 +225,7 @@ export class SheetViewStoreService extends Emitter<Payload> {
 
     this.initAreaRect();
     this.initSheetView();
-    this.emit({eventType: "init-sheet-view"});
+    this.emit({ eventType: "init-sheet-view" });
   }
 
   private initAreaRect() {
@@ -353,7 +353,7 @@ export class SheetViewStoreService extends Emitter<Payload> {
     }
 
     this.updateCellPos();
-    this.emit({eventType: "update-sheet-view"});
+    this.emit({ eventType: "update-sheet-view" });
   }
 
   private moveRowUp() {
@@ -480,6 +480,7 @@ export class SheetViewStoreService extends Emitter<Payload> {
 
   private updateSelectedCell(action: SheetViewAction.SelectCell) {
     this._selectedCellPos = action.selectedCellPos;
+    this.emit({ eventType: "update-selected-cell" });
     this.spreadSheetActionService.selectCell(this._sheetName, this._selectedCellPos);
   }
 

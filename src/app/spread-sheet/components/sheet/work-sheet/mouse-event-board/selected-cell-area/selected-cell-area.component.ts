@@ -17,7 +17,7 @@ export class SelectedCellAreaComponent implements OnInit {
   @HostBinding('style.width.px')
   private _width: number;
 
-  @HostBinding('style.height:px')
+  @HostBinding('style.height.px')
   private _height: number;
 
   @HostBinding('style.top.px')
@@ -29,11 +29,20 @@ export class SelectedCellAreaComponent implements OnInit {
   @HostBinding('style.border-width.px')
   private _borderWidth: number = SpreadSheetConsts.MAX_BORDER_WIDRH;
 
-  @HostBinding('style.border-style')
-  private _borderStyle: string = "solid";
-
   @HostBinding('style.border-color')
-  private _borderColor: string = new RGBAColor(255, 0, 0, 1).toString();
+  private _borderColor: string = new RGBAColor(15, 130, 15, 1).toString();
+
+  @HostBinding('style.border-top-style')
+  private _topBorderStyle: string = "solid";
+
+  @HostBinding('style.border-left-style')
+  private _leftBorderStyle: string = "solid";
+
+  @HostBinding('style.border-bottom-style')
+  private _bottomBorderStyle: string = "solid";
+
+  @HostBinding('style.border-right-style')
+  private _rightBorderStyle: string = "solid";
 
   private _sheetViewColumnList: number[];
 
@@ -65,16 +74,15 @@ export class SelectedCellAreaComponent implements OnInit {
   }
 
   private isShowable(): boolean {
-    var startColNum: number = _.first(this._sheetViewColumnList);
-    var endColNum: number = _.last(this._sheetViewColumnList);
-    var startRowNum: number = _.first(this._sheetViewRowList);
-    var endRowNum: number = _.last(this._sheetViewRowList);
+    if (!this._currentPos) {
+      return;
+    }
 
-    if (this._currentPos.startColNum > endColNum || this._currentPos.endColNum < startColNum) {
+    if (this._currentPos.startColNum > _.last(this._sheetViewColumnList) || this._currentPos.endColNum < _.first(this._sheetViewColumnList)) {
       return false;
     }
 
-    if (this._currentPos.startRowNum > endRowNum || this._currentPos.endRowNum < startRowNum) {
+    if (this._currentPos.startRowNum > _.last(this._sheetViewRowList) || this._currentPos.endRowNum < _.first(this._sheetViewRowList)) {
       return false;
     }
 
@@ -85,10 +93,85 @@ export class SelectedCellAreaComponent implements OnInit {
     if (!this.isShowable()) {
       this._display = "none";
       return;
+    } else {
+      this._display = "block";
     }
 
+    this.setAreaPos();
+    this.setAreaSize();
+    this.setAreaBorder();
   }
 
-  
+  private setAreaPos() {
+    if (this._currentPos.startColNum > _.first(this._sheetViewColumnList)) {
+      var colNumIndex: number = this._sheetViewColumnList.indexOf(this._currentPos.startColNum);
+      this._left = this._cellPosLeftList[colNumIndex] - this.sheetViewStoreService.sheetViewLeft - SpreadSheetConsts.MAX_BORDER_WIDRH / 2;
+    } else {
+      this._left = - SpreadSheetConsts.MAX_BORDER_WIDRH / 2;
+    }
+
+    if (this._currentPos.startRowNum > _.first(this._sheetViewRowList)) {
+      var topRowIndex: number = this._sheetViewRowList.indexOf(this._currentPos.startRowNum);
+      this._top = this._cellPosTopList[topRowIndex] - this.sheetViewStoreService.sheetViewTop - SpreadSheetConsts.MAX_BORDER_WIDRH / 2;
+    } else {
+      this._top = - SpreadSheetConsts.MAX_BORDER_WIDRH / 2;
+    }
+  }
+
+  private setAreaSize() {
+    this._width = SpreadSheetConsts.MAX_BORDER_WIDRH;
+    if (this._currentPos.startColNum < _.first(this._sheetViewColumnList)) {
+      var colNum = _.first(this._sheetViewColumnList);
+    } else {
+      var colNum = this._currentPos.startColNum;
+    }
+    while (colNum <= this._currentPos.endColNum) {
+      this._width += this.sheetViewStoreService.getColumn(colNum).width;
+      if (colNum >= _.last(this._sheetViewColumnList)) {
+        break;
+      }
+      colNum++;
+    }
+
+    this._height = SpreadSheetConsts.MAX_BORDER_WIDRH;
+    if (this._currentPos.startRowNum < _.first(this._sheetViewRowList)) {
+      var rowNum = _.first(this._sheetViewRowList);
+    } else {
+      var rowNum = this._currentPos.startRowNum;
+    }
+    while (rowNum <= this._currentPos.endRowNum) {
+      this._height += this.sheetViewStoreService.getRow(rowNum).height;
+      if (rowNum >= _.last(this._sheetViewRowList)) {
+        break;
+      }
+      rowNum++;
+    }
+  }
+
+  private setAreaBorder() {
+    if (this._currentPos.startColNum < _.first(this._sheetViewColumnList)) {
+      this._leftBorderStyle = "none";
+    } else {
+      this._leftBorderStyle = "solid";
+    }
+
+    if (this._currentPos.endColNum > _.last(this._sheetViewColumnList)) {
+      this._rightBorderStyle = "none";
+    } else {
+      this._rightBorderStyle = "solid";
+    }
+
+    if (this._currentPos.startRowNum < _.first(this._sheetViewRowList)) {
+      this._topBorderStyle = "none";
+    } else {
+      this._topBorderStyle = "solid";
+    }
+
+    if (this._currentPos.endRowNum > _.last(this._sheetViewRowList)) {
+      this._bottomBorderStyle = "none";
+    } else {
+      this._bottomBorderStyle = "solid";
+    }
+  }
 
 }
