@@ -1,4 +1,4 @@
-import { SelectedCellPosition } from '../index';
+import { SelectedCellPosition } from "app/spread-sheet";
 
 export module SpreadSheetAction {
 

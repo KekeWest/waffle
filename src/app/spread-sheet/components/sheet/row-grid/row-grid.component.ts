@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { SheetViewActionService, SheetViewStoreService } from '../../../services/index';
-import { Payload } from '../../../../base/index';
+import { SheetViewStoreService, SheetViewActionService } from "app/spread-sheet/services";
+import { Payload } from "app/base";
 
 @Component({
   selector: 'wf-row-grid',

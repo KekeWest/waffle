@@ -1,4 +1,5 @@
-import { RGBAColor } from './rgba-color';
+
+import { RGBAColor } from "app/spread-sheet";
 
 export class Border {
 

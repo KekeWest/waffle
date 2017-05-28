@@ -1,6 +1,5 @@
-import { Border } from './style/border';
-import { Font } from './style/font';
-import { RGBAColor } from './style/rgba-color';
+
+import { RGBAColor, Border, Font } from "app/spread-sheet";
 
 export class CommonGridStyle {
 

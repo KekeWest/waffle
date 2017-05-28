@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
-import { SheetViewDispatcherService, SheetViewAction } from './index';
-import { SelectedCellPosition } from '../index';
+import { SheetViewDispatcherService, SheetViewAction } from "app/spread-sheet/services";
 
 @Injectable()
 export class SheetViewActionService {

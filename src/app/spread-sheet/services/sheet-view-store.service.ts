@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { Emitter, Payload } from '../../base/index';
-import { SpreadSheetActionService, SheetViewDispatcherService, SheetViewAction } from './index';
-import { Sheet, Column, Row, Cell, SpreadSheetConsts, SelectedCellPosition } from '../../spread-sheet/index';
-import { s, _ } from '../../index';
+import { Emitter, Payload } from "app/base";
+import { SpreadSheetActionService, SheetViewDispatcherService, SheetViewAction } from "app/spread-sheet/services";
+import { Sheet, Column, Row, Cell, SpreadSheetConsts, SelectedCellPosition } from "app/spread-sheet";
+import { s, _ } from "app";
 
 @Injectable()
 export class SheetViewStoreService extends Emitter<Payload> {

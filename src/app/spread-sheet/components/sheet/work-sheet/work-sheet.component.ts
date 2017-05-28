@@ -1,7 +1,7 @@
 import { Component, OnInit, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
-import { SpreadSheetConsts } from '../../../../spread-sheet/index';
-import { SheetViewActionService, SheetViewStoreService } from '../../../services/index';
-import { Payload } from '../../../../base/index';
+import { SheetViewActionService, SheetViewStoreService } from "app/spread-sheet/services";
+import { Payload } from "app/base";
+import { SpreadSheetConsts } from "app/spread-sheet";
 
 @Component({
   selector: 'wf-work-sheet',

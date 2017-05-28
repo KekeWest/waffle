@@ -1,7 +1,7 @@
 import { Component, ElementRef, OnInit, AfterViewChecked, HostBinding } from '@angular/core';
-import { SheetViewStoreService } from '../../../../services/index';
-import { Column, Row, Cell, Border, RGBAColor, SpreadSheetConsts } from '../../../../index';
-import { Payload } from '../../../../../base/index';
+import { SheetViewStoreService } from "app/spread-sheet/services";
+import { Column, Row, Cell, Border, RGBAColor, SpreadSheetConsts } from "app/spread-sheet";
+import { Payload } from "app/base";
 
 @Component({
   selector: '[wf-sheet-view-canvas]',

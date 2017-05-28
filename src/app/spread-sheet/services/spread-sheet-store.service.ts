@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { Emitter, Payload } from '../../base/index';
-import { SpreadSheet, Sheet, Column, Row, Cell, RGBAColor, SelectedCellPosition } from '../../spread-sheet/index';
-import { SpreadSheetDispatcherService, SpreadSheetAction } from './index';
+import { Emitter, Payload } from "app/base";
+import { SpreadSheet, Sheet, Column, Row, Cell, RGBAColor, SelectedCellPosition } from "app/spread-sheet";
+import { SpreadSheetDispatcherService, SpreadSheetAction } from "app/spread-sheet/services";
 
 @Injectable()
 export class SpreadSheetStoreService extends Emitter<Payload> {

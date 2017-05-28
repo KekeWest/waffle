@@ -1,6 +1,5 @@
-import { Column } from './column';
-import { Row } from './row';
-import { Cell } from './cell';
+
+import { Column, Row, Cell } from "app/spread-sheet";
 
 export class Sheet {
 

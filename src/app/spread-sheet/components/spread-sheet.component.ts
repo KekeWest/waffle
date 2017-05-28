@@ -1,6 +1,5 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
-import { SpreadSheetDispatcherService, SpreadSheetActionService, SpreadSheetStoreService } from '../services/index';
-import { Sheet } from '../sheet';
+import { SpreadSheetDispatcherService, SpreadSheetActionService, SpreadSheetStoreService } from "app/spread-sheet/services";
 
 @Component({
   selector: 'wf-spread-sheet',

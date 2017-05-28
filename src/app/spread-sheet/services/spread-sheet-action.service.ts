@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { SpreadSheetDispatcherService, SpreadSheetAction } from './index';
-import { SelectedCellPosition } from '../index';
+import { SpreadSheetDispatcherService, SpreadSheetAction } from "app/spread-sheet/services";
+import { SelectedCellPosition } from "app/spread-sheet";
 
 @Injectable()
 export class SpreadSheetActionService {

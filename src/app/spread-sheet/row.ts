@@ -1,4 +1,4 @@
-import { CommonGridStyle } from './common-grid-style';
+import { CommonGridStyle } from "app/spread-sheet/common-grid-style";
 
 export class Row extends CommonGridStyle {
 

@@ -1,6 +1,6 @@
 import { Component, OnInit, HostListener, HostBinding, ElementRef } from '@angular/core';
-import { SheetViewStoreService, SheetViewActionService } from '../../../../services/index';
-import { Payload } from '../../../../../base/index';
+import { SheetViewStoreService, SheetViewActionService } from "app/spread-sheet/services";
+import { Payload } from "app/base";
 
 @Component({
   selector: 'wf-mouse-event-board',

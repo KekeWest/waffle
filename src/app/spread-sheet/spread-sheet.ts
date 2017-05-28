@@ -1,4 +1,5 @@
-import { Sheet } from './sheet';
+
+import { Sheet } from "app/spread-sheet";
 
 export class SpreadSheet {
 
