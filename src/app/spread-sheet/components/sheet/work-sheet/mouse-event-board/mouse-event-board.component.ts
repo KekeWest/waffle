@@ -41,12 +41,12 @@ export class MouseEventBoardComponent implements OnInit {
   ngOnInit() {
     this.sheetViewStoreService.register(
       (payload: Payload) => {
-        this.updateSheetView();
+        this.updateSheetViewInfo();
       }
     );
   }
 
-  private updateSheetView() {
+  private updateSheetViewInfo() {
     this._sheetViewColumnList = this.sheetViewStoreService.sheetViewColumnList;
     this._sheetViewRowList = this.sheetViewStoreService.sheetViewRowList;
     this._cellPosTopList = this.sheetViewStoreService.cellPosTopList;
@@ -57,16 +57,31 @@ export class MouseEventBoardComponent implements OnInit {
     this._sheetViewLeft = this.sheetViewStoreService.sheetViewLeft;
   }
 
+  private emitSelectedCell(startColNum: number, startRowNum: number, endColNum: number, endRowNum: number) {
+    if (startColNum > endColNum) {
+      var startCol: number = endColNum;
+      var endCol: number = startColNum; 
+    } else {
+      var startCol: number = startColNum;
+      var endCol: number = endColNum;
+    }
+
+    if (startRowNum > endRowNum) {
+      var startRow: number = endRowNum;
+      var endRow: number = startRowNum;
+    } else {
+      var startRow: number = startRowNum;
+      var endRow: number = endRowNum;
+    }
+
+    this.sheetViewActionService.selectCell(startCol, startRow, endCol, endRow);
+  }
+
   @HostListener('mousedown', ['$event'])
   private onMouseBoardDown(e: MouseEvent) {
     this._onMouseDown = true;
     this._startSelectedCellPos = this.getMouseOverCell(e);
-    this.sheetViewActionService.selectCell(
-      this._startSelectedCellPos.colNum,
-      this._startSelectedCellPos.rowNum,
-      this._startSelectedCellPos.colNum,
-      this._startSelectedCellPos.rowNum
-    );
+    this.emitSelectedCell(this._startSelectedCellPos.colNum, this._startSelectedCellPos.rowNum, this._startSelectedCellPos.colNum, this._startSelectedCellPos.rowNum);
   }
 
   @HostListener('mousemove', ['$event'])
@@ -75,12 +90,8 @@ export class MouseEventBoardComponent implements OnInit {
       return;
     }
     var endSelectedCellPos: { colNum: number, rowNum: number } = this.getMouseOverCell(e);
-    this.sheetViewActionService.selectCell(
-      this._startSelectedCellPos.colNum,
-      this._startSelectedCellPos.rowNum,
-      endSelectedCellPos.colNum,
-      endSelectedCellPos.rowNum
-    );
+    this.emitSelectedCell(
+      this._startSelectedCellPos.colNum, this._startSelectedCellPos.rowNum, endSelectedCellPos.colNum, endSelectedCellPos.rowNum);
   }
 
   @HostListener('window:mouseup', ['$event'])

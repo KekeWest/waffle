@@ -17,10 +17,6 @@ export class WorkSheetComponent implements OnInit, AfterViewInit {
 
   private _areaHeight: number;
 
-  private _sheetViewColumnList: number[];
-
-  private _sheetViewRowList: number[];
-
   constructor(
     private sheetViewActionService: SheetViewActionService,
     private sheetViewStoreService: SheetViewStoreService
@@ -29,7 +25,7 @@ export class WorkSheetComponent implements OnInit, AfterViewInit {
   ngOnInit() {
     this.sheetViewStoreService.register(
       (payload: Payload) => {
-        this.updateSheetView();
+        this.updateSheetViewInfo();
       }
     );
   }
@@ -38,10 +34,7 @@ export class WorkSheetComponent implements OnInit, AfterViewInit {
     this.sheetViewActionService.initSheet(this._workSheetViewRef.nativeElement);
   }
 
-  private updateSheetView() {
-    this._sheetViewColumnList = this.sheetViewStoreService.sheetViewColumnList;
-    this._sheetViewRowList = this.sheetViewStoreService.sheetViewRowList;
-
+  private updateSheetViewInfo() {
     if (this.sheetViewStoreService.areaWidth < this.sheetViewStoreService.viewScrollLeft + this.sheetViewStoreService.viewWidth) {
       this._areaWidth = this.sheetViewStoreService.viewScrollLeft + this.sheetViewStoreService.viewWidth * 2;
     } else {
@@ -52,18 +45,6 @@ export class WorkSheetComponent implements OnInit, AfterViewInit {
     } else {
       this._areaHeight = this.sheetViewStoreService.areaHeight + this.sheetViewStoreService.viewHeight;
     }
-  }
-
-  private getTextPosTop(rowNum: number) {
-    return this.sheetViewStoreService.cellPosTopList[rowNum] + SpreadSheetConsts.MAX_BORDER_WIDRH / 2;
-  }
-
-  private getTextPosLeft(colNum: number) {
-    return this.sheetViewStoreService.cellPosLeftList[colNum] + SpreadSheetConsts.MAX_BORDER_WIDRH / 2;
-  }
-
-  private getCellHeight(rowNum: number): number {
-    return this.sheetViewStoreService.getRow(rowNum).height - SpreadSheetConsts.MAX_BORDER_WIDRH;
   }
 
   private onScroll() {

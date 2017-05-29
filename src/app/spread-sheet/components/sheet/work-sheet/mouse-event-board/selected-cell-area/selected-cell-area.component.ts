@@ -27,7 +27,7 @@ export class SelectedCellAreaComponent implements OnInit {
   private _left: number;
 
   @HostBinding('style.border-width.px')
-  private _borderWidth: number = SpreadSheetConsts.MAX_BORDER_WIDRH;
+  private _borderWidth: number = 2;
 
   @HostBinding('style.border-color')
   private _borderColor: string = new RGBAColor(15, 130, 15, 1).toString();
