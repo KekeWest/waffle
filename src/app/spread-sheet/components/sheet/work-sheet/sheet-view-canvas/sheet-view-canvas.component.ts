@@ -1,7 +1,8 @@
 import { Component, ElementRef, OnInit, AfterViewChecked, HostBinding } from '@angular/core';
 import { SheetViewStoreService } from "app/spread-sheet/services";
-import { Column, Row, Cell, Border, RGBAColor, SpreadSheetConsts } from "app/spread-sheet";
+import { Column, Row, Cell, Border, RGBAColor, SpreadSheetConsts, SelectedCellPosition } from "app/spread-sheet";
 import { Payload } from "app/base";
+import { _ } from "app";
 
 @Component({
   selector: '[wf-sheet-view-canvas]',
@@ -32,6 +33,12 @@ export class SheetViewCanvasComponent implements OnInit, AfterViewChecked {
 
   private _defaultBorder: Border;
 
+  private _defaultSelectedBorder: Border;
+
+  private _selectedCellBackgroundColor: RGBAColor = new RGBAColor(0, 0, 0, 0.1);
+
+  private _selectedCellPos: SelectedCellPosition;
+
   constructor(private el: ElementRef, private sheetViewStoreService: SheetViewStoreService) { }
 
   ngOnInit() {
@@ -60,6 +67,16 @@ export class SheetViewCanvasComponent implements OnInit, AfterViewChecked {
     this._defaultBorder.borderRightColor = new RGBAColor(233, 233, 233, 1);
     this._defaultBorder.borderRightStyle = "solid";
     this._defaultBorder.borderRightWidth = 1;
+
+    this._defaultSelectedBorder = new Border();
+    this._defaultSelectedBorder.borderBottom = true;
+    this._defaultSelectedBorder.borderBottomColor = new RGBAColor(200, 200, 200, 1);
+    this._defaultSelectedBorder.borderBottomStyle = "solid";
+    this._defaultSelectedBorder.borderBottomWidth = 1;
+    this._defaultSelectedBorder.borderRight = true;
+    this._defaultSelectedBorder.borderRightColor = new RGBAColor(200, 200, 200, 1);
+    this._defaultSelectedBorder.borderRightStyle = "solid";
+    this._defaultSelectedBorder.borderRightWidth = 1;
   }
 
   updateSheetViewInfo() {
@@ -81,30 +98,40 @@ export class SheetViewCanvasComponent implements OnInit, AfterViewChecked {
     }
     this._sheetViewTop = this.sheetViewStoreService.sheetViewTop;
     this._sheetViewLeft = this.sheetViewStoreService.sheetViewLeft;
+    this._selectedCellPos = this.sheetViewStoreService.selectedCellPos;
   }
 
   private drawSheetView() {
     this._sheetViewStage.removeAllChildren();
-    this.drawCellRect();
+    this.drawCell();
     this.drawCellBorder();
     this._sheetViewStage.update();
   }
 
-  private drawCellRect() {
+  private drawCell() {
     var shape: createjs.Shape = new createjs.Shape();
     this._sheetViewStage.addChild(shape);
 
-    var posY: number = 0;
-    for (var rowNum of this.sheetViewStoreService.sheetViewRowList) {
-      var height: number = this.sheetViewStoreService.getRow(rowNum).height;
-      var posX: number = 0;
-      for (var colNum of this.sheetViewStoreService.sheetViewColumnList) {
-        var width: number = this.sheetViewStoreService.getColumn(colNum).width;
-        this.setCellBackgroundColor(colNum, rowNum, shape.graphics);
-        shape.graphics.drawRect(posX, posY, width, height);
-        posX += width;
-      }
-      posY += height;
+    var colNum: number;
+    var rowNum: number;
+    _.forEach(this.sheetViewStoreService.cellPosLeftList, (left, colIdx) => {
+      colNum = this.sheetViewStoreService.sheetViewColumnList[colIdx];
+      _.forEach(this.sheetViewStoreService.cellPosTopList, (top, rowIdx) => {
+        rowNum = this.sheetViewStoreService.sheetViewRowList[rowIdx];
+        this.drawCellRect(left, top, colNum, rowNum, shape.graphics);
+      });
+    });
+  }
+
+  private drawCellRect(posX: number, posY: number, colNum: number, rowNum: number, graphics: createjs.Graphics) {
+    var width: number = this.sheetViewStoreService.getColumn(colNum).width;
+    var height: number = this.sheetViewStoreService.getRow(rowNum).height;
+
+    this.setCellBackgroundColor(colNum, rowNum, graphics);
+    graphics.drawRect(posX, posY, width, height);
+    if (this._selectedCellPos.contains(colNum, rowNum) && !this._selectedCellPos.isClickCell(colNum, rowNum)) {
+      graphics.beginFill(this._selectedCellBackgroundColor.toString());
+      graphics.drawRect(posX, posY, width, height);
     }
   }
 
@@ -177,6 +204,9 @@ export class SheetViewCanvasComponent implements OnInit, AfterViewChecked {
       return column.border;
     }
 
+    if (this._selectedCellPos.contains(colNum, rowNum)) {
+      return this._defaultSelectedBorder;
+    }
     return this._defaultBorder;
   }
 
@@ -191,6 +221,9 @@ export class SheetViewCanvasComponent implements OnInit, AfterViewChecked {
       return row.border;
     }
 
+    if (this._selectedCellPos.contains(colNum, rowNum)) {
+      return this._defaultSelectedBorder;
+    }
     return this._defaultBorder;
   }
 

@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { SheetViewDispatcherService, SheetViewAction } from "app/spread-sheet/services";
+import { SelectedCellPosition } from "app/spread-sheet";
 
 @Injectable()
 export class SheetViewActionService {
@@ -29,14 +30,9 @@ export class SheetViewActionService {
     );
   }
 
-  selectCell(startColNum: number, startRowNum: number, endColNum: number, endRowNum: number) {
+  selectCell(startColNum: number, startRowNum: number, endColNum: number, endRowNum: number, clickColNum: number, clickRowNum: number) {
     var action: SheetViewAction.SelectCell = {
-      selectedCellPos: {
-        startColNum: startColNum,
-        startRowNum: startRowNum,
-        endColNum: endColNum,
-        endRowNum: endRowNum
-      }
+      selectedCellPos: new SelectedCellPosition(startColNum, startRowNum, endColNum, endRowNum, clickColNum, clickRowNum)
     }
 
     this.sheetViewDispatcherService.emit(

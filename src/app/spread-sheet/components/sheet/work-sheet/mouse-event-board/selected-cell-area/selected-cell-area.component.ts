@@ -59,12 +59,12 @@ export class SelectedCellAreaComponent implements OnInit {
   ngOnInit() {
     this.sheetViewStoreService.register(
       (payload: Payload) => {
-        this.updateSheetView();
+        this.updateSheetViewInfo();
       }
     );
   }
 
-  private updateSheetView() {
+  private updateSheetViewInfo() {
     this._sheetViewColumnList = this.sheetViewStoreService.sheetViewColumnList;
     this._sheetViewRowList = this.sheetViewStoreService.sheetViewRowList;
     this._cellPosTopList = this.sheetViewStoreService.cellPosTopList;
@@ -105,14 +105,14 @@ export class SelectedCellAreaComponent implements OnInit {
   private setAreaPos() {
     if (this._currentPos.startColNum > _.first(this._sheetViewColumnList)) {
       var colNumIndex: number = this._sheetViewColumnList.indexOf(this._currentPos.startColNum);
-      this._left = this._cellPosLeftList[colNumIndex] - this.sheetViewStoreService.sheetViewLeft - SpreadSheetConsts.MAX_BORDER_WIDRH / 2;
+      this._left = this._cellPosLeftList[colNumIndex] - SpreadSheetConsts.MAX_BORDER_WIDRH / 2;
     } else {
       this._left = - SpreadSheetConsts.MAX_BORDER_WIDRH / 2;
     }
 
     if (this._currentPos.startRowNum > _.first(this._sheetViewRowList)) {
       var topRowIndex: number = this._sheetViewRowList.indexOf(this._currentPos.startRowNum);
-      this._top = this._cellPosTopList[topRowIndex] - this.sheetViewStoreService.sheetViewTop - SpreadSheetConsts.MAX_BORDER_WIDRH / 2;
+      this._top = this._cellPosTopList[topRowIndex] - SpreadSheetConsts.MAX_BORDER_WIDRH / 2;
     } else {
       this._top = - SpreadSheetConsts.MAX_BORDER_WIDRH / 2;
     }

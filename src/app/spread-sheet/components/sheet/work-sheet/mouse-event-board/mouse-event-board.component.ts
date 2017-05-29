@@ -74,7 +74,7 @@ export class MouseEventBoardComponent implements OnInit {
       var endRow: number = endRowNum;
     }
 
-    this.sheetViewActionService.selectCell(startCol, startRow, endCol, endRow);
+    this.sheetViewActionService.selectCell(startCol, startRow, endCol, endRow, startColNum, startRowNum);
   }
 
   @HostListener('mousedown', ['$event'])
@@ -90,8 +90,7 @@ export class MouseEventBoardComponent implements OnInit {
       return;
     }
     var endSelectedCellPos: { colNum: number, rowNum: number } = this.getMouseOverCell(e);
-    this.emitSelectedCell(
-      this._startSelectedCellPos.colNum, this._startSelectedCellPos.rowNum, endSelectedCellPos.colNum, endSelectedCellPos.rowNum);
+    this.emitSelectedCell(this._startSelectedCellPos.colNum, this._startSelectedCellPos.rowNum, endSelectedCellPos.colNum, endSelectedCellPos.rowNum);
   }
 
   @HostListener('window:mouseup', ['$event'])
@@ -104,7 +103,7 @@ export class MouseEventBoardComponent implements OnInit {
 
     var rowNum: number = this._sheetViewRowList[this._cellPosTopList.length - 1];
     for (var i: number = 0; i < this._cellPosTopList.length; i++) {
-      if (pos.y < this._cellPosTopList[i] - this._sheetViewTop) {
+      if (pos.y < this._cellPosTopList[i]) {
         rowNum = this._sheetViewRowList[i - 1];
         break;
       }
@@ -112,7 +111,7 @@ export class MouseEventBoardComponent implements OnInit {
 
     var colNum: number = this._sheetViewColumnList[this._cellPosLeftList.length - 1];
     for (var i: number = 0; i < this._cellPosLeftList.length; i++) {
-      if (pos.x < this._cellPosLeftList[i] - this._sheetViewLeft) {
+      if (pos.x < this._cellPosLeftList[i]) {
         colNum = this._sheetViewColumnList[i - 1];
         break;
       }

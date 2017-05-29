@@ -48,11 +48,11 @@ export class ValuesViewComponent implements OnInit {
   }
 
   private getTextPosTop(rowNum: number) {
-    return this.sheetViewStoreService.cellPosTopList[rowNum] - this._sheetViewTop + SpreadSheetConsts.MAX_BORDER_WIDRH / 2;
+    return this.sheetViewStoreService.cellPosTopList[rowNum] + SpreadSheetConsts.MAX_BORDER_WIDRH / 2;
   }
 
   private getTextPosLeft(colNum: number) {
-    return this.sheetViewStoreService.cellPosLeftList[colNum] - this._sheetViewLeft + SpreadSheetConsts.MAX_BORDER_WIDRH / 2;
+    return this.sheetViewStoreService.cellPosLeftList[colNum] + SpreadSheetConsts.MAX_BORDER_WIDRH / 2;
   }
 
   private getCellHeight(rowNum: number): number {

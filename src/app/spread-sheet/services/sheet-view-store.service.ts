@@ -49,7 +49,7 @@ export class SheetViewStoreService extends Emitter<Payload> {
 
   private _textMetricsCache: { [colIndex: number]: { [rowIndex: number]: { height: number, width: number } } } = {};
 
-  private _selectedCellPos: SelectedCellPosition;
+  private _selectedCellPos: SelectedCellPosition = new SelectedCellPosition(0, 0, 0, 0, 0, 0);
 
   constructor(
     private sheetViewDispatcherService: SheetViewDispatcherService,
@@ -490,13 +490,13 @@ export class SheetViewStoreService extends Emitter<Payload> {
 
     var topSum: number = 0;
     for (var rowNum of this._sheetViewRowList) {
-      this._cellPosTopList.push(this._sheetViewTop + topSum);
+      this._cellPosTopList.push(topSum);
       topSum += this.getRow(rowNum).height;
     }
 
     var leftSum: number = 0;
     for (var colNum of this._sheetViewColumnList) {
-      this._cellPosLeftList.push(this._sheetViewLeft + leftSum);
+      this._cellPosLeftList.push(leftSum);
       leftSum += this.getColumn(colNum).width;
     }
   }
