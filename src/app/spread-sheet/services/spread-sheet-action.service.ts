@@ -13,12 +13,10 @@ export class SpreadSheetActionService {
       selectedCellPos: selectedCellPos
     }
 
-    this.spreadSheetDispatcherService.emit(
-      {
-        eventType: "select-cell",
-        data: action
-      }
-    );
+    this.spreadSheetDispatcherService.emit({
+      eventType: "select-cell",
+      data: action
+    });
   }
 
 }

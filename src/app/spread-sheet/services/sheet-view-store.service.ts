@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Emitter, Payload } from "app/base";
-import { SpreadSheetActionService, SheetViewDispatcherService, SheetViewAction } from "app/spread-sheet/services";
+import { SpreadSheetActionService, SheetViewDispatcherService, SheetViewAction, SpreadSheetStoreService } from "app/spread-sheet/services";
 import { Sheet, Column, Row, Cell, SpreadSheetConsts, SelectedCellPosition } from "app/spread-sheet";
 import { s, _ } from "app";
 
@@ -49,11 +49,12 @@ export class SheetViewStoreService extends Emitter<Payload> {
 
   private _textMetricsCache: { [colIndex: number]: { [rowIndex: number]: { height: number, width: number } } } = {};
 
-  private _selectedCellPos: SelectedCellPosition = new SelectedCellPosition(0, 0, 0, 0, 0, 0);
+  private _selectedCellPos: SelectedCellPosition = new SelectedCellPosition(1, 1, 1, 1, 1, 1);
 
   constructor(
     private sheetViewDispatcherService: SheetViewDispatcherService,
-    private spreadSheetActionService: SpreadSheetActionService
+    private spreadSheetActionService: SpreadSheetActionService,
+    private spreadSheetStoreService: SpreadSheetStoreService
   ) {
     super();
     this.sheetViewDispatcherService.register(
@@ -71,7 +72,6 @@ export class SheetViewStoreService extends Emitter<Payload> {
         }
       }
     );
-
   }
 
   set sheetName(sheetName: string) {
@@ -80,6 +80,10 @@ export class SheetViewStoreService extends Emitter<Payload> {
 
   set sheet(sheet: Sheet) {
     this._sheet = sheet;
+  }
+
+  set selectedCellPos(selectedCellPos: SelectedCellPosition) {
+    this._selectedCellPos = selectedCellPos;
   }
 
   get sheetName(): string {

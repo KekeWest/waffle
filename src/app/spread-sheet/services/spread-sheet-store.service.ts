@@ -25,6 +25,10 @@ export class SpreadSheetStoreService extends Emitter<Payload> {
     this.getInitialSpreadSheet();
   }
 
+  get spreadSheet(): SpreadSheet {
+    return this._spreadSheet;
+  }
+
   get sheetOrder(): string[] {
     return this._spreadSheet.sheetOrder;
   }

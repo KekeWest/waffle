@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
-import { SpreadSheetDispatcherService, SpreadSheetActionService, SpreadSheetStoreService } from "app/spread-sheet/services";
+import { SpreadSheetDispatcherService, SpreadSheetActionService, SpreadSheetStoreService, CommandStoreService } from "app/spread-sheet/services";
 
 @Component({
   selector: 'wf-spread-sheet',
@@ -8,19 +8,25 @@ import { SpreadSheetDispatcherService, SpreadSheetActionService, SpreadSheetStor
   providers: [
     SpreadSheetDispatcherService,
     SpreadSheetActionService,
-    SpreadSheetStoreService
+    SpreadSheetStoreService,
+    CommandStoreService
   ]
 })
 export class SpreadSheetComponent implements OnInit {
 
-  sheetOrder: string[];
+  private _sheetOrder: string[];
+  private _selectedSheetName: string;
 
   constructor(
-    private spreadSheetStoreService: SpreadSheetStoreService
+    private spreadSheetActionService: SpreadSheetActionService,
+    private spreadSheetDispatcherService: SpreadSheetDispatcherService,
+    private spreadSheetStoreService: SpreadSheetStoreService,
+    private commandStoreService: CommandStoreService
   ) { }
 
   ngOnInit() {
-    this.sheetOrder = this.spreadSheetStoreService.sheetOrder;
+    this._sheetOrder = this.spreadSheetStoreService.sheetOrder;
+    this._selectedSheetName = this.spreadSheetStoreService.selectedSheetName;
   }
 
 }
