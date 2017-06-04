@@ -7,11 +7,22 @@ export class SpreadSheetActionService {
 
   constructor(private spreadSheetDispatcherService: SpreadSheetDispatcherService) { }
 
-  selectCell(sheetName: string, selectedCellPos: SelectedCellPosition) {
+  selectSheet(sheetName: string) {
+    var action: SpreadSheetAction.SelectSheet = {
+      sheetName: sheetName
+    };
+
+    this.spreadSheetDispatcherService.emit({
+      eventType: "select-sheet",
+      data: action
+    });
+  }
+
+  selectCell(sheetName: string, startColNum: number, startRowNum: number, endColNum: number, endRowNum: number, clickColNum: number, clickRowNum: number) {
     var action: SpreadSheetAction.SelectCell = {
       sheetName: sheetName,
-      selectedCellPos: selectedCellPos
-    }
+      selectedCellPos: new SelectedCellPosition(startColNum, startRowNum, endColNum, endRowNum, clickColNum, clickRowNum)
+    };
 
     this.spreadSheetDispatcherService.emit({
       eventType: "select-cell",

@@ -1,4 +1,4 @@
 <ng-container *ngFor="let sheetName of _sheetOrder">
-  <div class="tab-button">{{sheetName}}</div>
+  <div class="tab-button" (click)="selectSheet(sheetName)">{{sheetName}}</div>
 </ng-container>
 <div class="tab-button" (click)="createNewSheet()">+</div>

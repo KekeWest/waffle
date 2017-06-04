@@ -5,7 +5,6 @@ import { HttpModule } from '@angular/http';
 
 import { AppComponent } from './app.component';
 import { SpreadSheetComponent } from './spread-sheet/components/spread-sheet.component';
-import { SheetComponent } from './spread-sheet/components/sheet/sheet.component';
 import { SheetTabComponent } from './spread-sheet/components/sheet-tab/sheet-tab.component';
 import { SheetEditComponent } from './spread-sheet/components/sheet-edit/sheet-edit.component';
 import { ColumnGridComponent } from './spread-sheet/components/sheet/column-grid/column-grid.component';
@@ -21,7 +20,6 @@ import { ValuesViewComponent } from './spread-sheet/components/sheet/work-sheet/
   declarations: [
     AppComponent,
     SpreadSheetComponent,
-    SheetComponent,
     SheetTabComponent,
     SheetEditComponent,
     ColumnGridComponent,

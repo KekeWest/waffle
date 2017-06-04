@@ -7,8 +7,4 @@ export module SheetViewAction {
     workSheetViewEl: HTMLElement;
   }
 
-  export interface SelectCell {
-    selectedCellPos: SelectedCellPosition;
-  }
-
 }

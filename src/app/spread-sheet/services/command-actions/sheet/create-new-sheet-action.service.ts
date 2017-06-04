@@ -31,7 +31,7 @@ class CreateNewSheetCommand extends SheetEditCommand {
     var selectedSheetIndex: number = this._spreadSheet.sheetOrder.indexOf(this._spreadSheet.selectedSheetName);
     this._spreadSheet.sheetOrder.splice(selectedSheetIndex + 1, 0, this.sheetName);
     this._spreadSheet.selectedSheetName = this.sheetName;
-    this._spreadSheet.sheets[this.sheetName] = new Sheet();
+    this._spreadSheet.sheets[this.sheetName] = new Sheet(this.sheetName);
   }
 
   undo() {
@@ -39,7 +39,7 @@ class CreateNewSheetCommand extends SheetEditCommand {
   }
 
   redo() {
-    this._spreadSheet.sheets[this.sheetName] = new Sheet();
+    this._spreadSheet.sheets[this.sheetName] = new Sheet(this.sheetName);
   }
 
   generateNewSheetName(): string {

@@ -30,17 +30,4 @@ export class SheetViewActionService {
     );
   }
 
-  selectCell(startColNum: number, startRowNum: number, endColNum: number, endRowNum: number, clickColNum: number, clickRowNum: number) {
-    var action: SheetViewAction.SelectCell = {
-      selectedCellPos: new SelectedCellPosition(startColNum, startRowNum, endColNum, endRowNum, clickColNum, clickRowNum)
-    }
-
-    this.sheetViewDispatcherService.emit(
-      {
-        eventType: "select-cell",
-        data: action
-      }
-    );
-  }
-
 }

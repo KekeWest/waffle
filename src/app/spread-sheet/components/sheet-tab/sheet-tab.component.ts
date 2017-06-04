@@ -16,6 +16,7 @@ export class SheetTabComponent implements OnInit {
   private _sheetOrder: string[];
 
   constructor(
+    private spreadSheetActionService: SpreadSheetActionService,
     private spreadSheetStoreService: SpreadSheetStoreService,
     private createNewSheetActionService: CreateNewSheetActionService
   ) { }
@@ -26,6 +27,10 @@ export class SheetTabComponent implements OnInit {
 
   private createNewSheet() {
     this.createNewSheetActionService.createNewSheet();
+  }
+
+  private selectSheet(sheetName: string) {
+    this.spreadSheetActionService.selectSheet(sheetName);
   }
 
 }

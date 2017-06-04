@@ -1,5 +1,5 @@
 
-import { Column, Row, Cell } from "app/spread-sheet";
+import { Column, Row, Cell, SelectedCellPosition } from "app/spread-sheet";
 
 export class Sheet {
 
@@ -14,5 +14,9 @@ export class Sheet {
   defaultRow: Row = new Row();
 
   defaultCell: Cell = new Cell();
+
+  selectedCellPosition: SelectedCellPosition = new SelectedCellPosition(1, 1, 1, 1, 1, 1);
+
+  constructor(public name: string) { }
 
 }

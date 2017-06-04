@@ -1,5 +1,5 @@
 import { Component, OnInit, HostListener, HostBinding, ElementRef } from '@angular/core';
-import { SheetViewStoreService, SheetViewActionService } from "app/spread-sheet/services";
+import { SheetViewStoreService, SpreadSheetActionService } from "app/spread-sheet/services";
 import { Payload } from "app/base";
 
 @Component({
@@ -36,7 +36,7 @@ export class MouseEventBoardComponent implements OnInit {
   constructor(
     private el: ElementRef,
     private sheetViewStoreService: SheetViewStoreService,
-    private sheetViewActionService: SheetViewActionService) { }
+    private spreadSheetActionService: SpreadSheetActionService) { }
 
   ngOnInit() {
     this.sheetViewStoreService.register(
@@ -73,8 +73,8 @@ export class MouseEventBoardComponent implements OnInit {
       var startRow: number = startRowNum;
       var endRow: number = endRowNum;
     }
-
-    this.sheetViewActionService.selectCell(startCol, startRow, endCol, endRow, startColNum, startRowNum);
+    console.log(this.sheetViewStoreService.sheet);
+    this.spreadSheetActionService.selectCell(this.sheetViewStoreService.sheetName, startCol, startRow, endCol, endRow, startColNum, startRowNum)
   }
 
   @HostListener('mousedown', ['$event'])

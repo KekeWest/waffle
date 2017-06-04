@@ -7,3 +7,10 @@
   width: 100%;
   height: calc(100% - 120px);
 }
+
+.sheet {
+  width: 100%;
+  height: calc(100% - 1px);
+  table-layout: fixed;
+  border-collapse: collapse;
+}

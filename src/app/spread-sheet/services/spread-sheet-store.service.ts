@@ -6,17 +6,20 @@ import { SpreadSheetDispatcherService, SpreadSheetAction } from "app/spread-shee
 @Injectable()
 export class SpreadSheetStoreService extends Emitter<Payload> {
 
-  private _spreadSheet: SpreadSheet;
+  spreadSheetDispatcherId: string;
 
-  private _selectedCellPos: { [sheetName: string]: SelectedCellPosition } = {};
+  private _spreadSheet: SpreadSheet;
 
   constructor(private spreadSheetDispatcherService: SpreadSheetDispatcherService) {
     super();
-    this.spreadSheetDispatcherService.register(
+    this.spreadSheetDispatcherId = this.spreadSheetDispatcherService.register(
       (payload: Payload) => {
         switch (payload.eventType) {
+          case "select-sheet":
+            this.selectSheet(<SpreadSheetAction.SelectSheet>payload.data);
+            break;
           case "select-cell":
-            this.selectSheet(<SpreadSheetAction.SelectCell>payload.data);
+            this.selectCell(<SpreadSheetAction.SelectCell>payload.data);
             break;
         }
       }
@@ -42,7 +45,7 @@ export class SpreadSheetStoreService extends Emitter<Payload> {
   }
 
   getInitialSpreadSheet() {
-    this._spreadSheet = new SpreadSheet("book1", { "sheet1": new Sheet() }, ["sheet1"], "sheet1");
+    this._spreadSheet = new SpreadSheet("book1", { "sheet1": new Sheet("sheet1") }, ["sheet1"], "sheet1");
 
     var cell1: Cell = new Cell();
     cell1.value = "200 200";
@@ -100,7 +103,7 @@ export class SpreadSheetStoreService extends Emitter<Payload> {
   }
 
   getSelectedCellPosition(sheetName: string): SelectedCellPosition {
-    return this._selectedCellPos[sheetName];
+    return this._spreadSheet.sheets[sheetName].selectedCellPosition;
   }
 
   setCell(sheetName: string, colIndex: number, rowIndex: number, cell: Cell) {
@@ -125,9 +128,12 @@ export class SpreadSheetStoreService extends Emitter<Payload> {
     return null;
   }
 
-  private selectSheet(action: SpreadSheetAction.SelectCell) {
-    this._selectedCellPos[action.sheetName] = action.selectedCellPos;
-    this.emit({eventType: "update-selected-cell", data: action.sheetName});
+  private selectSheet(action: SpreadSheetAction.SelectSheet) {
+    this._spreadSheet.selectedSheetName = action.sheetName;
+  }
+
+  private selectCell(action: SpreadSheetAction.SelectCell) {
+    this.spreadSheet.sheets[action.sheetName].selectedCellPosition = action.selectedCellPos;
   }
 
 }
