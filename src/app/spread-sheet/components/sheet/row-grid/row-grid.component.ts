@@ -27,9 +27,7 @@ export class RowGridComponent implements OnInit {
   }
 
   private updateRowView() {
-    if (!this._sheetViewRowList) {
-      this._sheetViewRowList = this.sheetViewStoreService.sheetViewRowList;
-    }
+    this._sheetViewRowList = this.sheetViewStoreService.sheetViewRowList;
     this._rowViewTop = (this.sheetViewStoreService.viewScrollTop - this.sheetViewStoreService.sheetViewTop) * -1;
   }
 

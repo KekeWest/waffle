@@ -15,6 +15,10 @@ export class Sheet {
 
   defaultCell: Cell = new Cell();
 
+  scrollTop: number = 0;
+
+  scrollLeft: number = 0;
+
   selectedCellPosition: SelectedCellPosition = new SelectedCellPosition(1, 1, 1, 1, 1, 1);
 
   constructor(public name: string) { }

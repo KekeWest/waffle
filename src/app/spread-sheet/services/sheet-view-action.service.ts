@@ -9,25 +9,28 @@ export class SheetViewActionService {
     private sheetViewDispatcherService: SheetViewDispatcherService,
   ) { }
 
-  initSheet(workSheetViewEl: HTMLElement) {
-    var action: SheetViewAction.InitSheet = {
-      workSheetViewEl: workSheetViewEl
-    }
+  changeSheetViewSize(width: number, height: number) {
+    var action: SheetViewAction.ChangeSheetViewSize = {
+      width: width,
+      height: height
+    };
 
-    this.sheetViewDispatcherService.emit(
-      {
-        eventType: "init-sheet",
-        data: action
-      }
-    );
+    this.sheetViewDispatcherService.emit({
+      eventType: "change-sheet-view-size",
+      data: action
+    });
   }
 
-  scrollSheet() {
-    this.sheetViewDispatcherService.emit(
-      {
-        eventType: "scroll-sheet"
-      }
-    );
+  scrollSheetView(scrollTop: number, scrollLeft: number) {
+    var action: SheetViewAction.ScrollSheet = {
+      scrollTop: scrollTop,
+      scrollLeft: scrollLeft
+    };
+
+    this.sheetViewDispatcherService.emit({
+      eventType: "scroll-sheet-view",
+      data: action
+    });
   }
 
 }

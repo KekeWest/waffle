@@ -73,7 +73,7 @@ export class MouseEventBoardComponent implements OnInit {
       var startRow: number = startRowNum;
       var endRow: number = endRowNum;
     }
-    console.log(this.sheetViewStoreService.sheet);
+
     this.spreadSheetActionService.selectCell(this.sheetViewStoreService.sheetName, startCol, startRow, endCol, endRow, startColNum, startRowNum)
   }
 

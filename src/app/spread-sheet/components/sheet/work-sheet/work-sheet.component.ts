@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, ViewChild, ElementRef, Input } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ViewChild, ElementRef, Input, HostListener } from '@angular/core';
 import { SheetViewActionService, SheetViewStoreService } from "app/spread-sheet/services";
 import { Payload } from "app/base";
 import { SpreadSheetConsts, Sheet } from "app/spread-sheet";
@@ -12,6 +12,8 @@ export class WorkSheetComponent implements OnInit, AfterViewInit {
 
   @ViewChild("workSheetView")
   private _workSheetViewRef: ElementRef;
+
+  private _workSheetViewEl: HTMLElement;
 
   private _areaWidth: number;
 
@@ -31,7 +33,12 @@ export class WorkSheetComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    this.sheetViewActionService.initSheet(this._workSheetViewRef.nativeElement);
+    this._workSheetViewEl = this._workSheetViewRef.nativeElement;
+    var rect: ClientRect = this._workSheetViewEl.getBoundingClientRect();
+    this.sheetViewActionService.changeSheetViewSize(
+      rect.width,
+      rect.height
+    );
   }
 
   private updateSheetViewInfo() {
@@ -47,8 +54,20 @@ export class WorkSheetComponent implements OnInit, AfterViewInit {
     }
   }
 
+  @HostListener('window:resize', ['$event'])
+  private onWindowResize(e: MouseEvent) {
+    var rect: ClientRect = this._workSheetViewEl.getBoundingClientRect();
+    this.sheetViewActionService.changeSheetViewSize(
+      rect.width,
+      rect.height
+    );
+  }
+
   private onScroll() {
-    this.sheetViewActionService.scrollSheet();
+    this.sheetViewActionService.scrollSheetView(
+      this._workSheetViewEl.scrollTop,
+      this._workSheetViewEl.scrollLeft
+    );
   }
 
 }

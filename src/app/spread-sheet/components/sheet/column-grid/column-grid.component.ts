@@ -27,9 +27,7 @@ export class ColumnGridComponent implements OnInit {
   }
 
   private updateColumnView() {
-    if (!this._sheetViewColumnList) {
-      this._sheetViewColumnList = this.sheetViewStoreService.sheetViewColumnList;
-    }
+    this._sheetViewColumnList = this.sheetViewStoreService.sheetViewColumnList;
     this._columnViewLeft = (this.sheetViewStoreService.viewScrollLeft - this.sheetViewStoreService.sheetViewLeft) * -1;
   }
 

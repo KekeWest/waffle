@@ -9,8 +9,6 @@ export class SheetViewStoreService extends Emitter<Payload> {
 
   private _sheet: Sheet;
 
-  private _workSheetViewEl: HTMLElement;
-
   private _edgeColIndex: number;
 
   private _edgeRowIndex: number;
@@ -19,17 +17,17 @@ export class SheetViewStoreService extends Emitter<Payload> {
 
   private _viewHeight: number;
 
-  private _viewScrollTop: number;
+  private _viewScrollTop: number = 0;
 
-  private _viewScrollLeft: number;
+  private _viewScrollLeft: number = 0;
 
-  private _areaWidth: number;
+  private _areaWidth: number = 0;
 
-  private _areaHeight: number;
+  private _areaHeight: number = 0;
 
-  private _sheetViewColumnList: number[];
+  private _sheetViewColumnList: number[] = [];
 
-  private _sheetViewRowList: number[];
+  private _sheetViewRowList: number[] = [];
 
   private _cellPosTopList: number[];
 
@@ -39,9 +37,9 @@ export class SheetViewStoreService extends Emitter<Payload> {
 
   private _sheetViewHeight: number;
 
-  private _sheetViewTop: number;
+  private _sheetViewTop: number = 0;
 
-  private _sheetViewLeft: number;
+  private _sheetViewLeft: number = 0;
 
   private _textRuler: createjs.Text = new createjs.Text();
 
@@ -72,11 +70,11 @@ export class SheetViewStoreService extends Emitter<Payload> {
     this.sheetViewDispatcherService.register(
       (payload: Payload) => {
         switch (payload.eventType) {
-          case "init-sheet":
-            this.initSheet(<SheetViewAction.InitSheet>payload.data);
+          case "change-sheet-view-size":
+            this.changeSheetViewSize(<SheetViewAction.ChangeSheetViewSize>payload.data);
             break;
-          case "scroll-sheet":
-            this.updateSheetView();
+          case "scroll-sheet-view":
+            this.scrollSheetView(<SheetViewAction.ScrollSheet>payload.data);
             break;
         }
       }
@@ -225,12 +223,14 @@ export class SheetViewStoreService extends Emitter<Payload> {
     return newMetrics;
   }
 
-  private initSheet(action: SheetViewAction.InitSheet) {
-    this._workSheetViewEl = action.workSheetViewEl;
+  private changeSheetViewSize(action: SheetViewAction.ChangeSheetViewSize) {
+    this._viewWidth = action.width;
+    this._viewHeight = action.height;
 
+    this.updateCellRange();
+    this.updateCellPos();
     this.initAreaRect();
-    this.initSheetView();
-    this.emit({ eventType: "init-sheet-view" });
+    this.emit({ eventType: "update-sheet-view" });
   }
 
   private initAreaRect() {
@@ -298,53 +298,48 @@ export class SheetViewStoreService extends Emitter<Payload> {
     }
   }
 
-  private initSheetView() {
-    this.updateViewRect();
-    this._workSheetViewEl.scrollTop = 0;
-    this._workSheetViewEl.scrollLeft = 0;
-    this._viewScrollTop = 0;
-    this._viewScrollLeft = 0;
+  private updateCellRange() {
     this._sheetViewWidth = 0;
     this._sheetViewHeight = 0;
-    this._sheetViewTop = 0;
-    this._sheetViewLeft = 0;
-    this._sheetViewColumnList = [];
-    this._sheetViewRowList = [];
 
+    if (_.isEmpty(this._sheetViewColumnList)) {
+      var colIdx: number = 1;
+    } else {
+      var colIdx: number = _.first(this._sheetViewColumnList);
+      this._sheetViewColumnList = [];
+    }
     var col: Column;
-    for (var colIdx: number = 1; colIdx <= SpreadSheetConsts.MAX_COLUMN_NUM; colIdx++) {
+    for (; colIdx <= SpreadSheetConsts.MAX_COLUMN_NUM; colIdx++) {
       col = this.getColumn(colIdx);
       this._sheetViewWidth += col.width;
       this._sheetViewColumnList.push(colIdx);
 
-      if (this._sheetViewWidth > this._viewWidth) {
+      if ((this._sheetViewLeft + this._sheetViewWidth) - (this._viewScrollLeft + this._viewWidth) > 0) {
         break;
       }
     }
 
+    if (_.isEmpty(this._sheetViewRowList)) {
+      var rowIdx: number = 1;
+    } else {
+      var rowIdx: number = _.first(this._sheetViewRowList);
+      this._sheetViewRowList = [];
+    }
     var row: Row;
-    for (var rowIdx: number = 1; rowIdx <= SpreadSheetConsts.MAX_ROW_NUM; rowIdx++) {
+    for (; rowIdx <= SpreadSheetConsts.MAX_ROW_NUM; rowIdx++) {
       row = this.getRow(rowIdx);
       this._sheetViewHeight += row.height;
       this._sheetViewRowList.push(rowIdx);
 
-      if (this._sheetViewHeight > this._viewHeight) {
+      if ((this._sheetViewTop + this._sheetViewHeight) - (this._viewScrollTop + this._viewHeight) > 0) {
         break;
       }
     }
-
-    this.updateCellPos();
   }
 
-  private updateViewRect() {
-    var rect: any = this._workSheetViewEl.getBoundingClientRect();
-    this._viewWidth = rect.width;
-    this._viewHeight = rect.height;
-  }
-
-  private updateSheetView() {
-    this._viewScrollTop = this._workSheetViewEl.scrollTop;
-    this._viewScrollLeft = this._workSheetViewEl.scrollLeft;
+  private scrollSheetView(action: SheetViewAction.ScrollSheet) {
+    this._viewScrollTop = action.scrollTop;
+    this._viewScrollLeft = action.scrollLeft;
 
     if (this._viewScrollTop - this._sheetViewTop <= 0) {
       this.moveRowUp();
