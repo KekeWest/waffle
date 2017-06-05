@@ -103,7 +103,7 @@ export class SpreadSheetStoreService extends Emitter<Payload> {
   }
 
   getSelectedCellPosition(sheetName: string): SelectedCellPosition {
-    return this._spreadSheet.sheets[sheetName].selectedCellPosition;
+    return this._spreadSheet.sheets[sheetName].sheetView.selectedCellPosition;
   }
 
   setCell(sheetName: string, colIndex: number, rowIndex: number, cell: Cell) {
@@ -133,7 +133,7 @@ export class SpreadSheetStoreService extends Emitter<Payload> {
   }
 
   private selectCell(action: SpreadSheetAction.SelectCell) {
-    this.spreadSheet.sheets[action.sheetName].selectedCellPosition = action.selectedCellPos;
+    this.spreadSheet.sheets[action.sheetName].sheetView.selectedCellPosition = action.selectedCellPos;
   }
 
 }

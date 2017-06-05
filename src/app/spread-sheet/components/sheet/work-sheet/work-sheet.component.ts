@@ -28,6 +28,11 @@ export class WorkSheetComponent implements OnInit, AfterViewInit {
     this.sheetViewStoreService.register(
       (payload: Payload) => {
         this.updateSheetViewInfo();
+        switch (payload.eventType) {
+          case "scroll-sheet-view":
+            this.scrollSheetView();
+            break;
+        }
       }
     );
   }
@@ -61,6 +66,11 @@ export class WorkSheetComponent implements OnInit, AfterViewInit {
       rect.width,
       rect.height
     );
+  }
+
+  private scrollSheetView() {
+    this._workSheetViewEl.scrollTop = this.sheetViewStoreService.scrollTop;
+    this._workSheetViewEl.scrollLeft = this.sheetViewStoreService.scrollLeft;
   }
 
   private onScroll() {

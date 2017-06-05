@@ -1,5 +1,5 @@
 
-import { Column, Row, Cell, SelectedCellPosition } from "app/spread-sheet";
+import { Column, Row, Cell, SelectedCellPosition, SheetView } from "app/spread-sheet";
 
 export class Sheet {
 
@@ -15,11 +15,7 @@ export class Sheet {
 
   defaultCell: Cell = new Cell();
 
-  scrollTop: number = 0;
-
-  scrollLeft: number = 0;
-
-  selectedCellPosition: SelectedCellPosition = new SelectedCellPosition(1, 1, 1, 1, 1, 1);
+  sheetView: SheetView = new SheetView();
 
   constructor(public name: string) { }
 

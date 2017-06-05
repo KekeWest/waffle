@@ -146,7 +146,15 @@ export class SheetViewStoreService extends Emitter<Payload> {
   }
 
   get selectedCellPos(): SelectedCellPosition {
-    return this._sheet.selectedCellPosition;
+    return this._sheet.sheetView.selectedCellPosition;
+  }
+
+  get scrollTop(): number {
+    return this._sheet.sheetView.scrollTop;
+  }
+
+  get scrollLeft(): number {
+    return this._sheet.sheetView.scrollLeft;
   }
 
   getColumn(colIndex: number): Column {
@@ -223,14 +231,17 @@ export class SheetViewStoreService extends Emitter<Payload> {
     return newMetrics;
   }
 
-  private changeSheetViewSize(action: SheetViewAction.ChangeSheetViewSize) {
-    this._viewWidth = action.width;
-    this._viewHeight = action.height;
-
+  private updateSheetViewState() {
     this.updateCellRange();
     this.updateCellPos();
     this.initAreaRect();
     this.emit({ eventType: "update-sheet-view" });
+  }
+
+  private changeSheetViewSize(action: SheetViewAction.ChangeSheetViewSize) {
+    this._viewWidth = action.width;
+    this._viewHeight = action.height;
+    this.updateSheetViewState();
   }
 
   private initAreaRect() {
@@ -353,6 +364,12 @@ export class SheetViewStoreService extends Emitter<Payload> {
     }
 
     this.updateCellPos();
+
+    this._sheet.sheetView.scrollTop = action.scrollTop;
+    this._sheet.sheetView.scrollLeft = action.scrollLeft;
+    this._sheet.sheetView.startColNum = _.first(this._sheetViewColumnList);
+    this._sheet.sheetView.startRowNum = _.first(this._sheetViewRowList);
+
     this.emit({ eventType: "update-sheet-view" });
   }
 
@@ -480,13 +497,20 @@ export class SheetViewStoreService extends Emitter<Payload> {
 
   private selectSheet(action: SpreadSheetAction.SelectSheet) {
     this._sheet = this.spreadSheetStoreService.getSheet(action.sheetName);
-    this.emit({ eventType: "update-selected-sheet" });
+    this._viewScrollTop = 0;
+    this._viewScrollLeft = 0;
+    this._sheetViewTop = 0;
+    this._sheetViewLeft = 0;
+    this._sheetViewColumnList = [];
+    this._sheetViewRowList = [];
+    this.updateSheetViewState();
+    this.emit({ eventType: "scroll-sheet-view" });
   }
 
   private selectCell(action: SpreadSheetAction.SelectCell) {
     this.spreadSheetDispatcherService.waitFor([this.spreadSheetStoreService.spreadSheetDispatcherId]);
     this.emit({ eventType: "update-selected-cell" });
-  } 
+  }
 
   private updateCellPos() {
     this._cellPosLeftList = [];

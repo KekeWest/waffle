@@ -8,3 +8,4 @@ export * from './style/font';
 export * from './style/rgba-color';
 export * from './spread-sheet-consts';
 export * from './selected-cell-position';
+export * from './sheet-view';
