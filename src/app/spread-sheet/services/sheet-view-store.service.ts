@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Emitter, Payload } from "app/base";
 import { SpreadSheetActionService, SheetViewDispatcherService, SheetViewAction, SpreadSheetStoreService, SpreadSheetDispatcherService, SpreadSheetAction } from "app/spread-sheet/services";
-import { Sheet, Column, Row, Cell, SpreadSheetConsts, SelectedCellPosition } from "app/spread-sheet";
+import { Sheet, Column, Row, Cell, SpreadSheetConsts, SelectedCellPosition, SheetView } from "app/spread-sheet";
 import { s, _ } from "app";
 
 @Injectable()
@@ -9,25 +9,9 @@ export class SheetViewStoreService extends Emitter<Payload> {
 
   private _sheet: Sheet;
 
-  private _edgeColIndex: number;
-
-  private _edgeRowIndex: number;
-
   private _viewWidth: number;
 
   private _viewHeight: number;
-
-  private _viewScrollTop: number = 0;
-
-  private _viewScrollLeft: number = 0;
-
-  private _areaWidth: number = 0;
-
-  private _areaHeight: number = 0;
-
-  private _sheetViewColumnList: number[] = [];
-
-  private _sheetViewRowList: number[] = [];
 
   private _cellPosTopList: number[];
 
@@ -36,10 +20,6 @@ export class SheetViewStoreService extends Emitter<Payload> {
   private _sheetViewWidth: number;
 
   private _sheetViewHeight: number;
-
-  private _sheetViewTop: number = 0;
-
-  private _sheetViewLeft: number = 0;
 
   private _textRuler: createjs.Text = new createjs.Text();
 
@@ -90,11 +70,11 @@ export class SheetViewStoreService extends Emitter<Payload> {
   }
 
   get sheetViewColumnList(): number[] {
-    return this._sheetViewColumnList;
+    return this._sheet.sheetView.sheetViewColumnList;
   }
 
   get sheetViewRowList(): number[] {
-    return this._sheetViewRowList;
+    return this._sheet.sheetView.sheetViewRowList;
   }
 
   get cellPosTopList(): number[] {
@@ -114,19 +94,19 @@ export class SheetViewStoreService extends Emitter<Payload> {
   }
 
   get viewScrollTop(): number {
-    return this._viewScrollTop;
+    return this._sheet.sheetView.viewScrollTop;
   }
 
   get viewScrollLeft(): number {
-    return this._viewScrollLeft;
+    return this._sheet.sheetView.viewScrollLeft;
   }
 
   get areaWidth(): number {
-    return this._areaWidth;
+    return this._sheet.sheetView.areaWidth;
   }
 
   get areaHeight(): number {
-    return this._areaHeight;
+    return this._sheet.sheetView.areaHeight;
   }
 
   get sheetViewWidth(): number {
@@ -138,23 +118,15 @@ export class SheetViewStoreService extends Emitter<Payload> {
   }
 
   get sheetViewTop(): number {
-    return this._sheetViewTop;
+    return this._sheet.sheetView.sheetViewTop;
   }
 
   get sheetViewLeft(): number {
-    return this._sheetViewLeft;
+    return this._sheet.sheetView.sheetViewLeft;
   }
 
   get selectedCellPos(): SelectedCellPosition {
     return this._sheet.sheetView.selectedCellPosition;
-  }
-
-  get scrollTop(): number {
-    return this._sheet.sheetView.scrollTop;
-  }
-
-  get scrollLeft(): number {
-    return this._sheet.sheetView.scrollLeft;
   }
 
   getColumn(colIndex: number): Column {
@@ -231,79 +203,78 @@ export class SheetViewStoreService extends Emitter<Payload> {
     return newMetrics;
   }
 
-  private updateSheetViewState() {
-    this.updateCellRange();
-    this.updateCellPos();
-    this.initAreaRect();
-    this.emit({ eventType: "update-sheet-view" });
-  }
-
   private changeSheetViewSize(action: SheetViewAction.ChangeSheetViewSize) {
     this._viewWidth = action.width;
     this._viewHeight = action.height;
-    this.updateSheetViewState();
+    
+    if (!this._sheet.sheetView.areaHeight || !this._sheet.sheetView.areaWidth) {
+      this.initAreaRect();
+    }
+    this.updateCellRange();
+
+    this.emit({ eventType: "update-sheet-view" });
   }
 
   private initAreaRect() {
     this.initEdgeIndex();
-    this._areaWidth = 0;
-    this._areaHeight = 0;
+    this._sheet.sheetView.areaHeight = 0;
+    this._sheet.sheetView.areaWidth = 0;
 
     var col: Column;
-    for (var colIdx: number = 1; colIdx <= this._edgeColIndex; colIdx++) {
+    for (var colIdx: number = 1; colIdx <= this._sheet.sheetView.edgeColIndex; colIdx++) {
       col = this._sheet.columns[colIdx];
       if (col) {
-        this._areaWidth += col.width;
+        this._sheet.sheetView.areaWidth += col.width;
       } else {
-        this._areaWidth += this._sheet.defaultColumn.width;
+        this._sheet.sheetView.areaWidth += this._sheet.defaultColumn.width;
       }
     }
 
     var row: Row;
-    for (var rowIdx: number = 1; rowIdx <= this._edgeRowIndex; rowIdx++) {
+    for (var rowIdx: number = 1; rowIdx <= this._sheet.sheetView.edgeRowIndex; rowIdx++) {
       row = this._sheet.rows[rowIdx];
       if (row) {
-        this._areaHeight += row.height;
+        this._sheet.sheetView.areaHeight += row.height;
       } else {
-        this._areaHeight += this._sheet.defaultRow.height;
+        this._sheet.sheetView.areaHeight += this._sheet.defaultRow.height;
       }
     }
   }
 
   private initEdgeIndex() {
-    this._edgeColIndex = 1;
-    this._edgeRowIndex = 1;
+    this._sheet.sheetView.edgeColIndex = 1;
+    this._sheet.sheetView.edgeRowIndex = 1;
 
     var i: number;
 
     var colIndexes: string[] = Object.keys(this._sheet.columns);
     for (var colIdx of colIndexes) {
       i = Number(colIdx);
-      if (this._edgeColIndex < i) {
-        this._edgeColIndex = i;
+      if (this._sheet.sheetView.edgeColIndex < i) {
+        this._sheet.sheetView.edgeColIndex = i;
       }
     }
 
     var rowIndexes: string[] = Object.keys(this._sheet.rows);
     for (var rowIdx of rowIndexes) {
       i = Number(rowIdx);
-      if (this._edgeRowIndex < i) {
-        this._edgeRowIndex = i;
+      if (this._sheet.sheetView.edgeRowIndex < i) {
+        this._sheet.sheetView.edgeRowIndex = i;
       }
     }
 
     var colIndexes: string[] = Object.keys(this._sheet.cells);
     for (var colIdx of colIndexes) {
       i = Number(colIdx);
-      if (this._edgeColIndex < i) {
-        this._edgeColIndex = i;
+      if (this._sheet.sheetView.edgeColIndex < i) {
+        this._sheet.sheetView.edgeColIndex = i;
       }
 
       var rowIndexes: string[] = Object.keys(this._sheet.cells[i]);
       for (var rowIdx of rowIndexes) {
         i = Number(rowIdx);
-        if (this._edgeRowIndex < i) {
-          this._edgeRowIndex = i;
+        if (this._sheet.sheetView.edgeRowIndex < i) {
+          this._sheet.sheetView.edgeRowIndex = i;
         }
       }
     }
@@ -312,204 +283,177 @@ export class SheetViewStoreService extends Emitter<Payload> {
   private updateCellRange() {
     this._sheetViewWidth = 0;
     this._sheetViewHeight = 0;
-
-    if (_.isEmpty(this._sheetViewColumnList)) {
-      var colIdx: number = 1;
-    } else {
-      var colIdx: number = _.first(this._sheetViewColumnList);
-      this._sheetViewColumnList = [];
+    for (var colNum of this.sheetViewColumnList) {
+      this._sheetViewWidth += this.getColumn(colNum).width;
     }
-    var col: Column;
-    for (; colIdx <= SpreadSheetConsts.MAX_COLUMN_NUM; colIdx++) {
-      col = this.getColumn(colIdx);
-      this._sheetViewWidth += col.width;
-      this._sheetViewColumnList.push(colIdx);
-
-      if ((this._sheetViewLeft + this._sheetViewWidth) - (this._viewScrollLeft + this._viewWidth) > 0) {
-        break;
-      }
+    for (var rowNum of this.sheetViewRowList) {
+      this._sheetViewHeight += this.getRow(rowNum).height;
     }
 
-    if (_.isEmpty(this._sheetViewRowList)) {
-      var rowIdx: number = 1;
-    } else {
-      var rowIdx: number = _.first(this._sheetViewRowList);
-      this._sheetViewRowList = [];
-    }
-    var row: Row;
-    for (; rowIdx <= SpreadSheetConsts.MAX_ROW_NUM; rowIdx++) {
-      row = this.getRow(rowIdx);
-      this._sheetViewHeight += row.height;
-      this._sheetViewRowList.push(rowIdx);
-
-      if ((this._sheetViewTop + this._sheetViewHeight) - (this._viewScrollTop + this._viewHeight) > 0) {
-        break;
-      }
-    }
+    this.addBottomRow();
+    this.addRightColumn();
+    this.updateCellPos();
   }
 
   private scrollSheetView(action: SheetViewAction.ScrollSheet) {
-    this._viewScrollTop = action.scrollTop;
-    this._viewScrollLeft = action.scrollLeft;
+    this._sheet.sheetView.viewScrollTop = action.scrollTop;
+    this._sheet.sheetView.viewScrollLeft = action.scrollLeft;
 
-    if (this._viewScrollTop - this._sheetViewTop <= 0) {
-      this.moveRowUp();
-    } else if ((this._sheetViewTop + this._sheetViewHeight) - (this._viewScrollTop + this._viewHeight) <= 0) {
-      this.moveRowDown();
+    if (this._sheet.sheetView.viewScrollTop - this._sheet.sheetView.sheetViewTop <= 0) {
+      this.addTopRow();
+      this.removeBottomRow();
+    } else if ((this._sheet.sheetView.sheetViewTop + this._sheetViewHeight) - (this._sheet.sheetView.viewScrollTop + this._viewHeight) <= 0) {
+      this.addBottomRow();
+      this.removeTopRow();
     }
-    if (this._viewScrollLeft - this._sheetViewLeft <= 0) {
-      this.moveColumnLeft();
-    } else if ((this._sheetViewLeft + this._sheetViewWidth) - (this._viewScrollLeft + this._viewWidth) <= 0) {
-      this.moveColumnRight();
+    if (this._sheet.sheetView.viewScrollLeft - this._sheet.sheetView.sheetViewLeft <= 0) {
+      this.addLeftColumn();
+      this.removeRightColumn();
+    } else if ((this._sheet.sheetView.sheetViewLeft + this._sheetViewWidth) - (this._sheet.sheetView.viewScrollLeft + this._viewWidth) <= 0) {
+      this.addRightColumn();
+      this.removeLeftColumn();
     }
 
     this.updateCellPos();
 
-    this._sheet.sheetView.scrollTop = action.scrollTop;
-    this._sheet.sheetView.scrollLeft = action.scrollLeft;
-    this._sheet.sheetView.startColNum = _.first(this._sheetViewColumnList);
-    this._sheet.sheetView.startRowNum = _.first(this._sheetViewRowList);
-
     this.emit({ eventType: "update-sheet-view" });
   }
 
-  private moveRowUp() {
+  private addTopRow() {
     var row: Row;
 
-    for (var rowIdx: number = this._sheetViewRowList[0] - 1; rowIdx >= 1; rowIdx--) {
+    for (var rowIdx: number = this._sheet.sheetView.sheetViewRowList[0] - 1; rowIdx >= 1; rowIdx--) {
       row = this.getRow(rowIdx);
       this._sheetViewHeight += row.height;
-      this._sheetViewTop -= row.height;
-      this._sheetViewRowList.unshift(rowIdx);
-      if (this._viewScrollTop - this._sheetViewTop > 0) {
+      this._sheet.sheetView.sheetViewTop -= row.height;
+      this._sheet.sheetView.sheetViewRowList.unshift(rowIdx);
+      if (this._sheet.sheetView.viewScrollTop - this._sheet.sheetView.sheetViewTop > 0) {
         break;
       }
     }
+  }
 
+  private removeBottomRow() {
+    var row: Row;
     var rowIdx: number = null;
     var rowHeight: number = null;
-    while ((this._sheetViewTop + this._sheetViewHeight) - (this._viewScrollTop + this._viewHeight) > 0) {
-      rowIdx = this._sheetViewRowList.pop();
+    while ((this._sheet.sheetView.sheetViewTop + this._sheetViewHeight) - (this._sheet.sheetView.viewScrollTop + this._viewHeight) > 0) {
+      rowIdx = this._sheet.sheetView.sheetViewRowList.pop();
       row = this.getRow(rowIdx);
       rowHeight = row.height;
       this._sheetViewHeight -= rowHeight;
-      if (this._sheetViewRowList.length === 0) {
+      if (this._sheet.sheetView.sheetViewRowList.length === 0) {
         break;
       }
     }
     if (rowIdx) {
-      this._sheetViewRowList.push(rowIdx);
+      this._sheet.sheetView.sheetViewRowList.push(rowIdx);
       this._sheetViewHeight += rowHeight;
     }
   }
 
-  private moveRowDown() {
+  private removeTopRow() {
     var row: Row;
-
-    for (var rowIdx: number = this._sheetViewRowList[this._sheetViewRowList.length - 1] + 1; rowIdx <= SpreadSheetConsts.MAX_ROW_NUM; rowIdx++) {
-      row = this.getRow(rowIdx);
-      this._sheetViewHeight += row.height;
-      this._sheetViewRowList.push(rowIdx);
-      if ((this._sheetViewTop + this._sheetViewHeight) - (this._viewScrollTop + this._viewHeight) > 0) {
-        break;
-      }
-    }
-
     var rowIdx: number = null;
     var rowHeight: number = null;
-    while (this._viewScrollTop - this._sheetViewTop > 0) {
-      rowIdx = this._sheetViewRowList.shift();
+
+    while (this._sheet.sheetView.viewScrollTop - this._sheet.sheetView.sheetViewTop > 0) {
+      rowIdx = this._sheet.sheetView.sheetViewRowList.shift();
       row = this.getRow(rowIdx);
       rowHeight = row.height;
       this._sheetViewHeight -= rowHeight;
-      this._sheetViewTop += rowHeight;
-      if (this._sheetViewRowList.length === 0) {
+      this._sheet.sheetView.sheetViewTop += rowHeight;
+      if (this._sheet.sheetView.sheetViewRowList.length === 0) {
         break;
       }
     }
     if (rowIdx) {
-      this._sheetViewRowList.unshift(rowIdx);
+      this._sheet.sheetView.sheetViewRowList.unshift(rowIdx);
       this._sheetViewHeight += rowHeight;
-      this._sheetViewTop -= rowHeight;
+      this._sheet.sheetView.sheetViewTop -= rowHeight;
     }
   }
 
-  private moveColumnLeft() {
-    var col: Column;
+  private addBottomRow() {
+    var row: Row;
 
-    for (var colIdx: number = this._sheetViewColumnList[0] - 1; colIdx >= 1; colIdx--) {
-      col = this.getColumn(colIdx);
-      this._sheetViewWidth += col.width;
-      this._sheetViewLeft -= col.width;
-      this._sheetViewColumnList.unshift(colIdx);
-      if (this._viewScrollLeft - this._sheetViewLeft > 0) {
+    for (var rowIdx: number = this._sheet.sheetView.sheetViewRowList[this._sheet.sheetView.sheetViewRowList.length - 1] + 1; rowIdx <= SpreadSheetConsts.MAX_ROW_NUM; rowIdx++) {
+      row = this.getRow(rowIdx);
+      this._sheetViewHeight += row.height;
+      this._sheet.sheetView.sheetViewRowList.push(rowIdx);
+      if ((this._sheet.sheetView.sheetViewTop + this._sheetViewHeight) - (this._sheet.sheetView.viewScrollTop + this._viewHeight) > 0) {
         break;
       }
     }
+  }
 
+  private addLeftColumn() {
+    var col: Column;
+
+    for (var colIdx: number = this._sheet.sheetView.sheetViewColumnList[0] - 1; colIdx >= 1; colIdx--) {
+      col = this.getColumn(colIdx);
+      this._sheetViewWidth += col.width;
+      this._sheet.sheetView.sheetViewLeft -= col.width;
+      this._sheet.sheetView.sheetViewColumnList.unshift(colIdx);
+      if (this._sheet.sheetView.viewScrollLeft - this._sheet.sheetView.sheetViewLeft > 0) {
+        break;
+      }
+    }
+  }
+
+  private removeRightColumn() {
+    var col: Column;
     var colIdx: number = null;
     var colWidth: number = null;
-    while ((this._sheetViewLeft + this._sheetViewWidth) - (this._viewScrollLeft + this._viewWidth) > 0) {
-      colIdx = this._sheetViewColumnList.pop();
+
+    while ((this._sheet.sheetView.sheetViewLeft + this._sheetViewWidth) - (this._sheet.sheetView.viewScrollLeft + this._viewWidth) > 0) {
+      colIdx = this._sheet.sheetView.sheetViewColumnList.pop();
       col = this.getColumn(colIdx);
       colWidth = col.width;
       this._sheetViewWidth -= colWidth;
-      if (this._sheetViewColumnList.length === 0) {
+      if (this._sheet.sheetView.sheetViewColumnList.length === 0) {
         break;
       }
     }
     if (colIdx) {
-      this._sheetViewColumnList.push(colIdx);
+      this._sheet.sheetView.sheetViewColumnList.push(colIdx);
       this._sheetViewWidth += colWidth;
     }
   }
 
-  private moveColumnRight() {
+  private addRightColumn() {
     var col: Column;
 
-    for (var colIdx: number = this._sheetViewColumnList[this._sheetViewColumnList.length - 1] + 1; colIdx <= SpreadSheetConsts.MAX_COLUMN_NUM; colIdx++) {
+    for (var colIdx: number = this._sheet.sheetView.sheetViewColumnList[this._sheet.sheetView.sheetViewColumnList.length - 1] + 1; colIdx <= SpreadSheetConsts.MAX_COLUMN_NUM; colIdx++) {
       col = this.getColumn(colIdx);
       this._sheetViewWidth += col.width;
-      this._sheetViewColumnList.push(colIdx);
-      if ((this._sheetViewLeft + this._sheetViewWidth) - (this._viewScrollLeft + this._viewWidth) > 0) {
+      this._sheet.sheetView.sheetViewColumnList.push(colIdx);
+      if ((this._sheet.sheetView.sheetViewLeft + this._sheetViewWidth) - (this._sheet.sheetView.viewScrollLeft + this._viewWidth) > 0) {
         break;
       }
     }
+  }
 
+  private removeLeftColumn() {
+    var col: Column;
     var colIdx: number = null;
     var colWidth: number = null;
-    while (this._viewScrollLeft - this._sheetViewLeft > 0) {
-      colIdx = this._sheetViewColumnList.shift();
+
+    while (this._sheet.sheetView.viewScrollLeft - this._sheet.sheetView.sheetViewLeft > 0) {
+      colIdx = this._sheet.sheetView.sheetViewColumnList.shift();
       col = this.getColumn(colIdx);
       colWidth = col.width;
       this._sheetViewWidth -= colWidth;
-      this._sheetViewLeft += colWidth;
-      if (this._sheetViewColumnList.length === 0) {
+      this._sheet.sheetView.sheetViewLeft += colWidth;
+      if (this._sheet.sheetView.sheetViewColumnList.length === 0) {
         break;
       }
     }
     if (colIdx) {
-      this._sheetViewColumnList.unshift(colIdx);
+      this._sheet.sheetView.sheetViewColumnList.unshift(colIdx);
       this._sheetViewWidth += colWidth;
-      this._sheetViewLeft -= colWidth;
+      this._sheet.sheetView.sheetViewLeft -= colWidth;
     }
-  }
-
-  private selectSheet(action: SpreadSheetAction.SelectSheet) {
-    this._sheet = this.spreadSheetStoreService.getSheet(action.sheetName);
-    this._viewScrollTop = 0;
-    this._viewScrollLeft = 0;
-    this._sheetViewTop = 0;
-    this._sheetViewLeft = 0;
-    this._sheetViewColumnList = [];
-    this._sheetViewRowList = [];
-    this.updateSheetViewState();
-    this.emit({ eventType: "scroll-sheet-view" });
-  }
-
-  private selectCell(action: SpreadSheetAction.SelectCell) {
-    this.spreadSheetDispatcherService.waitFor([this.spreadSheetStoreService.spreadSheetDispatcherId]);
-    this.emit({ eventType: "update-selected-cell" });
   }
 
   private updateCellPos() {
@@ -517,16 +461,32 @@ export class SheetViewStoreService extends Emitter<Payload> {
     this._cellPosTopList = [];
 
     var topSum: number = 0;
-    for (var rowNum of this._sheetViewRowList) {
+    for (var rowNum of this._sheet.sheetView.sheetViewRowList) {
       this._cellPosTopList.push(topSum);
       topSum += this.getRow(rowNum).height;
     }
 
     var leftSum: number = 0;
-    for (var colNum of this._sheetViewColumnList) {
+    for (var colNum of this._sheet.sheetView.sheetViewColumnList) {
       this._cellPosLeftList.push(leftSum);
       leftSum += this.getColumn(colNum).width;
     }
+  }
+
+  private selectSheet(action: SpreadSheetAction.SelectSheet) {
+    this._sheet = this.spreadSheetStoreService.getSheet(action.sheetName);
+    
+    if (!this._sheet.sheetView.areaHeight || !this._sheet.sheetView.areaWidth) {
+      this.initAreaRect();
+    }
+    this.updateCellRange();
+    
+    this.emit({ eventType: "update-sheet-view" });
+  }
+
+  private selectCell(action: SpreadSheetAction.SelectCell) {
+    this.spreadSheetDispatcherService.waitFor([this.spreadSheetStoreService.spreadSheetDispatcherId]);
+    this.emit({ eventType: "update-selected-cell" });
   }
 
 }

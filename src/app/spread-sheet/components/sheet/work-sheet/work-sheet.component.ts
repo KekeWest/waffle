@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, ViewChild, ElementRef, Input, HostListener } from '@angular/core';
+import { Component, OnInit, AfterViewInit, AfterViewChecked, ViewChild, ElementRef, Input, HostListener } from '@angular/core';
 import { SheetViewActionService, SheetViewStoreService } from "app/spread-sheet/services";
 import { Payload } from "app/base";
 import { SpreadSheetConsts, Sheet } from "app/spread-sheet";
@@ -8,7 +8,7 @@ import { SpreadSheetConsts, Sheet } from "app/spread-sheet";
   templateUrl: './work-sheet.component.html',
   styleUrls: ['./work-sheet.component.scss'],
 })
-export class WorkSheetComponent implements OnInit, AfterViewInit {
+export class WorkSheetComponent implements OnInit, AfterViewInit, AfterViewChecked {
 
   @ViewChild("workSheetView")
   private _workSheetViewRef: ElementRef;
@@ -19,6 +19,10 @@ export class WorkSheetComponent implements OnInit, AfterViewInit {
 
   private _areaHeight: number;
 
+  private _scrollTop: number = 0;
+
+  private _scrollLeft: number = 0;
+
   constructor(
     private sheetViewActionService: SheetViewActionService,
     private sheetViewStoreService: SheetViewStoreService
@@ -28,11 +32,6 @@ export class WorkSheetComponent implements OnInit, AfterViewInit {
     this.sheetViewStoreService.register(
       (payload: Payload) => {
         this.updateSheetViewInfo();
-        switch (payload.eventType) {
-          case "scroll-sheet-view":
-            this.scrollSheetView();
-            break;
-        }
       }
     );
   }
@@ -44,6 +43,17 @@ export class WorkSheetComponent implements OnInit, AfterViewInit {
       rect.width,
       rect.height
     );
+  }
+
+  ngAfterViewChecked() {
+    if (this._scrollTop !== this.sheetViewStoreService.viewScrollTop) {
+      this._workSheetViewEl.scrollTop = this.sheetViewStoreService.viewScrollTop;
+      this._scrollTop = this.sheetViewStoreService.viewScrollTop
+    }
+    if (this._scrollLeft !== this.sheetViewStoreService.viewScrollLeft) {
+      this._workSheetViewEl.scrollLeft = this.sheetViewStoreService.viewScrollLeft;
+      this._scrollLeft = this.sheetViewStoreService.viewScrollLeft
+    }
   }
 
   private updateSheetViewInfo() {
@@ -68,15 +78,12 @@ export class WorkSheetComponent implements OnInit, AfterViewInit {
     );
   }
 
-  private scrollSheetView() {
-    this._workSheetViewEl.scrollTop = this.sheetViewStoreService.scrollTop;
-    this._workSheetViewEl.scrollLeft = this.sheetViewStoreService.scrollLeft;
-  }
-
   private onScroll() {
+    this._scrollTop = this._workSheetViewEl.scrollTop;
+    this._scrollLeft = this._workSheetViewEl.scrollLeft;
     this.sheetViewActionService.scrollSheetView(
-      this._workSheetViewEl.scrollTop,
-      this._workSheetViewEl.scrollLeft
+      this._scrollTop,
+      this._scrollLeft
     );
   }
 

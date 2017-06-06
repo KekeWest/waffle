@@ -3,6 +3,14 @@
   width: 100%;
 }
 
+:host /deep/ * {
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  cursor: default;
+}
+
 .sheets-container {
   width: 100%;
   height: calc(100% - 120px);
