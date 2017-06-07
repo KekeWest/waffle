@@ -21,7 +21,11 @@ export class RowGridComponent implements OnInit {
   ngOnInit() {
     this.sheetViewStoreService.register(
       (payload: Payload) => {
-        this.updateRowView();
+        switch (payload.eventType) {
+          case SheetViewStoreService.UPDATE_EVENT:
+            this.updateRowView();
+            break;
+        }
       }
     );
   }

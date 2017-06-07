@@ -5,6 +5,10 @@ import { SelectedCellPosition } from "app/spread-sheet";
 @Injectable()
 export class SheetViewActionService {
 
+  static EVENT_PREFIX: string = "SheetViewActionService.";
+  static CHANGE_SIZE_EVENT: string = SheetViewActionService.EVENT_PREFIX + "change-size";
+  static SCROLL_EVENT: string      = SheetViewActionService.EVENT_PREFIX + "scroll";
+
   constructor(
     private sheetViewDispatcherService: SheetViewDispatcherService,
   ) { }
@@ -16,7 +20,7 @@ export class SheetViewActionService {
     };
 
     this.sheetViewDispatcherService.emit({
-      eventType: "change-sheet-view-size",
+      eventType: SheetViewActionService.CHANGE_SIZE_EVENT,
       data: action
     });
   }
@@ -28,7 +32,7 @@ export class SheetViewActionService {
     };
 
     this.sheetViewDispatcherService.emit({
-      eventType: "scroll-sheet-view",
+      eventType: SheetViewActionService.SCROLL_EVENT,
       data: action
     });
   }

@@ -7,8 +7,6 @@ import { _ } from "app";
 @Injectable()
 export class CommandStoreService {
 
-  public static SHEET_EDIT_COMMAND: string = "sheet-edit-command";
-
   private _undoCommandStack: Command[] = [];
 
   private _redoCommandStack: Command[] = [];
@@ -20,7 +18,7 @@ export class CommandStoreService {
     this.spreadSheetDispatcherService.register(
       (payload: Payload) => {
         switch (payload.eventType) {
-          case CommandStoreService.SHEET_EDIT_COMMAND:
+          case SheetEditCommand.EDIT_EVENT:
             this.invokeSheetEditCommand(<SheetEditCommand>payload.data);
             break;
         }

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Emitter, Payload } from "app/base";
 import { SpreadSheet, Sheet, Column, Row, Cell, RGBAColor, SelectedCellPosition } from "app/spread-sheet";
-import { SpreadSheetDispatcherService, SpreadSheetAction } from "app/spread-sheet/services";
+import { SpreadSheetDispatcherService, SpreadSheetAction, SpreadSheetActionService } from "app/spread-sheet/services";
 
 @Injectable()
 export class SpreadSheetStoreService extends Emitter<Payload> {
@@ -15,10 +15,10 @@ export class SpreadSheetStoreService extends Emitter<Payload> {
     this.spreadSheetDispatcherId = this.spreadSheetDispatcherService.register(
       (payload: Payload) => {
         switch (payload.eventType) {
-          case "select-sheet":
+          case SpreadSheetActionService.SELECT_SHEET:
             this.selectSheet(<SpreadSheetAction.SelectSheet>payload.data);
             break;
-          case "select-cell":
+          case SpreadSheetActionService.SELECT_CELL:
             this.selectCell(<SpreadSheetAction.SelectCell>payload.data);
             break;
         }

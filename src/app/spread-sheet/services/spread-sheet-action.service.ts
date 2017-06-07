@@ -5,6 +5,10 @@ import { SelectedCellPosition } from "app/spread-sheet";
 @Injectable()
 export class SpreadSheetActionService {
 
+  static EVENT_PREFIX: string = "SpreadSheetActionService.";
+  static SELECT_SHEET: string = SpreadSheetActionService.EVENT_PREFIX + "select-sheet";
+  static SELECT_CELL: string  = SpreadSheetActionService.EVENT_PREFIX + "select-cell";
+
   constructor(private spreadSheetDispatcherService: SpreadSheetDispatcherService) { }
 
   selectSheet(sheetName: string) {
@@ -13,7 +17,7 @@ export class SpreadSheetActionService {
     };
 
     this.spreadSheetDispatcherService.emit({
-      eventType: "select-sheet",
+      eventType: SpreadSheetActionService.SELECT_SHEET,
       data: action
     });
   }
@@ -25,7 +29,7 @@ export class SpreadSheetActionService {
     };
 
     this.spreadSheetDispatcherService.emit({
-      eventType: "select-cell",
+      eventType: SpreadSheetActionService.SELECT_CELL,
       data: action
     });
   }

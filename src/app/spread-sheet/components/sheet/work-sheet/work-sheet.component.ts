@@ -31,7 +31,11 @@ export class WorkSheetComponent implements OnInit, AfterViewInit, AfterViewCheck
   ngOnInit() {
     this.sheetViewStoreService.register(
       (payload: Payload) => {
-        this.updateSheetViewInfo();
+        switch (payload.eventType) {
+          case SheetViewStoreService.UPDATE_EVENT:
+            this.updateSheetViewInfo();
+            break;
+        }
       }
     );
   }

@@ -46,7 +46,11 @@ export class SheetViewCanvasComponent implements OnInit, AfterViewChecked {
 
     this.sheetViewStoreService.register(
       (payload: Payload) => {
-        this.updateSheetViewInfo();
+        switch (payload.eventType) {
+          case SheetViewStoreService.UPDATE_EVENT:
+            this.updateSheetViewInfo();
+            break;
+        }
       }
     );
   }

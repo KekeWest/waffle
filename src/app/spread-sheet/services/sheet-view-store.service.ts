@@ -1,11 +1,15 @@
 import { Injectable } from '@angular/core';
 import { Emitter, Payload } from "app/base";
-import { SpreadSheetActionService, SheetViewDispatcherService, SheetViewAction, SpreadSheetStoreService, SpreadSheetDispatcherService, SpreadSheetAction } from "app/spread-sheet/services";
+import { SpreadSheetActionService, SheetViewDispatcherService, SheetViewAction, SpreadSheetStoreService, SpreadSheetDispatcherService, SpreadSheetAction, SheetViewActionService } from "app/spread-sheet/services";
 import { Sheet, Column, Row, Cell, SpreadSheetConsts, SelectedCellPosition, SheetView } from "app/spread-sheet";
 import { s, _ } from "app";
 
 @Injectable()
 export class SheetViewStoreService extends Emitter<Payload> {
+
+  static EVENT_PREFIX: string = "SheetViewStoreService.";
+  static UPDATE_EVENT: string               = SheetViewStoreService.EVENT_PREFIX + "update";
+  static UPDATE_SELECTED_CELL_EVENT: string = SheetViewStoreService.EVENT_PREFIX + "update-selected-cell";
 
   private _sheet: Sheet;
 
@@ -37,10 +41,10 @@ export class SheetViewStoreService extends Emitter<Payload> {
     this.spreadSheetDispatcherService.register(
       (payload: Payload) => {
         switch (payload.eventType) {
-          case "select-sheet":
+          case SpreadSheetActionService.SELECT_SHEET:
             this.selectSheet(<SpreadSheetAction.SelectSheet>payload.data);
             break;
-          case "select-cell":
+          case SpreadSheetActionService.SELECT_CELL:
             this.selectCell(<SpreadSheetAction.SelectCell>payload.data);
             break;
         }
@@ -50,10 +54,10 @@ export class SheetViewStoreService extends Emitter<Payload> {
     this.sheetViewDispatcherService.register(
       (payload: Payload) => {
         switch (payload.eventType) {
-          case "change-sheet-view-size":
+          case SheetViewActionService.CHANGE_SIZE_EVENT:
             this.changeSheetViewSize(<SheetViewAction.ChangeSheetViewSize>payload.data);
             break;
-          case "scroll-sheet-view":
+          case SheetViewActionService.SCROLL_EVENT:
             this.scrollSheetView(<SheetViewAction.ScrollSheet>payload.data);
             break;
         }
@@ -212,7 +216,7 @@ export class SheetViewStoreService extends Emitter<Payload> {
     }
     this.updateCellRange();
 
-    this.emit({ eventType: "update-sheet-view" });
+    this.emit({ eventType: SheetViewStoreService.UPDATE_EVENT });
   }
 
   private initAreaRect() {
@@ -316,7 +320,7 @@ export class SheetViewStoreService extends Emitter<Payload> {
 
     this.updateCellPos();
 
-    this.emit({ eventType: "update-sheet-view" });
+    this.emit({ eventType: SheetViewStoreService.UPDATE_EVENT });
   }
 
   private addTopRow() {
@@ -481,12 +485,12 @@ export class SheetViewStoreService extends Emitter<Payload> {
     }
     this.updateCellRange();
     
-    this.emit({ eventType: "update-sheet-view" });
+    this.emit({ eventType: SheetViewStoreService.UPDATE_EVENT });
   }
 
   private selectCell(action: SpreadSheetAction.SelectCell) {
     this.spreadSheetDispatcherService.waitFor([this.spreadSheetStoreService.spreadSheetDispatcherId]);
-    this.emit({ eventType: "update-selected-cell" });
+    this.emit({ eventType: SheetViewStoreService.UPDATE_SELECTED_CELL_EVENT });
   }
 
 }

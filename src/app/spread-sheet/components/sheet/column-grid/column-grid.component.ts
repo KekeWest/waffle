@@ -21,7 +21,11 @@ export class ColumnGridComponent implements OnInit {
   ngOnInit() {
     this.sheetViewStoreService.register(
       (payload: Payload) => {
-        this.updateColumnView();
+        switch (payload.eventType) {
+          case SheetViewStoreService.UPDATE_EVENT:
+            this.updateColumnView();
+            break;
+        }
       }
     );
   }

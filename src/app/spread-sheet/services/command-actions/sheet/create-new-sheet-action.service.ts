@@ -13,7 +13,7 @@ export class CreateNewSheetActionService {
 
   createNewSheet() {
     this.spreadSheetDispatcherService.emit({
-      eventType: CommandStoreService.SHEET_EDIT_COMMAND,
+      eventType: SheetEditCommand.EDIT_EVENT,
       data: new CreateNewSheetCommand()
     });
   }

@@ -12,6 +12,9 @@ export interface Command {
 
 export abstract class SheetEditCommand implements Command {
 
+  static EVENT_PREFIX: string = "SheetEditCommand.";
+  static EDIT_EVENT: string   = SheetEditCommand.EVENT_PREFIX + "edit";
+
   protected _spreadSheet: SpreadSheet;
 
   set spreadSheet(spreadSheet: SpreadSheet) {
