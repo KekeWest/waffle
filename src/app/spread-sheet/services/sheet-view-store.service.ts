@@ -40,10 +40,10 @@ export class SheetViewStoreService extends Emitter<Payload> {
     this.spreadSheetDispatcherService.register(
       (payload: Payload) => {
         switch (payload.eventType) {
-          case SpreadSheetActionService.SELECT_SHEET:
+          case SpreadSheetActionService.SELECT_SHEET_EVENT:
             this.selectSheet(<SpreadSheetAction.SelectSheet>payload.data);
             break;
-          case SpreadSheetActionService.SELECT_CELL:
+          case SpreadSheetActionService.SELECT_CELL_EVENT:
             this.selectCell(<SpreadSheetAction.SelectCell>payload.data);
             break;
         }

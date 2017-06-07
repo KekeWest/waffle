@@ -25,20 +25,33 @@ class CreateNewSheetCommand extends SheetEditCommand {
   private static SHEET_NAME_PREFIX: string = "Sheet";
 
   private sheetName: string;
+  private newSheetIndex: number;
 
   invoke() {
     this.sheetName = this.generateNewSheetName();
-    var selectedSheetIndex: number = this._spreadSheet.sheetOrder.indexOf(this._spreadSheet.selectedSheetName);
-    this._spreadSheet.sheetOrder.splice(selectedSheetIndex + 1, 0, this.sheetName);
+    this.newSheetIndex = this._spreadSheet.sheetOrder.indexOf(this._spreadSheet.selectedSheetName) + 1;
+    this._spreadSheet.sheetOrder.splice(this.newSheetIndex, 0, this.sheetName);
     this._spreadSheet.selectedSheetName = this.sheetName;
     this._spreadSheet.sheets[this.sheetName] = new Sheet(this.sheetName);
   }
 
   undo() {
+    if (this._spreadSheet.selectedSheetName === this.sheetName) {
+      var selectSheetIndex: number = this._spreadSheet.sheetOrder.indexOf(this.sheetName);
+      if (selectSheetIndex + 1 === this._spreadSheet.sheetOrder.length) {
+        this._spreadSheet.selectedSheetName = this._spreadSheet.sheetOrder[selectSheetIndex - 1];
+      } else {
+        this._spreadSheet.selectedSheetName = this._spreadSheet.sheetOrder[selectSheetIndex + 1];
+      }
+      this._spreadSheetActionService.selectSheet(this._spreadSheet.selectedSheetName);
+    }
+    
+    _.remove(this._spreadSheet.sheetOrder, (v: string) => v === this.sheetName);
     delete this._spreadSheet.sheets[this.sheetName];
   }
 
   redo() {
+    this._spreadSheet.sheetOrder.splice(this.newSheetIndex, 0, this.sheetName);
     this._spreadSheet.sheets[this.sheetName] = new Sheet(this.sheetName);
   }
 

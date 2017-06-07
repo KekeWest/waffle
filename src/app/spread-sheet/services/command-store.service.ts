@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { SpreadSheetStoreService, SpreadSheetDispatcherService } from "app/spread-sheet/services";
+import { SpreadSheetStoreService, SpreadSheetDispatcherService, SpreadSheetActionService } from "app/spread-sheet/services";
 import { Payload } from "app/base";
 import { SheetEditCommand, Command } from "app/spread-sheet/services/command-actions";
 import { _ } from "app";
@@ -13,13 +13,20 @@ export class CommandStoreService {
 
   constructor(
     private spreadSheetDispatcherService: SpreadSheetDispatcherService,
-    private spreadSheetStoreService: SpreadSheetStoreService
+    private spreadSheetStoreService: SpreadSheetStoreService,
+    private spreadSheetActionService: SpreadSheetActionService
   ) {
     this.spreadSheetDispatcherService.register(
       (payload: Payload) => {
         switch (payload.eventType) {
           case SheetEditCommand.EDIT_EVENT:
             this.invokeSheetEditCommand(<SheetEditCommand>payload.data);
+            break;
+          case SpreadSheetActionService.UNDO_EVENT:
+            this.undo();
+            break;
+          case SpreadSheetActionService.REDO_EVENT:
+            this.redo();
             break;
         }
       }
@@ -28,7 +35,9 @@ export class CommandStoreService {
 
   private invokeSheetEditCommand(command: SheetEditCommand) {
     command.spreadSheet = this.spreadSheetStoreService.spreadSheet;
+    command.spreadSheetActionService = this.spreadSheetActionService;
     command.invoke();
+    
     this._redoCommandStack = [];
     this._undoCommandStack.push(command);
   }
