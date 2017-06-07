@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { SpreadSheetActionService } from "app/spread-sheet/services";
 
 @Component({
   selector: 'wf-sheet-edit',
@@ -8,19 +7,9 @@ import { SpreadSheetActionService } from "app/spread-sheet/services";
 })
 export class SheetEditComponent implements OnInit {
 
-  constructor(
-    private spreadSheetActionService: SpreadSheetActionService
-  ) { }
+  constructor() { }
 
   ngOnInit() {
-  }
-
-  undo() {
-    this.spreadSheetActionService.undo();
-  }
-
-  redo() {
-    this.spreadSheetActionService.redo();
   }
 
 }

@@ -15,6 +15,7 @@ import { SheetViewCanvasComponent } from './spread-sheet/components/sheet/work-s
 import { MouseEventBoardComponent } from './spread-sheet/components/sheet/work-sheet/mouse-event-board/mouse-event-board.component';
 import { SelectedCellAreaComponent } from './spread-sheet/components/sheet/work-sheet/mouse-event-board/selected-cell-area/selected-cell-area.component';
 import { ValuesViewComponent } from './spread-sheet/components/sheet/work-sheet/values-view/values-view.component';
+import { RedoUndoComponent } from './spread-sheet/components/sheet-edit/redo-undo/redo-undo.component';
 
 @NgModule({
   declarations: [
@@ -29,7 +30,8 @@ import { ValuesViewComponent } from './spread-sheet/components/sheet/work-sheet/
     SheetViewCanvasComponent,
     MouseEventBoardComponent,
     SelectedCellAreaComponent,
-    ValuesViewComponent
+    ValuesViewComponent,
+    RedoUndoComponent
   ],
   imports: [
     BrowserModule,
