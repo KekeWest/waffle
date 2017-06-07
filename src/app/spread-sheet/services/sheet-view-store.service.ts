@@ -8,8 +8,7 @@ import { s, _ } from "app";
 export class SheetViewStoreService extends Emitter<Payload> {
 
   static EVENT_PREFIX: string = "SheetViewStoreService.";
-  static UPDATE_EVENT: string               = SheetViewStoreService.EVENT_PREFIX + "update";
-  static UPDATE_SELECTED_CELL_EVENT: string = SheetViewStoreService.EVENT_PREFIX + "update-selected-cell";
+  static UPDATE_EVENT: string = SheetViewStoreService.EVENT_PREFIX + "update";
 
   private _sheet: Sheet;
 
@@ -490,7 +489,7 @@ export class SheetViewStoreService extends Emitter<Payload> {
 
   private selectCell(action: SpreadSheetAction.SelectCell) {
     this.spreadSheetDispatcherService.waitFor([this.spreadSheetStoreService.spreadSheetDispatcherId]);
-    this.emit({ eventType: SheetViewStoreService.UPDATE_SELECTED_CELL_EVENT });
+    this.emit({ eventType: SheetViewStoreService.UPDATE_EVENT });
   }
 
 }
