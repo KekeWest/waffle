@@ -30,7 +30,7 @@ export class SelectedCellAreaComponent implements OnInit {
   private _borderWidth: number = 2;
 
   @HostBinding('style.border-color')
-  private _borderColor: string = new RGBAColor(15, 130, 15, 1).toString();
+  private _borderColor: string = new RGBAColor(31, 145, 243, 1).toString();
 
   @HostBinding('style.border-top-style')
   private _topBorderStyle: string = "solid";

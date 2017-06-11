@@ -3,6 +3,8 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 
+import { TabsModule } from 'ngx-bootstrap/tabs';
+
 import { AppComponent } from './app.component';
 import { SpreadSheetComponent } from './spread-sheet/components/spread-sheet.component';
 import { SheetTabComponent } from './spread-sheet/components/sheet-tab/sheet-tab.component';
@@ -15,7 +17,9 @@ import { SheetViewCanvasComponent } from './spread-sheet/components/sheet/work-s
 import { MouseEventBoardComponent } from './spread-sheet/components/sheet/work-sheet/mouse-event-board/mouse-event-board.component';
 import { SelectedCellAreaComponent } from './spread-sheet/components/sheet/work-sheet/mouse-event-board/selected-cell-area/selected-cell-area.component';
 import { ValuesViewComponent } from './spread-sheet/components/sheet/work-sheet/values-view/values-view.component';
-import { RedoUndoComponent } from './spread-sheet/components/sheet-edit/redo-undo/redo-undo.component';
+import { RedoUndoComponent } from './spread-sheet/components/sheet-edit/sheet-edit-home/redo-undo/redo-undo.component';
+import { SheetEditHomeComponent } from './spread-sheet/components/sheet-edit/sheet-edit-home/sheet-edit-home.component';
+import { FontStyleComponent } from './spread-sheet/components/sheet-edit/sheet-edit-home/font-style/font-style.component';
 
 @NgModule({
   declarations: [
@@ -31,12 +35,15 @@ import { RedoUndoComponent } from './spread-sheet/components/sheet-edit/redo-und
     MouseEventBoardComponent,
     SelectedCellAreaComponent,
     ValuesViewComponent,
-    RedoUndoComponent
+    RedoUndoComponent,
+    SheetEditHomeComponent,
+    FontStyleComponent
   ],
   imports: [
     BrowserModule,
     FormsModule,
-    HttpModule
+    HttpModule,
+    TabsModule.forRoot()
   ],
   providers: [
   ],
