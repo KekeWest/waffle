@@ -26,7 +26,7 @@
     </module>
     <module name="LineLength">
       <property name="ignorePattern" value="^package.*|^import.*|a href|href|http://|https://|ftp://"/>
-      <property name="max" value="100"/>
+      <property name="max" value="160"/>
     </module>
     <module name="AvoidStarImport"/>
     <module name="OneTopLevelClass"/>
@@ -122,8 +122,8 @@
     <module name="OverloadMethodsDeclarationOrder"/>
     <module name="VariableDeclarationUsageDistance"/>
     <module name="CustomImportOrder">
-      <property name="customImportOrderRules" value="STATIC###SPECIAL_IMPORTS###THIRD_PARTY_PACKAGE###STANDARD_JAVA_PACKAGE"/>
-      <property name="specialImportsRegExp" value="com.google"/>
+      <property name="customImportOrderRules" value="STATIC###STANDARD_JAVA_PACKAGE###THIRD_PARTY_PACKAGE###SPECIAL_IMPORTS"/>
+      <property name="specialImportsRegExp" value="waffle"/>
       <property name="sortImportsInGroupAlphabetically" value="true"/>
     </module>
     <module name="MethodParamPad"/>
