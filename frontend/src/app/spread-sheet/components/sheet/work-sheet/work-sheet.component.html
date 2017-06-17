@@ -1,5 +1,5 @@
 <div #workSheetView class="work-sheet-view" (scroll)="onScroll()">
-  <div class="work-sheet-area" [style.width.px]="_areaWidth" [style.height.px]="_areaHeight">
+  <div class="work-sheet-area" [style.width.px]="areaWidth" [style.height.px]="areaHeight">
     <canvas wf-sheet-view-canvas></canvas>
     <wf-values-view></wf-values-view>
     <wf-mouse-event-board></wf-mouse-event-board>

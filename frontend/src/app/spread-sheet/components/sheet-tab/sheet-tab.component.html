@@ -3,7 +3,7 @@
 </div>
 <div class="tabset-wrapper">
   <tabset>
-    <ng-container *ngFor="let sheetName of _sheetOrder">
+    <ng-container *ngFor="let sheetName of sheetOrder">
       <tab
           [heading]="sheetName"
           [active]="isActiveTab(sheetName)"

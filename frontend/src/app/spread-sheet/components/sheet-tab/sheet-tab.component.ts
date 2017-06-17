@@ -13,7 +13,7 @@ import { CreateNewSheetActionService } from "app/spread-sheet/services/command-a
 })
 export class SheetTabComponent implements OnInit, AfterViewChecked {
 
-  private _sheetOrder: string[];
+  sheetOrder: string[];
 
   private _needScroll: boolean = false;
 
@@ -25,7 +25,7 @@ export class SheetTabComponent implements OnInit, AfterViewChecked {
   ) { }
 
   ngOnInit() {
-    this._sheetOrder = this.spreadSheetStoreService.sheetOrder;
+    this.sheetOrder = this.spreadSheetStoreService.sheetOrder;
   }
 
   ngAfterViewChecked() {
@@ -36,19 +36,19 @@ export class SheetTabComponent implements OnInit, AfterViewChecked {
     }
   }
 
-  private createNewSheet() {
+  createNewSheet() {
     this.createNewSheetActionService.createNewSheet();
     this._needScroll = true;
   }
 
-  private selectSheet(sheetName: string) {
+  selectSheet(sheetName: string) {
     if (this.isActiveTab(sheetName)) {
       return;
     }
     this.spreadSheetActionService.selectSheet(sheetName);
   }
 
-  private isActiveTab(sheetName: string): boolean {
+  isActiveTab(sheetName: string): boolean {
     return sheetName === this.spreadSheetStoreService.selectedSheetName;
   }
 

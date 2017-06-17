@@ -15,9 +15,9 @@ export class WorkSheetComponent implements OnInit, AfterViewInit, AfterViewCheck
 
   private _workSheetViewEl: HTMLElement;
 
-  private _areaWidth: number;
+  areaWidth: number;
 
-  private _areaHeight: number;
+  areaHeight: number;
 
   private _scrollTop: number = 0;
 
@@ -62,14 +62,14 @@ export class WorkSheetComponent implements OnInit, AfterViewInit, AfterViewCheck
 
   private updateSheetViewInfo() {
     if (this.sheetViewStoreService.areaWidth < this.sheetViewStoreService.viewScrollLeft + this.sheetViewStoreService.viewWidth) {
-      this._areaWidth = this.sheetViewStoreService.viewScrollLeft + this.sheetViewStoreService.viewWidth * 2;
+      this.areaWidth = this.sheetViewStoreService.viewScrollLeft + this.sheetViewStoreService.viewWidth * 2;
     } else {
-      this._areaWidth = this.sheetViewStoreService.areaWidth + this.sheetViewStoreService.viewWidth;
+      this.areaWidth = this.sheetViewStoreService.areaWidth + this.sheetViewStoreService.viewWidth;
     }
     if (this.sheetViewStoreService.areaHeight < this.sheetViewStoreService.viewScrollTop + this.sheetViewStoreService.viewHeight) {
-      this._areaHeight = this.sheetViewStoreService.viewScrollTop + this.sheetViewStoreService.viewHeight * 2;
+      this.areaHeight = this.sheetViewStoreService.viewScrollTop + this.sheetViewStoreService.viewHeight * 2;
     } else {
-      this._areaHeight = this.sheetViewStoreService.areaHeight + this.sheetViewStoreService.viewHeight;
+      this.areaHeight = this.sheetViewStoreService.areaHeight + this.sheetViewStoreService.viewHeight;
     }
   }
 
@@ -82,7 +82,7 @@ export class WorkSheetComponent implements OnInit, AfterViewInit, AfterViewCheck
     );
   }
 
-  private onScroll() {
+  onScroll() {
     this._scrollTop = this._workSheetViewEl.scrollTop;
     this._scrollLeft = this._workSheetViewEl.scrollLeft;
     this.sheetViewActionService.scrollSheetView(

@@ -9,9 +9,9 @@ import { Payload } from "app/base";
 })
 export class RowGridComponent implements OnInit {
 
-  private _sheetViewRowList: number[];
+  sheetViewRowList: number[];
 
-  private _rowViewTop: number;
+  rowViewTop: number;
 
   constructor(
     private sheetViewActionService: SheetViewActionService,
@@ -31,8 +31,8 @@ export class RowGridComponent implements OnInit {
   }
 
   private updateRowView() {
-    this._sheetViewRowList = this.sheetViewStoreService.sheetViewRowList;
-    this._rowViewTop = (this.sheetViewStoreService.viewScrollTop - this.sheetViewStoreService.sheetViewTop) * -1;
+    this.sheetViewRowList = this.sheetViewStoreService.sheetViewRowList;
+    this.rowViewTop = (this.sheetViewStoreService.viewScrollTop - this.sheetViewStoreService.sheetViewTop) * -1;
   }
 
 }

@@ -9,9 +9,9 @@ import { Payload } from "app/base";
 })
 export class ColumnGridComponent implements OnInit {
 
-  private _sheetViewColumnList: number[];
+  sheetViewColumnList: number[];
 
-  private _columnViewLeft: number;
+  columnViewLeft: number;
 
   constructor(
     private sheetViewActionService: SheetViewActionService,
@@ -31,8 +31,8 @@ export class ColumnGridComponent implements OnInit {
   }
 
   private updateColumnView() {
-    this._sheetViewColumnList = this.sheetViewStoreService.sheetViewColumnList;
-    this._columnViewLeft = (this.sheetViewStoreService.viewScrollLeft - this.sheetViewStoreService.sheetViewLeft) * -1;
+    this.sheetViewColumnList = this.sheetViewStoreService.sheetViewColumnList;
+    this.columnViewLeft = (this.sheetViewStoreService.viewScrollLeft - this.sheetViewStoreService.sheetViewLeft) * -1;
   }
 
 }

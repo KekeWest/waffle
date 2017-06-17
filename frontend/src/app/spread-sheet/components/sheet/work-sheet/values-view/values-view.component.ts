@@ -22,9 +22,9 @@ export class ValuesViewComponent implements OnInit {
   @HostBinding('style.left.px')
   private _sheetViewLeft: number;
 
-  private _sheetViewColumnList: number[];
+  sheetViewColumnList: number[];
 
-  private _sheetViewRowList: number[];
+  sheetViewRowList: number[];
 
   constructor(
     private sheetViewStoreService: SheetViewStoreService
@@ -43,8 +43,8 @@ export class ValuesViewComponent implements OnInit {
   }
 
   private updateSheetViewInfo() {
-    this._sheetViewColumnList = this.sheetViewStoreService.sheetViewColumnList;
-    this._sheetViewRowList = this.sheetViewStoreService.sheetViewRowList;
+    this.sheetViewColumnList = this.sheetViewStoreService.sheetViewColumnList;
+    this.sheetViewRowList = this.sheetViewStoreService.sheetViewRowList;
     this._sheetViewWidthStyle = this.sheetViewStoreService.sheetViewWidth;
     this._sheetViewHeightStyle = this.sheetViewStoreService.sheetViewHeight;
     this._sheetViewTop = this.sheetViewStoreService.sheetViewTop;
