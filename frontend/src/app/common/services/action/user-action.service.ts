@@ -4,6 +4,9 @@ import { WaffleDispatcherService, UserAction } from "app/common/services";
 @Injectable()
 export class UserActionService {
 
+  static EVENT_PREFIX: string = "UserActionService.";
+  static LOGIN_EVENT: string = UserActionService.EVENT_PREFIX + "login";
+
   constructor(
     private waffleDispatcherService: WaffleDispatcherService
   ) { }
@@ -15,7 +18,7 @@ export class UserActionService {
     };
 
     this.waffleDispatcherService.emit({
-      eventType: UserAction.LOGIN_EVENT,
+      eventType: UserActionService.LOGIN_EVENT,
       data: action
     });
   }

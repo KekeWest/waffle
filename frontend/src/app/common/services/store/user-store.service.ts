@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Http } from "@angular/http";
 import { Emitter, Payload } from "app/common/base";
-import { WaffleDispatcherService, UserAction } from "app/common/services";
+import { WaffleDispatcherService, UserActionService, UserAction } from "app/common/services";
 import { environment } from "environments/environment";
 import { Consts } from "app/common/base/consts";
 
@@ -16,7 +16,7 @@ export class UserStoreService extends Emitter<Payload>{
     this.waffleDispatcherService.register(
       (payload: Payload) => {
         switch (payload.eventType) {
-          case UserAction.LOGIN_EVENT:
+          case UserActionService.LOGIN_EVENT:
             this.login(<UserAction.Login>payload.data);
             break;
         }
