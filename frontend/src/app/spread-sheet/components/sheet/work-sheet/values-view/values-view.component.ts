@@ -1,6 +1,6 @@
 import { Component, OnInit, HostBinding } from '@angular/core';
 import { SheetViewStoreService } from "app/spread-sheet/services";
-import { Payload } from "app/base";
+import { Payload } from "app/common/base";
 import { SpreadSheetConsts } from "app/spread-sheet";
 
 @Component({

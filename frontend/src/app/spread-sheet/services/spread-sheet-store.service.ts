@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Emitter, Payload } from "app/base";
+import { Emitter, Payload } from "app/common/base";
 import { SpreadSheet, Sheet, Column, Row, Cell, RGBAColor, SelectedCellPosition } from "app/spread-sheet";
 import { SpreadSheetDispatcherService, SpreadSheetAction, SpreadSheetActionService } from "app/spread-sheet/services";
 

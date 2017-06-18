@@ -1,7 +1,7 @@
 import { Component, ElementRef, OnInit, AfterViewChecked, HostBinding } from '@angular/core';
 import { SheetViewStoreService } from "app/spread-sheet/services";
 import { Column, Row, Cell, Border, RGBAColor, SpreadSheetConsts, SelectedCellPosition } from "app/spread-sheet";
-import { Payload } from "app/base";
+import { Payload } from "app/common/base";
 import { _ } from "app";
 
 @Component({

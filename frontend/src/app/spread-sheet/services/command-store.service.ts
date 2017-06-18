@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { SpreadSheetStoreService, SpreadSheetDispatcherService, SpreadSheetActionService } from "app/spread-sheet/services";
-import { Payload } from "app/base";
+import { Payload } from "app/common/base";
 import { SheetEditCommand, Command } from "app/spread-sheet/services/command-actions";
 import { _ } from "app";
 
