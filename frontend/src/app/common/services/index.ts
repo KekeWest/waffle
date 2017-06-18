@@ -4,5 +4,3 @@ export * from './action/user-action.service';
 export * from './action/user-action';
 
 export * from './store/user-store.service';
-
-export * from './api.service';

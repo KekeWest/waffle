@@ -24,7 +24,6 @@ import { FontStyleComponent } from './spread-sheet/components/sheet-edit/sheet-e
 import { LoginComponent } from './login/components/login.component';
 import { RootComponent } from './root/components/root.component';
 import { FilesComponent } from './files/components/files.component';
-import { WaffleDispatcherService, UserActionService, UserStoreService } from "app/common/services";
 
 @NgModule({
   declarations: [
