@@ -5,6 +5,8 @@ import { HttpModule } from '@angular/http';
 
 import { TabsModule } from 'ngx-bootstrap/tabs';
 
+import { AppRoutingModule } from "app/app-routing.module";
+
 import { SpreadSheetComponent } from './spread-sheet/components/spread-sheet.component';
 import { SheetTabComponent } from './spread-sheet/components/sheet-tab/sheet-tab.component';
 import { SheetEditComponent } from './spread-sheet/components/sheet-edit/sheet-edit.component';
@@ -19,9 +21,10 @@ import { ValuesViewComponent } from './spread-sheet/components/sheet/work-sheet/
 import { RedoUndoComponent } from './spread-sheet/components/sheet-edit/sheet-edit-home/redo-undo/redo-undo.component';
 import { SheetEditHomeComponent } from './spread-sheet/components/sheet-edit/sheet-edit-home/sheet-edit-home.component';
 import { FontStyleComponent } from './spread-sheet/components/sheet-edit/sheet-edit-home/font-style/font-style.component';
-import { LoginComponent } from './login/components/login/login.component';
-import { RootComponent } from './root/components/root/root.component';
-import { HomeComponent } from './home/components/home/home.component';
+import { LoginComponent } from './login/components/login.component';
+import { RootComponent } from './root/components/root.component';
+import { FilesComponent } from './files/components/files.component';
+import { WaffleDispatcherService, UserActionService, UserStoreService } from "app/common/services";
 
 @NgModule({
   declarations: [
@@ -42,12 +45,13 @@ import { HomeComponent } from './home/components/home/home.component';
     FontStyleComponent,
     LoginComponent,
     RootComponent,
-    HomeComponent
+    FilesComponent
   ],
   imports: [
     BrowserModule,
     FormsModule,
     HttpModule,
+    AppRoutingModule,
     TabsModule.forRoot()
   ],
   providers: [

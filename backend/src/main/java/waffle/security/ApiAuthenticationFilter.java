@@ -17,12 +17,10 @@ import org.springframework.security.web.authentication.AbstractAuthenticationPro
 
 public class ApiAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
 
-    public static final String LOGIN_URL = "/api/login";
-
     private ObjectReader jsonReader;
 
     public ApiAuthenticationFilter() {
-        super(ApiAuthenticationFilter.LOGIN_URL);
+        super("/api/login");
 
         ObjectMapper mapper = new ObjectMapper();
         jsonReader = mapper.readerFor(Login.class);
