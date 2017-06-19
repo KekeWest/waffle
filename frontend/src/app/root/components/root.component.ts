@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { WaffleDispatcherService, UserActionService, UserStoreService } from "app/common/services";
+import { WaffleDispatcherService, MeActionService, MeStoreService } from "app/common/services";
 import { ApiService } from "app/common/services";
 
 @Component({
@@ -9,8 +9,8 @@ import { ApiService } from "app/common/services";
   providers: [
     ApiService,
     WaffleDispatcherService,
-    UserActionService,
-    UserStoreService
+    MeActionService,
+    MeStoreService
   ]
 })
 export class RootComponent implements OnInit {
@@ -18,8 +18,8 @@ export class RootComponent implements OnInit {
   constructor(
     private apiService: ApiService,
     private waffleDispatcherService: WaffleDispatcherService,
-    private userActionService: UserActionService,
-    private userStoreService: UserStoreService
+    private meActionService: MeActionService,
+    private meStoreService: MeStoreService
   ) { }
 
   ngOnInit() {

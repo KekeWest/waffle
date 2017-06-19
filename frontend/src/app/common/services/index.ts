@@ -2,7 +2,7 @@ export * from './api.service';
 
 export * from './waffle-dispatcher.service';
 
-export * from './action/user-action.service';
-export * from './action/user-action';
+export * from './action/me-action.service';
+export * from './action/me-action';
 
-export * from './store/user-store.service';
+export * from './store/me-store.service';
