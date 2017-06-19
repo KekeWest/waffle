@@ -18,9 +18,7 @@ export class FilesComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    if (!this.meStoreService.active) {
-      this.router.navigate(["/login"]);
-    }
+    
   }
 
 }

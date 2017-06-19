@@ -29,12 +29,13 @@ public class ApiAuthenticationSuccessHandler implements AuthenticationSuccessHan
             Authentication authentication) throws IOException, ServletException {
         response.setStatus(HttpStatus.OK.value());
 
-        LoggedIn loggedIn = new LoggedIn();
-        loggedIn.setActive(authentication.isAuthenticated());
-        loggedIn.setAuthorities(
-                authentication.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.toList()));
+        LoggedIn loggedIn = LoggedIn.builder()
+                .active(authentication.isAuthenticated())
+                .authorities(
+                        authentication.getAuthorities().stream()
+                        .map(GrantedAuthority::getAuthority)
+                        .collect(Collectors.toList()))
+                .build();
 
         response.getWriter().print(writer.writeValueAsString(loggedIn));
     }

@@ -1,4 +1,4 @@
-package waffle.security;
+package waffle.web.api.me;
 
 import java.io.Serializable;
 import java.util.List;
@@ -8,7 +8,7 @@ import lombok.Data;
 
 @Data
 @Builder
-public class LoggedIn implements Serializable {
+public class MeStatus implements Serializable {
 
     private boolean active;
 

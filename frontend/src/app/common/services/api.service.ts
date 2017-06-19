@@ -6,21 +6,40 @@ import { Observable } from "rxjs/Observable";
 @Injectable()
 export class ApiService {
 
-  private httpHeaders: Headers = new Headers({
-    'Content-Type': 'application/json;charset=UTF-8',
-    'X-Requested-With': 'XMLHttpRequest'
-  });
-
   constructor(
     private http: Http
   ) { }
 
-  post(url: string, jsonObject: any): Observable<Response> {
+  post(
+    url: string, 
+    jsonObject: any, 
+    params?: string | URLSearchParams | {[key: string]: any | any[];} | null
+    ): Observable<Response> {
     return this.http.post(
       environment.apiUrlRoot + url,
       JSON.stringify(jsonObject),
       {
-        headers: this.httpHeaders,
+        params: params,
+        headers: new Headers({
+          'Content-Type': 'application/json',
+          'X-Requested-With': 'XMLHttpRequest'
+        }),
+        withCredentials: true
+      }
+    );
+  }
+
+  get(
+    url: string,
+    params?: string | URLSearchParams | {[key: string]: any | any[];} | null
+    ): Observable<Response> {
+    return this.http.get(
+      environment.apiUrlRoot + url,
+      {
+        params: params,
+        headers: new Headers({
+          'X-Requested-With': 'XMLHttpRequest'
+        }),
         withCredentials: true
       }
     );

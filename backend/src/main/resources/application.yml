@@ -5,6 +5,10 @@ spring:
   h2:
     console:
       enabled: false
+      
+server:
+  session:
+    persistent: false
 
 security:
   basic:

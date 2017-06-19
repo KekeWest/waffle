@@ -2,18 +2,24 @@ import { Injectable } from '@angular/core';
 import { Http, Response } from "@angular/http";
 import { Emitter, Payload } from "app/common/base";
 import { WaffleDispatcherService, MeActionService, MeAction } from "app/common/services";
+import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, Router } from "@angular/router";
+import { Observable } from "rxjs/Observable";
 
 @Injectable()
-export class MeStoreService extends Emitter<Payload>{
+export class MeStoreService extends Emitter<Payload> implements CanActivate {
 
   static EVENT_PREFIX: string = "MeStoreService.";
-  static LOGIN_SUCCESS_EVENT: string = MeStoreService.EVENT_PREFIX + "login.success";
-  static LOGIN_FAILED_EVENT: string = MeStoreService.EVENT_PREFIX + "login.failed";
+  static LOGIN_SUCCESS_EVENT: string = MeStoreService.EVENT_PREFIX + "login-success";
+  static LOGIN_FAILED_EVENT: string = MeStoreService.EVENT_PREFIX + "login-failed";
+  static SYNC_STATUS_EVENT: string = MeStoreService.EVENT_PREFIX + "sync-status";
+
+  redirectUrl: string;
 
   private _active: boolean = false;
   private _authorities: string[] = [];
 
   constructor(
+    private router: Router,
     private waffleDispatcherService: WaffleDispatcherService
   ) {
     super();
@@ -23,6 +29,9 @@ export class MeStoreService extends Emitter<Payload>{
           case MeActionService.LOGIN_SUCCESS_EVENT:
           case MeActionService.LOGIN_FAILED_EVENT:
             this.login(<MeAction.LoggedIn>payload.data);
+            break;
+          case MeActionService.SYNC_STATUS_EVENT:
+            this.syncStatus(<MeAction.LoggedIn>payload.data);
             break;
         }
       }
@@ -37,14 +46,37 @@ export class MeStoreService extends Emitter<Payload>{
     return this._authorities;
   }
 
-  login(action: MeAction.LoggedIn) {
-    this._active = action.active;
-    this._authorities = action.authorities;
+  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
+    if (this._active) {
+      return true;
+    }
+
+    this.redirectUrl = state.url;
+    return false;
+  }
+
+  canActivateChild(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
+    return this.canActivate(route, state);
+  }
+
+  private updateStatus(loggedIn: MeAction.LoggedIn) {
+    this._active = loggedIn.active;
+    this._authorities = loggedIn.authorities;
+  }
+
+  private login(action: MeAction.LoggedIn) {
+    this.updateStatus(action);
+
     if (this._active) {
       this.emit({ eventType: MeStoreService.LOGIN_SUCCESS_EVENT })
     } else {
       this.emit({ eventType: MeStoreService.LOGIN_FAILED_EVENT })
     }
+  }
+
+  private syncStatus(action: MeAction.LoggedIn) {
+    this.updateStatus(action);
+    this.emit({ eventType: MeStoreService.SYNC_STATUS_EVENT });
   }
 
 }

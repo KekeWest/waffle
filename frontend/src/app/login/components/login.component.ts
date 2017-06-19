@@ -45,7 +45,15 @@ export class LoginComponent implements OnInit {
   }
 
   onSuccess() {
-    this.router.navigate(['/files']);
+    if (!this.meStoreService.active) {
+      this.onFailed();
+    }
+
+    if (this.meStoreService.redirectUrl) {
+      this.router.navigate([this.meStoreService.redirectUrl]);
+    } else {
+      this.router.navigate(["/"]);
+    }
   }
 
   onFailed() {

@@ -6,8 +6,9 @@ import { WaffleDispatcherService, MeAction, ApiService } from "app/common/servic
 export class MeActionService {
 
   static EVENT_PREFIX: string = "MeActionService.";
-  static LOGIN_SUCCESS_EVENT: string = MeActionService.EVENT_PREFIX + "login.success";
-  static LOGIN_FAILED_EVENT: string = MeActionService.EVENT_PREFIX + "login.failed";
+  static LOGIN_SUCCESS_EVENT: string = MeActionService.EVENT_PREFIX + "login-success";
+  static LOGIN_FAILED_EVENT: string = MeActionService.EVENT_PREFIX + "login-failed";
+  static SYNC_STATUS_EVENT: string = MeActionService.EVENT_PREFIX + "sync-status";
 
   constructor(
     private apiService: ApiService,
@@ -15,7 +16,7 @@ export class MeActionService {
   ) { }
 
   login(userName: string, password: string) {
-    this.apiService.post("api/login", {
+    this.apiService.post("login", {
       userName: userName,
       password: password
     }).subscribe(
@@ -30,6 +31,25 @@ export class MeActionService {
         var json: MeAction.LoggedIn = { active: false, authorities: [] };
         this.waffleDispatcherService.emit({
           eventType: MeActionService.LOGIN_FAILED_EVENT,
+          data: json
+        });
+      }
+      );
+  }
+
+  syncStatus() {
+    this.apiService.get("me/status").subscribe(
+      (res: Response) => {
+        var json: MeAction.LoggedIn = res.json();
+        this.waffleDispatcherService.emit({
+          eventType: MeActionService.SYNC_STATUS_EVENT,
+          data: json
+        });
+      },
+      (error: Response) => {
+        var json: MeAction.LoggedIn = { active: false, authorities: [] };
+        this.waffleDispatcherService.emit({
+          eventType: MeActionService.SYNC_STATUS_EVENT,
           data: json
         });
       }

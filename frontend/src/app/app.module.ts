@@ -24,6 +24,8 @@ import { FontStyleComponent } from './spread-sheet/components/sheet-edit/sheet-e
 import { LoginComponent } from './login/components/login.component';
 import { RootComponent } from './root/components/root.component';
 import { FilesComponent } from './files/components/files.component';
+import { MainComponent } from './root/components/main/main.component';
+import { ApiService, WaffleDispatcherService, MeActionService, MeStoreService } from "app/common/services";
 
 @NgModule({
   declarations: [
@@ -44,7 +46,8 @@ import { FilesComponent } from './files/components/files.component';
     FontStyleComponent,
     LoginComponent,
     RootComponent,
-    FilesComponent
+    FilesComponent,
+    MainComponent
   ],
   imports: [
     BrowserModule,
@@ -54,6 +57,10 @@ import { FilesComponent } from './files/components/files.component';
     TabsModule.forRoot()
   ],
   providers: [
+    ApiService,
+    WaffleDispatcherService,
+    MeActionService,
+    MeStoreService
   ],
   bootstrap: [RootComponent]
 })
