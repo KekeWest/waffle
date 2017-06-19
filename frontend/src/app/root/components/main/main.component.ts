@@ -34,7 +34,8 @@ export class MainComponent implements OnInit {
 
   onSync() {
     if (this.meStoreService.active && this.meStoreService.redirectUrl) {
-      this.router.navigate([this.meStoreService.redirectUrl]);
+      this.router.navigateByUrl(this.meStoreService.redirectUrl);
+      this.meStoreService.redirectUrl = null;
     } else if (!this.meStoreService.active && this.meStoreService.redirectUrl) {
       this.router.navigate(['/login']);
     }

@@ -50,7 +50,8 @@ export class LoginComponent implements OnInit {
     }
 
     if (this.meStoreService.redirectUrl) {
-      this.router.navigate([this.meStoreService.redirectUrl]);
+      this.router.navigateByUrl(this.meStoreService.redirectUrl);
+      this.meStoreService.redirectUrl = null;
     } else {
       this.router.navigate(["/"]);
     }
