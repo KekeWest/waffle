@@ -1,3 +1,6 @@
+waffle:
+  home-dir: ~/.waffle_home
+
 spring:
   profiles:
     active: production
