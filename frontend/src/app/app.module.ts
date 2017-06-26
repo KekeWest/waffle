@@ -7,6 +7,8 @@ import { TabsModule } from 'ngx-bootstrap/tabs';
 
 import { AppRoutingModule } from "app/app-routing.module";
 
+import { ApiService, WaffleDispatcherService, MeActionService, MeStoreService } from "app/common/services";
+
 import { SpreadSheetComponent } from './spread-sheet/components/spread-sheet.component';
 import { SheetTabComponent } from './spread-sheet/components/sheet-tab/sheet-tab.component';
 import { SheetEditComponent } from './spread-sheet/components/sheet-edit/sheet-edit.component';
@@ -25,7 +27,7 @@ import { LoginComponent } from './login/components/login.component';
 import { RootComponent } from './root/components/root.component';
 import { FilesComponent } from './files/components/files.component';
 import { MainComponent } from './root/components/main/main.component';
-import { ApiService, WaffleDispatcherService, MeActionService, MeStoreService } from "app/common/services";
+import { DashboardHeaderComponent } from './root/components/main/dashboard-header/dashboard-header.component';
 
 @NgModule({
   declarations: [
@@ -47,7 +49,8 @@ import { ApiService, WaffleDispatcherService, MeActionService, MeStoreService } 
     LoginComponent,
     RootComponent,
     FilesComponent,
-    MainComponent
+    MainComponent,
+    DashboardHeaderComponent
   ],
   imports: [
     BrowserModule,

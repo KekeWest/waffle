@@ -1,0 +1,21 @@
+nav {
+  border-radius: 0;
+  margin-bottom: 0;
+}
+
+.navbar-nav {
+  margin: 0;
+}
+
+.navbar-right {
+  float: right;
+}
+
+.navbar-nav>li {
+  float: left;
+}
+
+.navbar-nav>li>a {
+  padding-top: 15px;
+  padding-bottom: 15px;
+}
