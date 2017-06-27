@@ -1,14 +1,12 @@
-waffle:
-  home-dir: ~/.waffle_home
-
 spring:
   profiles:
     active: production
     
-  h2:
-    console:
-      enabled: false
-      
+  data:
+    neo4j:
+      embedded:
+        enabled: true
+
 server:
   session:
     persistent: false

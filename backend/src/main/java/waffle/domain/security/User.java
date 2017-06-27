@@ -1,25 +1,19 @@
-package waffle.domain.entity;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+package waffle.domain.security;
 
 import lombok.Data;
 
+import org.neo4j.ogm.annotation.GraphId;
+import org.neo4j.ogm.annotation.NodeEntity;
+
 @Data
-@Entity
+@NodeEntity
 public class User {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GraphId
     private Long id;
 
-    @Column(unique = true, nullable = false)
     private String name;
 
-    @Column(unique = true, nullable = false)
     private String password;
 
 }

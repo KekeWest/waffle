@@ -12,7 +12,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
-import waffle.domain.repository.UserRepository;
+import waffle.repository.UserRepository;
 
 public class UserDetailsServiceImpl implements UserDetailsService {
 
@@ -21,7 +21,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        waffle.domain.entity.User userEntity = userRepository.findByName(username);
+        waffle.domain.security.User userEntity = userRepository.findByName(username);
 
         if (userEntity == null) {
             throw new UsernameNotFoundException("user not found.");
@@ -31,7 +31,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         return user;
     }
 
-    private Collection<? extends GrantedAuthority> getAuthorities(waffle.domain.entity.User userEntity) {
+    private Collection<? extends GrantedAuthority> getAuthorities(waffle.domain.security.User userEntity) {
         Set<GrantedAuthority> authorities = new HashSet<>();
         SimpleGrantedAuthority authority = new SimpleGrantedAuthority("USER");
         authorities.add(authority);
