@@ -29,13 +29,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable();
-
-        if (activeProfile.equals("local-test")) {
-            http.authorizeRequests().antMatchers("/h2-console/**")
-            .permitAll()
-            .and()
-            .headers().frameOptions().disable();
-        }
     }
 
     @Bean
@@ -49,7 +42,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        if (activeProfile.equals("local-test")) {
+        if (activeProfile.equals("local")) {
             return NoOpPasswordEncoder.getInstance();
         }
 

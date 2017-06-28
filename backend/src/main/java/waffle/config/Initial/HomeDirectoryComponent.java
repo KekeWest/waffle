@@ -1,9 +1,8 @@
-package waffle.config;
+package waffle.config.Initial;
 
 import java.io.File;
 
-import javax.annotation.PostConstruct;
-
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,10 +17,10 @@ public class HomeDirectoryComponent {
     @Autowired
     private WaffleProperties waffleProperties;
 
+    @Getter
     private String spreadSheetDir;
 
-    @PostConstruct
-    private void init() {
+    public void init() {
         spreadSheetDir = waffleProperties.getHomeDir() + "/SpreadSheet/";
         checkHomeDirectoryExistence();
     }
@@ -31,9 +30,7 @@ public class HomeDirectoryComponent {
         if (!homeDirectory.exists()) {
             try {
                 homeDirectory.mkdirs();
-                if (log.isDebugEnabled()) {
-                    log.debug("create home directory.");
-                }
+                log.info("create home directory.");
             } catch (Exception e) {
                 log.error("create home directory failed.", e);
                 throw e;
