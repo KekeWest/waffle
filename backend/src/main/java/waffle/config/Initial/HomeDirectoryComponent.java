@@ -30,7 +30,7 @@ public class HomeDirectoryComponent {
         if (!homeDirectory.exists()) {
             try {
                 homeDirectory.mkdirs();
-                log.info("create home directory.");
+                log.info("create home directory. (" + homeDirectory.getAbsolutePath() + ")");
             } catch (Exception e) {
                 log.error("create home directory failed.", e);
                 throw e;
@@ -41,9 +41,7 @@ public class HomeDirectoryComponent {
         if (!spreadSheetDirectory.exists()) {
             try {
                 spreadSheetDirectory.mkdirs();
-                if (log.isDebugEnabled()) {
-                    log.debug("create spreadsheet directory.");
-                }
+                log.info("create spreadsheet directory. (" + spreadSheetDirectory.getAbsolutePath() + ")");
             } catch (Exception e) {
                 log.error("create spreadsheet directory failed.", e);
                 throw e;

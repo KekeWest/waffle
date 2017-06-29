@@ -21,11 +21,10 @@ public class DatabaseConfig {
     private String activeProfile;
 
     @Bean
-    public org.neo4j.ogm.config.Configuration configuration(Neo4jProperties properties, WaffleProperties waffleProperties) {
+    public org.neo4j.ogm.config.Configuration configuration(Neo4jProperties properties,
+            WaffleProperties waffleProperties) {
         if (StringUtils.isEmpty(properties.getUri())) {
-            if (!activeProfile.equals(Profile.LOCAL)) {
-                properties.setUri("file://" + waffleProperties.getHomeDir() + "/waffle_neo4j");
-            }
+            properties.setUri("file://" + waffleProperties.getHomeDir() + "/waffle_neo4j");
         }
         return properties.createConfiguration();
     }

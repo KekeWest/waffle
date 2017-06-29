@@ -1,8 +1,14 @@
 package waffle.config.properties;
 
+import java.util.UUID;
+
+import javax.annotation.PostConstruct;
+
 import lombok.Data;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
@@ -11,6 +17,21 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties(prefix = "waffle", ignoreInvalidFields = true)
 public class WaffleProperties {
 
-    private String homeDir = FileUtils.getUserDirectoryPath() + "/.waffle_home";
+    @Value("${spring.profiles.active:" + Profile.PRODUCTION + "}")
+    private String activeProfile;
+
+    private String homeDir;
+
+    @PostConstruct
+    private void init() {
+        if (StringUtils.isEmpty(homeDir)) {
+            if (activeProfile.equals(Profile.LOCAL)) {
+                homeDir = FileUtils.getTempDirectoryPath() + "/.waffle_home-" + UUID.randomUUID().toString();
+            } else {
+                homeDir = FileUtils.getUserDirectoryPath() + "/.waffle_home";
+            }
+        }
+
+    }
 
 }
