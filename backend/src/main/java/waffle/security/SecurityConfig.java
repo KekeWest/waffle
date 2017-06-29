@@ -18,12 +18,14 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
+import waffle.config.properties.Profile;
+
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Value("${spring.profiles.active:production}")
+    @Value("${spring.profiles.active:" + Profile.PRODUCTION + "}")
     private String activeProfile;
 
     @Override
@@ -42,7 +44,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        if (activeProfile.equals("local")) {
+        if (activeProfile.equals(Profile.LOCAL)) {
             return NoOpPasswordEncoder.getInstance();
         }
 

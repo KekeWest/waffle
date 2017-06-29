@@ -8,7 +8,6 @@ import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,9 +19,6 @@ import waffle.repository.security.UserRepository;
 @Slf4j
 @Component
 public class TestDataComponent {
-
-    @Value("${spring.profiles.active:production}")
-    private String activeProfile;
 
     @Autowired
     private UserRepository userRepository;

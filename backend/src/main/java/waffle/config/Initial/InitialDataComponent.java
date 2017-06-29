@@ -1,22 +1,20 @@
 package waffle.config.Initial;
 
-import java.util.HashMap;
-
 import javax.annotation.PostConstruct;
 
 import lombok.extern.slf4j.Slf4j;
 
-import org.neo4j.ogm.session.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
+
+import waffle.config.properties.Profile;
 
 @Slf4j
 @Component
 public class InitialDataComponent {
 
-    @Value("${spring.profiles.active:production}")
+    @Value("${spring.profiles.active:" + Profile.PRODUCTION + "}")
     private String activeProfile;
 
     @Autowired
@@ -28,26 +26,14 @@ public class InitialDataComponent {
     @Autowired
     private TestDataComponent testDataComponent;
 
-    @Autowired
-    private Session session;
-
     @PostConstruct
     private void init() {
         homeDirectoryComponent.init();
+        masterDataComponent.createMasterData();
 
-        if (activeProfile.equals("local")) {
-            deleteTestData();
-            masterDataComponent.createMasterData();
+        if (activeProfile.equals(Profile.LOCAL)) {
             testDataComponent.createTestData();
-        } else {
-            masterDataComponent.createMasterData();
         }
-    }
-
-    @Transactional
-    private void deleteTestData() {
-        session.query("MATCH (n) DETACH DELETE n", new HashMap<>());
-        log.info("clear database.");
     }
 
 }
