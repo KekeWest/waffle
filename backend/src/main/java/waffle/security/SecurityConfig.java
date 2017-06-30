@@ -1,6 +1,6 @@
 package waffle.security;
 
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,15 +18,15 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
-import waffle.config.properties.Profile;
+import waffle.config.properties.WaffleProperties;
 
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Value("${spring.profiles.active:" + Profile.PRODUCTION + "}")
-    private String activeProfile;
+    @Autowired
+    private WaffleProperties waffleProperties;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -44,7 +44,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        if (activeProfile.equals(Profile.LOCAL)) {
+        if (waffleProperties.isTestMode()) {
             return NoOpPasswordEncoder.getInstance();
         }
 

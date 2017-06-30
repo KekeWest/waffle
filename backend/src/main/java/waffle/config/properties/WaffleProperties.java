@@ -22,10 +22,12 @@ public class WaffleProperties {
 
     private String homeDir;
 
+    private boolean testMode;
+
     @PostConstruct
     private void init() {
         if (StringUtils.isEmpty(homeDir)) {
-            if (activeProfile.equals(Profile.LOCAL)) {
+            if (isTestMode()) {
                 homeDir = FileUtils.getTempDirectoryPath() + "/.waffle_home-" + UUID.randomUUID().toString();
             } else {
                 homeDir = FileUtils.getUserDirectoryPath() + "/.waffle_home";

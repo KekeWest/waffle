@@ -5,17 +5,16 @@ import javax.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import waffle.config.properties.Profile;
+import waffle.config.properties.WaffleProperties;
 
 @Slf4j
 @Component
 public class InitialDataComponent {
 
-    @Value("${spring.profiles.active:" + Profile.PRODUCTION + "}")
-    private String activeProfile;
+    @Autowired
+    private WaffleProperties waffleProperties;
 
     @Autowired
     private HomeDirectoryComponent homeDirectoryComponent;
@@ -31,7 +30,7 @@ public class InitialDataComponent {
         homeDirectoryComponent.init();
         masterDataComponent.createMasterData();
 
-        if (activeProfile.equals(Profile.LOCAL)) {
+        if (waffleProperties.isTestMode()) {
             testDataComponent.createTestData();
         }
     }
