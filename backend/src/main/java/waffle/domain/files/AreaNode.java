@@ -16,7 +16,7 @@ import waffle.domain.security.User;
 @EqualsAndHashCode(of = {"name"})
 @Data
 @NodeEntity
-public class Area {
+public class AreaNode {
 
     @GraphId
     private Long id;

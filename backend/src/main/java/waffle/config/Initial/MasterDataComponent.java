@@ -68,7 +68,7 @@ public class MasterDataComponent {
         User user = new User();
         user.setName("admin");
         user.setPassword("admin");
-        user.addAuthorities(authorityRepository.findByAuthorityType(AuthorityType.Admin));
+        user.addAuthorities(authorityRepository.findByAuthorityType(AuthorityType.ROLE_ADMIN));
         userRepository.save(user);
     }
 

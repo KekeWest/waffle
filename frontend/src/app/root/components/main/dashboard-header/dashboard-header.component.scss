@@ -1,7 +1,13 @@
+:host {
+  display: block;
+}
+
 nav {
   border: none;
   border-radius: 0;
   margin-bottom: 0;
+  height: 50px;
+  overflow: hidden;
 }
 
 .navbar-nav {

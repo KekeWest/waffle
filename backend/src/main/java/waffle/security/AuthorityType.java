@@ -2,8 +2,8 @@ package waffle.security;
 
 public enum AuthorityType {
 
-    Admin,
+    ROLE_ADMIN,
 
-    User;
+    ROLE_USER;
 
 }

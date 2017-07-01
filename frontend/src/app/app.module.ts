@@ -7,7 +7,7 @@ import { TabsModule } from 'ngx-bootstrap/tabs';
 
 import { AppRoutingModule } from "app/app-routing.module";
 
-import { ApiService, WaffleDispatcherService, MeActionService, MeStoreService } from "app/common/services";
+import { ApiService, WaffleDispatcherService, MeActionService, MeStoreService, FilesActionService, ErrorActionService, FilesStoreService } from "app/common/services";
 
 import { SpreadSheetComponent } from './spread-sheet/components/spread-sheet.component';
 import { SheetTabComponent } from './spread-sheet/components/sheet-tab/sheet-tab.component';
@@ -28,6 +28,9 @@ import { RootComponent } from './root/components/root.component';
 import { FilesComponent } from './files/components/files.component';
 import { MainComponent } from './root/components/main/main.component';
 import { DashboardHeaderComponent } from './root/components/main/dashboard-header/dashboard-header.component';
+import { FilesLeftColComponent } from './files/components/files-left-col/files-left-col.component';
+import { FilesMainColComponent } from './files/components/files-main-col/files-main-col.component';
+import { FilesAreasColComponent } from './files/components/files-left-col/files-areas-col/files-areas-col.component';
 
 @NgModule({
   declarations: [
@@ -50,7 +53,10 @@ import { DashboardHeaderComponent } from './root/components/main/dashboard-heade
     RootComponent,
     FilesComponent,
     MainComponent,
-    DashboardHeaderComponent
+    DashboardHeaderComponent,
+    FilesLeftColComponent,
+    FilesMainColComponent,
+    FilesAreasColComponent,
   ],
   imports: [
     BrowserModule,
@@ -62,8 +68,11 @@ import { DashboardHeaderComponent } from './root/components/main/dashboard-heade
   providers: [
     ApiService,
     WaffleDispatcherService,
+    ErrorActionService,
     MeActionService,
-    MeStoreService
+    MeStoreService,
+    FilesActionService,
+    FilesStoreService
   ],
   bootstrap: [RootComponent]
 })

@@ -53,7 +53,7 @@ export class MeActionService {
           data: json
         });
       }
-      );
+    );
   }
 
 }

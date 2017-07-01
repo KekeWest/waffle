@@ -8,12 +8,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import waffle.domain.files.Area;
+import waffle.domain.files.AreaNode;
 import waffle.domain.files.DirectoryNode;
 import waffle.domain.files.FileNode;
 import waffle.domain.security.Authority;
 import waffle.domain.security.User;
-import waffle.repository.files.AreaRepository;
+import waffle.repository.files.AreaNodeRepository;
 import waffle.repository.security.AuthorityRepository;
 import waffle.repository.security.UserRepository;
 import waffle.security.AuthorityType;
@@ -29,7 +29,7 @@ public class TestDataComponent {
     private AuthorityRepository authorityRepository;
 
     @Autowired
-    private AreaRepository areaRepository;
+    private AreaNodeRepository areaNodeRepository;
 
     @Transactional
     public void createTestData() {
@@ -41,7 +41,7 @@ public class TestDataComponent {
 
     private void createUsers() {
 
-        Authority authority = authorityRepository.findByAuthorityType(AuthorityType.User);
+        Authority authority = authorityRepository.findByAuthorityType(AuthorityType.ROLE_USER);
 
         User user1 = new User();
         user1.setName("user1");
@@ -77,14 +77,14 @@ public class TestDataComponent {
         directory3.setName("directory3");
         directory3.addDirectories(directory1, directory2);
 
-        Area testArea = new Area();
+        AreaNode testArea = new AreaNode();
         testArea.setName("testArea");
         testArea.addDirectory(directory3);
         userRepository.findAll().forEach((user) -> {
             testArea.addUsers(user);
         });
 
-        areaRepository.save(testArea);
+        areaNodeRepository.save(testArea);
     }
 
 }

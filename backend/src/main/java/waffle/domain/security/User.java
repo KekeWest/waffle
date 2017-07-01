@@ -11,7 +11,7 @@ import org.neo4j.ogm.annotation.Index;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 
-import waffle.domain.files.Area;
+import waffle.domain.files.AreaNode;
 
 @EqualsAndHashCode(of = {"name"})
 @Data
@@ -30,7 +30,7 @@ public class User {
     private Set<Authority> authorities;
 
     @Relationship(type = "member", direction = Relationship.OUTGOING)
-    private Set<Area> areas;
+    private Set<AreaNode> areas;
 
     public void addAuthorities(Authority... as) {
         if (authorities == null) {
@@ -45,11 +45,11 @@ public class User {
         }
     }
 
-    public void addAreas(Area... as) {
+    public void addAreas(AreaNode... as) {
         if (areas == null) {
             areas = new HashSet<>();
         }
-        for (Area a : as) {
+        for (AreaNode a : as) {
             if (a == null || areas.contains(a)) {
                 continue;
             }
