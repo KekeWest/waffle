@@ -7,10 +7,13 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import org.neo4j.ogm.annotation.GraphId;
+import org.neo4j.ogm.annotation.Index;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 
-@EqualsAndHashCode(exclude = {"id"})
+import waffle.domain.files.Area;
+
+@EqualsAndHashCode(of = {"name"})
 @Data
 @NodeEntity
 public class User {
@@ -18,21 +21,41 @@ public class User {
     @GraphId
     private Long id;
 
+    @Index(primary = true, unique = true)
     private String name;
 
     private String password;
 
-    @Relationship(type = "Authority", direction = Relationship.OUTGOING)
+    @Relationship(type = "authority", direction = Relationship.OUTGOING)
     private Set<Authority> authorities;
 
-    public void addAuthority(Authority authority) {
-        if (authority == null) {
-            return;
-        }
+    @Relationship(type = "member", direction = Relationship.OUTGOING)
+    private Set<Area> areas;
+
+    public void addAuthorities(Authority... as) {
         if (authorities == null) {
             authorities = new HashSet<>();
         }
-        authorities.add(authority);
+        for (Authority a : as) {
+            if (a == null || authorities.contains(a)) {
+                continue;
+            }
+            authorities.add(a);
+            a.addUsers(this);
+        }
+    }
+
+    public void addAreas(Area... as) {
+        if (areas == null) {
+            areas = new HashSet<>();
+        }
+        for (Area a : as) {
+            if (a == null || areas.contains(a)) {
+                continue;
+            }
+            areas.add(a);
+            a.addUsers(this);
+        }
     }
 
 }

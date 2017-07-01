@@ -1,5 +1,6 @@
 package waffle.domain.security;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import lombok.Data;
@@ -10,7 +11,9 @@ import org.neo4j.ogm.annotation.Index;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 
-@EqualsAndHashCode(exclude = {"id"})
+import waffle.security.AuthorityType;
+
+@EqualsAndHashCode(of = {"authorityType"})
 @Data
 @NodeEntity
 public class Authority {
@@ -19,9 +22,22 @@ public class Authority {
     private Long id;
 
     @Index(primary = true, unique = true)
-    private String authorityName;
+    private AuthorityType authorityType;
 
-    @Relationship(type = "User", direction = Relationship.INCOMING)
+    @Relationship(type = "authority", direction = Relationship.INCOMING)
     private Set<User> users;
+
+    public void addUsers(User... us) {
+        if (users == null) {
+            users = new HashSet<>();
+        }
+        for (User u : us) {
+            if (u == null || users.contains(u)) {
+                continue;
+            }
+            users.add(u);
+            u.addAuthorities(this);
+        }
+    }
 
 }

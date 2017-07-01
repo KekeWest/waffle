@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import waffle.config.Initial.test.TestDataComponent;
 import waffle.config.properties.WaffleProperties;
 
 @Slf4j
