@@ -8,12 +8,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import waffle.domain.files.AreaNode;
-import waffle.domain.files.DirectoryNode;
-import waffle.domain.files.FileNode;
-import waffle.domain.security.Authority;
-import waffle.domain.security.User;
-import waffle.repository.files.AreaNodeRepository;
+import waffle.domain.db.node.files.Area;
+import waffle.domain.db.node.files.Directory;
+import waffle.domain.db.node.files.File;
+import waffle.domain.db.node.security.Authority;
+import waffle.domain.db.node.security.User;
+import waffle.repository.files.AreaRepository;
 import waffle.repository.security.AuthorityRepository;
 import waffle.repository.security.UserRepository;
 import waffle.security.AuthorityType;
@@ -29,7 +29,7 @@ public class TestDataComponent {
     private AuthorityRepository authorityRepository;
 
     @Autowired
-    private AreaNodeRepository areaNodeRepository;
+    private AreaRepository areaNodeRepository;
 
     @Transactional
     public void createTestData() {
@@ -57,27 +57,27 @@ public class TestDataComponent {
     }
 
     private void createFiles() {
-        DirectoryNode directory1 = new DirectoryNode();
+        Directory directory1 = new Directory();
         directory1.setName("directory1");
-        FileNode file1 = new FileNode();
+        File file1 = new File();
         file1.setName("file1");
-        FileNode file2 = new FileNode();
+        File file2 = new File();
         file2.setName("file2");
         directory1.addFiles(file1, file2);
 
-        DirectoryNode directory2 = new DirectoryNode();
+        Directory directory2 = new Directory();
         directory2.setName("directory2");
-        FileNode file3 = new FileNode();
+        File file3 = new File();
         file3.setName("file3");
-        FileNode file4 = new FileNode();
+        File file4 = new File();
         file4.setName("file4");
         directory2.addFiles(file3, file4);
 
-        DirectoryNode directory3 = new DirectoryNode();
-        directory3.setName("directory3");
+        Directory directory3 = new Directory();
+        directory3.setName(Directory.ROOT_NAME);
         directory3.addDirectories(directory1, directory2);
 
-        AreaNode testArea = new AreaNode();
+        Area testArea = new Area();
         testArea.setName("testArea");
         testArea.addDirectory(directory3);
         userRepository.findAll().forEach((user) -> {

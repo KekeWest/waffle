@@ -1,4 +1,4 @@
-package waffle.domain.security;
+package waffle.domain.db.node.security;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -24,7 +24,7 @@ public class Authority {
     @Index(primary = true, unique = true)
     private AuthorityType authorityType;
 
-    @Relationship(type = "authority", direction = Relationship.INCOMING)
+    @Relationship(type = "Authority", direction = Relationship.INCOMING)
     private Set<User> users;
 
     public void addUsers(User... us) {

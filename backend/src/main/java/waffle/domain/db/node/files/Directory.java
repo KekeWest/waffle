@@ -1,4 +1,4 @@
-package waffle.domain.files;
+package waffle.domain.db.node.files;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -15,7 +15,9 @@ import org.neo4j.ogm.annotation.Relationship;
 @EqualsAndHashCode(of = {"dirId"})
 @Data
 @NodeEntity
-public class DirectoryNode {
+public class Directory {
+
+    public static final String ROOT_NAME = "/";
 
     @GraphId
     private Long id;
@@ -25,20 +27,20 @@ public class DirectoryNode {
 
     private String name;
 
-    @Relationship(type = "ownership", direction = Relationship.INCOMING)
-    private Set<DirectoryNode> parentDirs;
+    @Relationship(type = "Ownership", direction = Relationship.INCOMING)
+    private Set<Directory> parentDirs;
 
-    @Relationship(type = "ownership", direction = Relationship.OUTGOING)
-    private Set<DirectoryNode> dirs;
+    @Relationship(type = "Ownership", direction = Relationship.OUTGOING)
+    private Set<Directory> dirs;
 
-    @Relationship(type = "ownership", direction = Relationship.OUTGOING)
-    private Set<FileNode> files;
+    @Relationship(type = "Ownership", direction = Relationship.OUTGOING)
+    private Set<File> files;
 
-    public void addDirectories(DirectoryNode... ds) {
+    public void addDirectories(Directory... ds) {
         if (dirs == null) {
             dirs = new HashSet<>();
         }
-        for (DirectoryNode d : ds) {
+        for (Directory d : ds) {
             if (d == null) {
                 continue;
             }
@@ -46,11 +48,11 @@ public class DirectoryNode {
         }
     }
 
-    public void removeDirectories(DirectoryNode... ds) {
+    public void removeDirectories(Directory... ds) {
         if (dirs == null) {
             return;
         }
-        for (DirectoryNode d : ds) {
+        for (Directory d : ds) {
             if (d == null) {
                 continue;
             }
@@ -58,11 +60,11 @@ public class DirectoryNode {
         }
     }
 
-    public void addFiles(FileNode... fs) {
+    public void addFiles(File... fs) {
         if (files == null) {
             files = new HashSet<>();
         }
-        for (FileNode f : fs) {
+        for (File f : fs) {
             if (f == null) {
                 continue;
             }
@@ -70,11 +72,11 @@ public class DirectoryNode {
         }
     }
 
-    public void removeFiles(FileNode... fs) {
+    public void removeFiles(File... fs) {
         if (files == null) {
             return;
         }
-        for (FileNode f : fs) {
+        for (File f : fs) {
             if (f == null) {
                 continue;
             }

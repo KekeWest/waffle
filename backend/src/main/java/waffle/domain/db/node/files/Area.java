@@ -1,4 +1,4 @@
-package waffle.domain.files;
+package waffle.domain.db.node.files;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -11,12 +11,12 @@ import org.neo4j.ogm.annotation.Index;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 
-import waffle.domain.security.User;
+import waffle.domain.db.node.security.User;
 
 @EqualsAndHashCode(of = {"name"})
 @Data
 @NodeEntity
-public class AreaNode {
+public class Area {
 
     @GraphId
     private Long id;
@@ -24,13 +24,13 @@ public class AreaNode {
     @Index(primary = true, unique = true)
     private String name;
 
-    @Relationship(type = "member", direction = Relationship.INCOMING)
+    @Relationship(type = "Member", direction = Relationship.INCOMING)
     private Set<User> users;
 
-    @Relationship(type = "ownership", direction = Relationship.OUTGOING)
-    private Set<DirectoryNode> dirs;
+    @Relationship(type = "Ownership", direction = Relationship.OUTGOING)
+    private Set<Directory> dirs;
 
-    public void addDirectory(DirectoryNode dir) {
+    public void addDirectory(Directory dir) {
         if (dir == null) {
             return;
         }

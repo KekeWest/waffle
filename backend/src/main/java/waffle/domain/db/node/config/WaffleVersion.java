@@ -1,4 +1,4 @@
-package waffle.domain.config;
+package waffle.domain.db.node.config;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -7,7 +7,7 @@ import org.neo4j.ogm.annotation.GraphId;
 import org.neo4j.ogm.annotation.NodeEntity;
 
 
-@EqualsAndHashCode(exclude = {"id"})
+@EqualsAndHashCode(of = {"version"})
 @Data
 @NodeEntity
 public class WaffleVersion {

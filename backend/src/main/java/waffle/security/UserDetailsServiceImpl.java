@@ -21,7 +21,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        waffle.domain.security.User userEntity = userRepository.findByName(username);
+        waffle.domain.db.node.security.User userEntity = userRepository.findByName(username);
 
         if (userEntity == null) {
             throw new UsernameNotFoundException("user not found.");
@@ -31,7 +31,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         return user;
     }
 
-    private Collection<? extends GrantedAuthority> getAuthorities(waffle.domain.security.User userEntity) {
+    private Collection<? extends GrantedAuthority> getAuthorities(waffle.domain.db.node.security.User userEntity) {
         Set<GrantedAuthority> authorities = new HashSet<>();
         userEntity.getAuthorities().forEach(
                 (authority) -> {

@@ -1,4 +1,4 @@
-package waffle.domain.files;
+package waffle.domain.db.node.files;
 
 import java.util.Set;
 import java.util.UUID;
@@ -14,7 +14,7 @@ import org.neo4j.ogm.annotation.Relationship;
 @EqualsAndHashCode(of = {"fileId"})
 @Data
 @NodeEntity
-public class FileNode {
+public class File {
 
     @GraphId
     private Long id;
@@ -26,7 +26,7 @@ public class FileNode {
 
     private String persistenceLocation;
 
-    @Relationship(type = "ownership", direction = Relationship.INCOMING)
-    private Set<DirectoryNode> dirs;
+    @Relationship(type = "Ownership", direction = Relationship.INCOMING)
+    private Set<Directory> dirs;
 
 }

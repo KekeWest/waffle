@@ -1,4 +1,4 @@
-package waffle.domain.security;
+package waffle.domain.db.node.security;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -11,7 +11,7 @@ import org.neo4j.ogm.annotation.Index;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 
-import waffle.domain.files.AreaNode;
+import waffle.domain.db.node.files.Area;
 
 @EqualsAndHashCode(of = {"name"})
 @Data
@@ -26,11 +26,11 @@ public class User {
 
     private String password;
 
-    @Relationship(type = "authority", direction = Relationship.OUTGOING)
+    @Relationship(type = "Authority", direction = Relationship.OUTGOING)
     private Set<Authority> authorities;
 
-    @Relationship(type = "member", direction = Relationship.OUTGOING)
-    private Set<AreaNode> areas;
+    @Relationship(type = "Member", direction = Relationship.OUTGOING)
+    private Set<Area> areas;
 
     public void addAuthorities(Authority... as) {
         if (authorities == null) {
@@ -45,11 +45,11 @@ public class User {
         }
     }
 
-    public void addAreas(AreaNode... as) {
+    public void addAreas(Area... as) {
         if (areas == null) {
             areas = new HashSet<>();
         }
-        for (AreaNode a : as) {
+        for (Area a : as) {
             if (a == null || areas.contains(a)) {
                 continue;
             }

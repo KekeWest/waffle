@@ -10,9 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import waffle.domain.config.WaffleVersion;
-import waffle.domain.security.Authority;
-import waffle.domain.security.User;
+import waffle.domain.db.node.config.WaffleVersion;
+import waffle.domain.db.node.security.Authority;
+import waffle.domain.db.node.security.User;
 import waffle.repository.config.WaffleVersionRepository;
 import waffle.repository.security.AuthorityRepository;
 import waffle.repository.security.UserRepository;
