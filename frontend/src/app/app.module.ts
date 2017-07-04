@@ -30,7 +30,8 @@ import { MainComponent } from './root/components/main/main.component';
 import { DashboardHeaderComponent } from './root/components/main/dashboard-header/dashboard-header.component';
 import { FilesLeftColComponent } from './files/components/files-left-col/files-left-col.component';
 import { FilesMainColComponent } from './files/components/files-main-col/files-main-col.component';
-import { FilesAreasColComponent } from './files/components/files-left-col/files-areas-col/files-areas-col.component';
+import { FilesAreasComponent } from './files/components/files-left-col/files-areas/files-areas.component';
+import { FilesLsComponent } from './files/components/files-main-col/files-ls/files-ls.component';
 
 @NgModule({
   declarations: [
@@ -56,7 +57,8 @@ import { FilesAreasColComponent } from './files/components/files-left-col/files-
     DashboardHeaderComponent,
     FilesLeftColComponent,
     FilesMainColComponent,
-    FilesAreasColComponent,
+    FilesAreasComponent,
+    FilesLsComponent,
   ],
   imports: [
     BrowserModule,

@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { FilesAreasColComponent } from './files-areas-col.component';
+import { FilesAreasComponent } from './files-areas.component';
 
-describe('FilesAreasColComponent', () => {
-  let component: FilesAreasColComponent;
-  let fixture: ComponentFixture<FilesAreasColComponent>;
+describe('FilesAreasComponent', () => {
+  let component: FilesAreasComponent;
+  let fixture: ComponentFixture<FilesAreasComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ FilesAreasColComponent ]
+      declarations: [ FilesAreasComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(FilesAreasColComponent);
+    fixture = TestBed.createComponent(FilesAreasComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
