@@ -7,6 +7,10 @@ spring:
       embedded:
         enabled: true
 
+  devtools:
+    restart:
+      enabled: false
+
 server:
   session:
     persistent: false
