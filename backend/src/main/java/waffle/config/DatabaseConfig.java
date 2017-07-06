@@ -10,16 +10,19 @@ import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 import org.neo4j.kernel.configuration.BoltConnector;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.data.neo4j.Neo4jProperties;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.neo4j.repository.config.EnableNeo4jRepositories;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-import waffle.WaffleApplication;
 import waffle.config.properties.WaffleProperties;
+import waffle.domain.db.node.EntityMarker;
+import waffle.repository.RepositoryMarker;
 
 @Configuration
-@EnableNeo4jRepositories(basePackageClasses = WaffleApplication.class)
+@EnableNeo4jRepositories(basePackageClasses = RepositoryMarker.class)
+@EntityScan(basePackageClasses = EntityMarker.class)
 @EnableTransactionManagement
 public class DatabaseConfig {
 
