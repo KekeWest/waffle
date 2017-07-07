@@ -2,13 +2,16 @@ import { Injectable } from '@angular/core';
 import { WaffleDispatcherService, FilesActionService, FilesAction } from "app/common/services";
 import { Payload, Emitter } from "app/common/base";
 import { ActivatedRoute, Params } from "@angular/router";
+import {s, _ } from "app";
 
 @Injectable()
 export class FilesStoreService extends Emitter<Payload> {
 
   private _areas: string[] = [];
 
-  private _activeArea: string;
+  private _currentArea: string;
+
+  private _currentPath: string;
 
   private _currentNodes: FilesAction.Node[];
 
@@ -43,8 +46,12 @@ export class FilesStoreService extends Emitter<Payload> {
     return this._areas;
   }
 
-  get activeArea(): string {
-    return this._activeArea;
+  get currentArea(): string {
+    return this._currentArea;
+  }
+
+  get currentPath(): string {
+    return this._currentPath;
   }
 
   get currentNodes(): FilesAction.Node[] {
@@ -58,14 +65,15 @@ export class FilesStoreService extends Emitter<Payload> {
 
   private onUnspecifiedPath() {
     this._currentNodes = [];
-    this._activeArea = null;
+    this._currentArea = null;
     this.emit({ eventType: FilesStoreService.ON_UNSPECIFIED_PATH_EVENT });
   }
 
   private setCurrentNodes(action: FilesAction.LsResult) {
     this._currentNodes = action.nodes;
     this.route.queryParams.subscribe((params: Params) => {
-      this._activeArea = params["areaName"];
+      this._currentArea = params["areaName"];
+      this._currentPath = "/" + s.trim(params["path"], "/");
       this.emit({ eventType: FilesStoreService.LS_EVENT });
     });
   }

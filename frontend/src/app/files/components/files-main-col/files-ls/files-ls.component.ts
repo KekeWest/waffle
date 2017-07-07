@@ -2,7 +2,7 @@ import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { Router, ActivatedRoute, Params } from "@angular/router";
 import { FilesActionService, FilesStoreService, FilesAction } from "app/common/services";
 import { Payload } from "app/common/base";
-import { _ } from "app";
+import { _, moment } from "app";
 
 @Component({
   selector: 'wf-files-ls',
@@ -10,6 +10,8 @@ import { _ } from "app";
   styleUrls: ['./files-ls.component.scss']
 })
 export class FilesLsComponent implements OnInit, AfterViewInit {
+
+  showFileList: boolean = false;
 
   currentNodes: FilesAction.Node[];
 
@@ -25,6 +27,7 @@ export class FilesLsComponent implements OnInit, AfterViewInit {
       (payload: Payload) => {
         switch (payload.eventType) {
           case FilesStoreService.ON_UNSPECIFIED_PATH_EVENT:
+            this.hideFileList();
           case FilesStoreService.LS_EVENT:
             this.setCurrentNodes();
             break;
@@ -48,8 +51,46 @@ export class FilesLsComponent implements OnInit, AfterViewInit {
     });
   }
 
+  private hideFileList() {
+    this.showFileList = false;
+    this.currentNodes = this.filesStoreService.currentNodes;
+  }
+
   private setCurrentNodes() {
     this.currentNodes = this.filesStoreService.currentNodes;
+    if (this.currentNodes.length > 0) {
+      this.showFileList = true;
+    }
+  }
+
+  isFile(node: FilesAction.Node): boolean {
+    if (node.type === "file") {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  isDirectory(node: FilesAction.Node): boolean {
+    if (node.type === "directory") {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  getNextDirParam(node: FilesAction.Node): {areaName: string, path: string} {
+    var path: string;
+    if (this.filesStoreService.currentPath === "/") {
+      path = "/" + node.name;
+    } else {
+      path = this.filesStoreService.currentPath + "/" + node.name
+    }
+
+    return {
+      areaName: this.filesStoreService.currentArea,
+      path: path
+    };
   }
 
 }

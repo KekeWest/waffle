@@ -1,0 +1,26 @@
+table {
+  thead {
+    th {
+      &.check {
+        width: 50px;
+      }
+
+      &.editing {
+        width: 80px;
+      }
+
+      &.update-date,
+      &.create-date {
+        width: 180px;
+      }
+    }
+  }
+
+  tbody {
+    td {
+      &.name {
+        cursor: pointer;
+      }
+    }
+  }
+}

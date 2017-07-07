@@ -32,6 +32,8 @@ import { FilesLeftColComponent } from './files/components/files-left-col/files-l
 import { FilesMainColComponent } from './files/components/files-main-col/files-main-col.component';
 import { FilesAreasComponent } from './files/components/files-left-col/files-areas/files-areas.component';
 import { FilesLsComponent } from './files/components/files-main-col/files-ls/files-ls.component';
+import { MomentPipe } from './common/pipes/moment.pipe';
+import { EmptyPipe } from './common/pipes/empty.pipe';
 
 @NgModule({
   declarations: [
@@ -59,6 +61,8 @@ import { FilesLsComponent } from './files/components/files-main-col/files-ls/fil
     FilesMainColComponent,
     FilesAreasComponent,
     FilesLsComponent,
+    MomentPipe,
+    EmptyPipe,
   ],
   imports: [
     BrowserModule,

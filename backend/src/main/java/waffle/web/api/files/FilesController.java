@@ -53,6 +53,8 @@ public class FilesController {
                                 LsResult.Node.builder()
                                         .name(d.getName())
                                         .type("directory")
+                                        .updateDateTime(d.getUpdateDateTime())
+                                        .createDateTime(d.getCreateDateTime())
                                         .build());
                     });
         }
@@ -63,6 +65,8 @@ public class FilesController {
                                 LsResult.Node.builder()
                                         .name(f.getName())
                                         .type("file")
+                                        .updateDateTime(f.getUpdateDateTime())
+                                        .createDateTime(f.getCreateDateTime())
                                         .build());
                     });
         }

@@ -11,6 +11,8 @@ export module FilesAction {
   export interface Node {
     name: string;
     type: string;
+    updateDateTime: number[];
+    createDateTime: number[];
   }
 
 }

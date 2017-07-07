@@ -43,4 +43,12 @@ export class FilesAreasComponent implements OnInit, AfterViewInit {
     this.router.navigate(['/files'], { queryParams: { areaName: areaName, path: "" } });
   }
 
+  isCurrentArea(areaName: string): boolean {
+    if (areaName === this.filesStoreService.currentArea) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
 }

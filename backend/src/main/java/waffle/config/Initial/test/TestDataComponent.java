@@ -1,5 +1,6 @@
 package waffle.config.Initial.test;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 
 import lombok.extern.slf4j.Slf4j;
@@ -64,8 +65,12 @@ public class TestDataComponent {
     private void createFiles() {
         Directory directory1 = new Directory();
         directory1.setName("directory1");
+        directory1.setUpdateDateTime(LocalDateTime.now());
+        directory1.setCreateDateTime(LocalDateTime.now());
         File file1 = new File();
         file1.setName("file1");
+        file1.setUpdateDateTime(LocalDateTime.now());
+        file1.setCreateDateTime(LocalDateTime.now());
         File file2 = new File();
         file2.setName("file2");
         directory1.addFiles(file1, file2);
@@ -74,6 +79,8 @@ public class TestDataComponent {
         directory2.setName("directory2");
         File file3 = new File();
         file3.setName("file3");
+        file3.setUpdateDateTime(LocalDateTime.now());
+        file3.setCreateDateTime(LocalDateTime.now());
         File file4 = new File();
         file4.setName("file4");
         directory2.addFiles(file3, file4);

@@ -17,6 +17,14 @@
   text-overflow: ellipsis;
   cursor: pointer;
 
+  &.current {
+    background-color: #dadada;
+
+    &:hover {
+      background-color: #dadada;
+    }
+  }
+
   &:hover {
     background-color: #e6e6e6;
   }

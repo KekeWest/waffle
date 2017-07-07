@@ -1,6 +1,7 @@
 package waffle.web.api.files;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,6 +20,10 @@ public class LsResult implements Serializable {
         private String name;
 
         private String type;
+
+        private LocalDateTime updateDateTime;
+
+        private LocalDateTime createDateTime;
 
     }
 

@@ -1,5 +1,6 @@
 package waffle.domain.db.node.files;
 
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -11,6 +12,9 @@ import org.neo4j.ogm.annotation.GraphId;
 import org.neo4j.ogm.annotation.Index;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
+import org.neo4j.ogm.annotation.typeconversion.Convert;
+
+import waffle.config.neo4j.converter.LocalDateTimeConverter;
 
 @EqualsAndHashCode(of = {"dirId"})
 @Data
@@ -26,6 +30,12 @@ public class Directory {
     private String dirId = UUID.randomUUID().toString();
 
     private String name;
+
+    @Convert(LocalDateTimeConverter.class)
+    private LocalDateTime updateDateTime;
+
+    @Convert(LocalDateTimeConverter.class)
+    private LocalDateTime createDateTime;
 
     @Relationship(type = "Ownership", direction = Relationship.INCOMING)
     private Set<Directory> parentDirs;

@@ -21,8 +21,8 @@ import waffle.domain.db.node.EntityMarker;
 import waffle.repository.RepositoryMarker;
 
 @Configuration
-@EnableNeo4jRepositories(basePackageClasses = RepositoryMarker.class)
-@EntityScan(basePackageClasses = EntityMarker.class)
+@EnableNeo4jRepositories(basePackageClasses = { RepositoryMarker.class })
+@EntityScan(basePackageClasses = { EntityMarker.class })
 @EnableTransactionManagement
 public class DatabaseConfig {
 
