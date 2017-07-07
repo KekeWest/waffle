@@ -33,6 +33,11 @@ public class TestDataComponent {
 
     @Transactional
     public void createTestData() {
+        User user = userRepository.findByName("user1");
+        if (user != null) {
+            return;
+        }
+
         log.info("create test data.");
 
         createUsers();
