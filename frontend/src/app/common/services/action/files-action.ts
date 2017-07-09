@@ -10,6 +10,7 @@ export module FilesAction {
 
   export interface Node {
     name: string;
+    nodeId: string;
     type: string;
     updateDateTime: number[];
     createDateTime: number[];

@@ -52,6 +52,7 @@ public class FilesController {
                         lsResult.getNodes().add(
                                 LsResult.Node.builder()
                                         .name(d.getName())
+                                        .nodeId(d.getDirId())
                                         .type("directory")
                                         .updateDateTime(d.getUpdateDateTime())
                                         .createDateTime(d.getCreateDateTime())
@@ -64,6 +65,7 @@ public class FilesController {
                         lsResult.getNodes().add(
                                 LsResult.Node.builder()
                                         .name(f.getName())
+                                        .nodeId(f.getFileId())
                                         .type("file")
                                         .updateDateTime(f.getUpdateDateTime())
                                         .createDateTime(f.getCreateDateTime())

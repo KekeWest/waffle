@@ -9,8 +9,12 @@
     </tr>
   </thead>
   <tbody>
-    <tr *ngFor="let node of currentNodes">
-      <th class="check"></th>
+    <tr *ngFor="let node of currentNodes; let i=index;">
+      <td class="check">
+        <label [attr.for]="node.nodeId">
+          <input type="checkbox" [id]="node.nodeId" [checked]="isSelectedNode(node)" (change)="changeSelectedNode(node)">
+        </label>
+      </td>
       <td *ngIf="isDirectory(node)" [routerLink]="['/files']" [queryParams]="getNextDirParam(node)" class="name">
         <img class="icon" src="/assets/images/files/folder-icon.png">
         <span>{{node.name}}</span>

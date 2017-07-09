@@ -19,6 +19,8 @@ public class LsResult implements Serializable {
 
         private String name;
 
+        private String nodeId;
+
         private String type;
 
         private LocalDateTime updateDateTime;

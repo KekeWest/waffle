@@ -15,6 +15,8 @@ export class FilesLsComponent implements OnInit, AfterViewInit {
 
   currentNodes: FilesAction.Node[];
 
+  private _selectNodes: {[id: string]: FilesAction.Node} = {};
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -54,10 +56,12 @@ export class FilesLsComponent implements OnInit, AfterViewInit {
   private hideFileList() {
     this.showFileList = false;
     this.currentNodes = this.filesStoreService.currentNodes;
+    this._selectNodes = {};
   }
 
   private setCurrentNodes() {
     this.currentNodes = this.filesStoreService.currentNodes;
+    this._selectNodes = {};
     if (this.currentNodes.length > 0) {
       this.showFileList = true;
     }
@@ -91,6 +95,22 @@ export class FilesLsComponent implements OnInit, AfterViewInit {
       areaName: this.filesStoreService.currentArea,
       path: path
     };
+  }
+
+  isSelectedNode(node: FilesAction.Node): boolean {
+    if (this._selectNodes[node.nodeId]) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  changeSelectedNode(node: FilesAction.Node) {
+    if (this._selectNodes[node.nodeId]) {
+      delete this._selectNodes[node.nodeId];
+    } else {
+      this._selectNodes[node.nodeId] = node;
+    }
   }
 
 }

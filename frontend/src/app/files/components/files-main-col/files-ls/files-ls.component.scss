@@ -18,6 +18,15 @@ table {
 
   tbody {
     td {
+      &.check {
+        text-align: center;
+
+        label {
+          width: 100%;
+          margin-bottom: 0;
+        }
+      }
+
       &.name {
         cursor: pointer;
 
