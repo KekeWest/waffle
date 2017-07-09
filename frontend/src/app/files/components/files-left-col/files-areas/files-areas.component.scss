@@ -5,8 +5,10 @@
   height: 100%;
 }
 
-.area-wrapper {
-
+.area-label {
+  padding: 5px 10px;
+  font-size: 18px;
+  color: #919191;
 }
 
 .area {
@@ -31,5 +33,13 @@
 
   &:active {
     background-color: #dadada;
+  }
+
+  .icon {
+    padding-bottom: 2px;
+  }
+
+  .name {
+    padding-left: 3px;
   }
 }
