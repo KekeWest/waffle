@@ -14,6 +14,7 @@ spring:
 server:
   session:
     persistent: false
+    tracking-modes: "cookie"
 
 security:
   basic:

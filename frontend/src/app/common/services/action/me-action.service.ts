@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Http, Response } from "@angular/http";
-import { WaffleDispatcherService, MeAction, ApiService } from "app/common/services";
+import { WaffleDispatcherService, MeAction, ApiService, ErrorActionService } from "app/common/services";
 
 @Injectable()
 export class MeActionService {
@@ -8,11 +8,13 @@ export class MeActionService {
   static EVENT_PREFIX: string = "MeActionService.";
   static LOGIN_SUCCESS_EVENT: string = MeActionService.EVENT_PREFIX + "login-success";
   static LOGIN_FAILED_EVENT: string = MeActionService.EVENT_PREFIX + "login-failed";
+  static LOGOUT_EVENT: string = MeActionService.EVENT_PREFIX + "logout";
   static SYNC_STATUS_EVENT: string = MeActionService.EVENT_PREFIX + "sync-status";
 
   constructor(
     private apiService: ApiService,
-    private waffleDispatcherService: WaffleDispatcherService
+    private waffleDispatcherService: WaffleDispatcherService,
+    private errorActionService: ErrorActionService
   ) { }
 
   login(userName: string, password: string) {
@@ -35,6 +37,19 @@ export class MeActionService {
         });
       }
       );
+  }
+
+  logout() {
+    this.apiService.get("logout").subscribe(
+      (res: Response) => {
+        this.waffleDispatcherService.emit({
+          eventType: MeActionService.LOGOUT_EVENT,
+        });
+      },
+      (error: Response) => {
+        this.errorActionService.serverSystemError(error);
+      }
+    );
   }
 
   syncStatus() {

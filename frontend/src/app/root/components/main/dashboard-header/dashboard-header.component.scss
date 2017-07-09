@@ -12,17 +12,18 @@ nav {
 
 .navbar-nav {
   margin: 0;
+
+  >li {
+    float: left;
+
+    >a {
+      padding-top: 15px;
+      padding-bottom: 15px;
+      cursor: pointer;
+    }
+  }
 }
 
 .navbar-right {
   float: right;
-}
-
-.navbar-nav>li {
-  float: left;
-}
-
-.navbar-nav>li>a {
-  padding-top: 15px;
-  padding-bottom: 15px;
 }

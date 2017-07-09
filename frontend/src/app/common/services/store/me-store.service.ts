@@ -11,6 +11,7 @@ export class MeStoreService extends Emitter<Payload> implements CanActivate {
   static EVENT_PREFIX: string = "MeStoreService.";
   static LOGIN_SUCCESS_EVENT: string = MeStoreService.EVENT_PREFIX + "login-success";
   static LOGIN_FAILED_EVENT: string = MeStoreService.EVENT_PREFIX + "login-failed";
+  static LOGOUT_EVENT: string = MeStoreService.EVENT_PREFIX + "logout";
   static SYNC_STATUS_EVENT: string = MeStoreService.EVENT_PREFIX + "sync-status";
 
   redirectUrl: string;
@@ -29,6 +30,9 @@ export class MeStoreService extends Emitter<Payload> implements CanActivate {
           case MeActionService.LOGIN_SUCCESS_EVENT:
           case MeActionService.LOGIN_FAILED_EVENT:
             this.login(<MeAction.LoggedIn>payload.data);
+            break;
+          case MeActionService.LOGOUT_EVENT:
+            this.logout();
             break;
           case MeActionService.SYNC_STATUS_EVENT:
             this.syncStatus(<MeAction.LoggedIn>payload.data);
@@ -72,6 +76,13 @@ export class MeStoreService extends Emitter<Payload> implements CanActivate {
     } else {
       this.emit({ eventType: MeStoreService.LOGIN_FAILED_EVENT })
     }
+  }
+
+  private logout() {
+    this.redirectUrl = null;
+    this._active = false;
+    this._authorities = [];
+    this.emit({ eventType: MeStoreService.LOGOUT_EVENT });
   }
 
   private syncStatus(action: MeAction.LoggedIn) {
