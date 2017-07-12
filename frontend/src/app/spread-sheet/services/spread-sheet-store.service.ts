@@ -96,6 +96,8 @@ export class SpreadSheetStoreService extends Emitter<Payload> {
     //     this.setCell("sheet1", i, j, cell3);
     //   }
     // }
+    var jsonstr: string = JSON.stringify(this._spreadSheet);
+    this._spreadSheet = new SpreadSheet().fromJSON(JSON.parse(jsonstr));
   }
 
   getSheet(sheetName: string): Sheet {

@@ -1,12 +1,14 @@
-export class SelectedCellPosition {
+import { Serializable } from "app/common/utils";
+
+export class SelectedCellPosition implements Serializable {
 
   constructor(
-    public startColNum: number,
-    public startRowNum: number,
-    public endColNum: number,
-    public endRowNum: number,
-    public clickColNum: number,
-    public clickRowNum: number
+    public startColNum?: number,
+    public startRowNum?: number,
+    public endColNum?: number,
+    public endRowNum?: number,
+    public clickColNum?: number,
+    public clickRowNum?: number
   ) { }
 
   contains(colNum: number, rowNum: number): boolean {
@@ -24,6 +26,25 @@ export class SelectedCellPosition {
       return true;
     }
     return false;
+  }
+
+  toJSON(): any {
+    return this;
+  }
+
+  fromJSON(json: any): SelectedCellPosition {
+    if (!json) {
+      return null;
+    }
+    
+    return new SelectedCellPosition(
+      json.startColNum,
+      json.startRowNum,
+      json.endColNum,
+      json.endRowNum,
+      json.clickColNum,
+      json.clickRowNum
+    );
   }
 
 }
