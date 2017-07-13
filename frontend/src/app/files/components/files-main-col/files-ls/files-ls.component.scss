@@ -1,47 +1,77 @@
 :host {
   display: block;
-  height: 100%;
+  height: calc(100% - 35px);
   overflow-y: scroll;
 }
 
-table {
-  thead {
-    th {
-      &.check {
-        width: 50px;
-      }
+.table-header {
+  height: 32px;
+  overflow: hidden;
 
-      &.editing {
-        width: 80px;
-      }
+  table {
+    margin-bottom: 0;
 
-      &.update-date,
-      &.create-date {
-        width: 180px;
+    thead {
+      th {
+        padding: 5px;
+
+        &.check {
+          width: 50px;
+        }
+
+        &.editing {
+          width: 80px;
+        }
+
+        &.update-date,
+        &.create-date {
+          width: 180px;
+        }
       }
     }
   }
+}
 
-  tbody {
-    td {
-      &.check {
-        text-align: center;
+.table-body {
+  height: calc(100% - 38px);
+  overflow-y: scroll;
 
-        label {
-          width: 100%;
-          margin-bottom: 0;
+  table {
+    tbody {
+      td {
+        padding: 5px;
+        border-top: none;
+        border-bottom: 1px solid #ddd;
+
+        &.check {
+          width: 50px;
+          text-align: center;
+
+          label {
+            width: 100%;
+            margin-bottom: 0;
+          }
         }
-      }
 
-      &.name {
-        cursor: pointer;
+        &.name {
+          cursor: pointer;
 
-        .icon {
-          padding-bottom: 2px;
+          .icon {
+            padding-bottom: 2px;
+          }
+
+          span {
+            padding-left: 5px;
+          }
         }
 
-        span {
-          padding-left: 5px;
+        &.editing {
+          width: 80px;
+        }
+
+        &.update-date,
+        &.create-date {
+          width: 180px;
         }
       }
     }

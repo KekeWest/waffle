@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 
 import { TabsModule } from 'ngx-bootstrap/tabs';
+import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 
 import { AppRoutingModule } from "app/app-routing.module";
 
@@ -34,6 +35,7 @@ import { FilesAreasComponent } from './files/components/files-left-col/files-are
 import { FilesLsComponent } from './files/components/files-main-col/files-ls/files-ls.component';
 import { MomentPipe } from './common/pipes/moment.pipe';
 import { EmptyPipe } from './common/pipes/empty.pipe';
+import { FilesDashboardBarComponent } from './files/components/files-main-col/files-dashboard-bar/files-dashboard-bar.component';
 
 @NgModule({
   declarations: [
@@ -63,13 +65,15 @@ import { EmptyPipe } from './common/pipes/empty.pipe';
     FilesLsComponent,
     MomentPipe,
     EmptyPipe,
+    FilesDashboardBarComponent,
   ],
   imports: [
     BrowserModule,
     FormsModule,
     HttpModule,
     AppRoutingModule,
-    TabsModule.forRoot()
+    TabsModule.forRoot(),
+    BsDropdownModule.forRoot()
   ],
   providers: [
     ApiService,

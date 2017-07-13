@@ -1,0 +1,36 @@
+:host {
+  display: block;
+  height: 35px;
+  border-bottom: 1px solid #e1f4ff;
+  background-color: #eff9ff;
+}
+
+.btn-group {
+  &.new-toggle {
+    margin: 3px 12px;
+  }
+
+  .btn {
+    width: 60px;
+    height: 28px;
+    padding: 4px;
+
+    .caret {
+      margin-left: 5px;
+    }
+  }
+
+  .dropdown-item {
+    cursor: pointer;
+  }
+}
+
+.search-file {
+  float: right;
+  margin: 4px 12px;
+
+  input.search {
+    height: 27px;
+    width: 200px;
+  }
+}
