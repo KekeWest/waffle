@@ -1,6 +1,9 @@
 <div class="area-label">Areas</div>
-<div class="areas-wrapper" *ngFor="let areaName of areas">
-  <div class="area" [class.current]="isCurrentArea(areaName)" (click)="onSelectArea(areaName)">
+<div class="areas-wrapper">
+  <div class="area"
+    [class.current]="isCurrentArea(areaName)" 
+    (click)="onSelectArea(areaName)"
+    *ngFor="let areaName of areas">
       <img class="icon" src="/assets/images/files/area-icon.png">
       <span class="name">{{areaName}}</span>
     </div>

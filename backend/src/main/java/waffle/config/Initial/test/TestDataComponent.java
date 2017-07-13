@@ -89,6 +89,13 @@ public class TestDataComponent {
         directory3.setName(Directory.ROOT_NAME);
         directory3.addDirectories(directory1, directory2);
 
+
+        for (int i  = 0; i < 50; i++) {
+            Directory dir = new Directory();
+            dir.setName("directory_" + String.valueOf(i));
+            directory3.addDirectories(dir);
+        }
+
         Area testArea = new Area();
         testArea.setName("testArea");
         testArea.addDirectory(directory3);
@@ -97,6 +104,18 @@ public class TestDataComponent {
         });
 
         areaNodeRepository.save(testArea);
+
+        for (int i = 0; i < 50; i++) {
+            Area area = new Area();
+            area.setName("area_" + String.valueOf(i));
+            Directory dir = new Directory();
+            dir.setName(Directory.ROOT_NAME);
+            area.addDirectory(dir);
+            userRepository.findAll().forEach((user) -> {
+                area.addUsers(user);
+            });
+            areaNodeRepository.save(area);
+        }
     }
 
 }

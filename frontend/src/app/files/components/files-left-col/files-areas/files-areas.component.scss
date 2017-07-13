@@ -6,9 +6,16 @@
 }
 
 .area-label {
+  height: 35px;
+  overflow: hidden;
   padding: 5px 10px;
   font-size: 18px;
   color: #919191;
+}
+
+.areas-wrapper {
+  height: calc(100% - 35px);
+  overflow-y: scroll;
 }
 
 .area {
