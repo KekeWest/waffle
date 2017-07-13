@@ -30,6 +30,7 @@ export class FilesLsComponent implements OnInit, AfterViewInit {
         switch (payload.eventType) {
           case FilesStoreService.ON_UNSPECIFIED_PATH_EVENT:
             this.hideFileList();
+            break;
           case FilesStoreService.LS_EVENT:
             this.setCurrentNodes();
             break;
@@ -60,11 +61,9 @@ export class FilesLsComponent implements OnInit, AfterViewInit {
   }
 
   private setCurrentNodes() {
+    this.showFileList = true;
     this.currentNodes = this.filesStoreService.currentNodes;
     this._selectNodes = {};
-    if (this.currentNodes.length > 0) {
-      this.showFileList = true;
-    }
   }
 
   isFile(node: FilesAction.Node): boolean {

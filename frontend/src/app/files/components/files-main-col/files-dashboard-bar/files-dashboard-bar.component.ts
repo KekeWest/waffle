@@ -1,4 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostBinding } from '@angular/core';
+import { FilesStoreService } from "app/common/services";
+import { Payload } from "app/common/base";
 
 @Component({
   selector: 'wf-files-dashboard-bar',
@@ -7,9 +9,34 @@ import { Component, OnInit } from '@angular/core';
 })
 export class FilesDashboardBarComponent implements OnInit {
 
-  constructor() { }
+  @HostBinding("style.display")
+  display: string = "none";
+
+  constructor(
+    private filesStoreService: FilesStoreService
+  ) { }
 
   ngOnInit() {
+    this.filesStoreService.register(
+      (payload: Payload) => {
+        switch (payload.eventType) {
+          case FilesStoreService.ON_UNSPECIFIED_PATH_EVENT:
+            this.hide();
+            break;
+          case FilesStoreService.LS_EVENT:
+            this.show();
+            break;
+        }
+      }
+    );
+  }
+
+  private hide() {
+    this.display = "none";
+  }
+
+  private show() {
+    this.display = "block";
   }
 
 }
