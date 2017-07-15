@@ -3,8 +3,7 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 
-import { TabsModule } from 'ngx-bootstrap/tabs';
-import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
+import { TabsModule, BsDropdownModule, ModalModule } from 'ngx-bootstrap';
 
 import { AppRoutingModule } from "app/app-routing.module";
 
@@ -73,7 +72,8 @@ import { FilesDashboardBarComponent } from './files/components/files-main-col/fi
     HttpModule,
     AppRoutingModule,
     TabsModule.forRoot(),
-    BsDropdownModule.forRoot()
+    BsDropdownModule.forRoot(),
+    ModalModule.forRoot()
   ],
   providers: [
     ApiService,

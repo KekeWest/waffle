@@ -20,7 +20,13 @@
   }
 
   .dropdown-item {
+    padding: 3px 14px;
     cursor: pointer;
+
+    .icon {
+      margin-bottom: 2px;
+      margin-right: 3px;
+    }
   }
 }
 
