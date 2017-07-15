@@ -39,3 +39,23 @@
     width: 200px;
   }
 }
+
+.new-modal {
+  .modal-dialog {
+    width: 350px;
+
+    .modal-header {
+      padding: 6px 15px;
+
+      .close {
+        margin-top: 0;
+      }
+    }
+
+    .modal-body {
+      .btn-wrapper {
+        text-align: right;
+      }
+    }
+  }
+}

@@ -1,6 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 
 import { TabsModule, BsDropdownModule, ModalModule } from 'ngx-bootstrap';
@@ -35,6 +35,7 @@ import { FilesLsComponent } from './files/components/files-main-col/files-ls/fil
 import { MomentPipe } from './common/pipes/moment.pipe';
 import { EmptyPipe } from './common/pipes/empty.pipe';
 import { FilesDashboardBarComponent } from './files/components/files-main-col/files-dashboard-bar/files-dashboard-bar.component';
+import { FilenameValidator } from "app/common/validators";
 
 @NgModule({
   declarations: [
@@ -69,6 +70,7 @@ import { FilesDashboardBarComponent } from './files/components/files-main-col/fi
   imports: [
     BrowserModule,
     FormsModule,
+    ReactiveFormsModule,
     HttpModule,
     AppRoutingModule,
     TabsModule.forRoot(),
@@ -82,7 +84,8 @@ import { FilesDashboardBarComponent } from './files/components/files-main-col/fi
     MeActionService,
     MeStoreService,
     FilesActionService,
-    FilesStoreService
+    FilesStoreService,
+    FilenameValidator
   ],
   bootstrap: [RootComponent]
 })
