@@ -9,6 +9,7 @@ export class FilesActionService {
   static GET_ALL_AREAS_EVENT: string = FilesActionService.EVENT_PREFIX + "get-all-areas";
   static ON_UNSPECIFIED_PATH_EVENT: string = FilesActionService.EVENT_PREFIX + "on-unspecified-path";
   static LS_EVENT: string = FilesActionService.EVENT_PREFIX + "ls";
+  static NEW_SPREAD_SHEET_EVENT: string = FilesActionService.EVENT_PREFIX + "new-spread-sheet";
 
   constructor(
     private apiService: ApiService,
@@ -43,9 +44,30 @@ export class FilesActionService {
       path: path
     }).subscribe(
       (res: Response) => {
-        var json: FilesAction.LsResult = res.json();
+        var json: FilesAction.Ls = res.json();
         this.waffleDispatcherService.emit({
           eventType: FilesActionService.LS_EVENT,
+          data: json
+        });
+      },
+      (error: Response) => {
+        this.errorActionService.serverSystemError(error);
+      }
+      );
+  }
+
+  newSpreadSheet(areaName: string, dirId: string, filename: string, spreadSheet: any) {
+    this.apiService.put("files/new/spread-sheet", 
+    spreadSheet,
+    {
+      areaname: areaName,
+      dirId: dirId,
+      filename: filename
+    }).subscribe(
+      (res: Response) => {
+        var json: FilesAction.NewNode = res.json();
+        this.waffleDispatcherService.emit({
+          eventType: FilesActionService.NEW_SPREAD_SHEET_EVENT,
           data: json
         });
       },

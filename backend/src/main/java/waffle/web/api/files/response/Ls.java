@@ -1,32 +1,16 @@
-package waffle.web.api.files;
+package waffle.web.api.files.response;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import lombok.Builder;
 import lombok.Data;
 
 @Data
-public class LsResult implements Serializable {
+public class Ls implements Serializable {
 
-    List<Node> nodes = new ArrayList<>();
+    Node currentNode;
 
-    @Builder
-    @Data
-    public static class Node implements Serializable {
-
-        private String name;
-
-        private String nodeId;
-
-        private String type;
-
-        private LocalDateTime updateDateTime;
-
-        private LocalDateTime createDateTime;
-
-    }
+    List<Node> childNodes = new ArrayList<>();
 
 }

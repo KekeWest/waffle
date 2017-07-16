@@ -1,6 +1,6 @@
 package waffle.domain.db.node.files;
 
-import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
@@ -11,14 +11,11 @@ import org.neo4j.ogm.annotation.GraphId;
 import org.neo4j.ogm.annotation.Index;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
-import org.neo4j.ogm.annotation.typeconversion.Convert;
 
-import waffle.config.neo4j.converter.LocalDateTimeConverter;
-
-@EqualsAndHashCode(of = {"fileId"})
+@EqualsAndHashCode(of = {"fileId"}, callSuper = false)
 @Data
 @NodeEntity
-public class File {
+public class File extends Node {
 
     @GraphId
     private Long id;
@@ -28,15 +25,29 @@ public class File {
 
     private String name;
 
-    @Convert(LocalDateTimeConverter.class)
-    private LocalDateTime updateDateTime;
-
-    @Convert(LocalDateTimeConverter.class)
-    private LocalDateTime createDateTime;
-
     private String persistenceLocation;
 
     @Relationship(type = "Ownership", direction = Relationship.INCOMING)
     private Set<Directory> dirs;
+
+    public void addDirectory(Directory dir) {
+        if (dirs == null) {
+            dirs = new HashSet<>();
+        }
+        if (dir != null && !dirs.contains(dir)) {
+            dirs.add(dir);
+            dir.addFiles(this);
+        }
+    }
+
+    public void removeDirectory(Directory dir) {
+        if (dirs == null) {
+            return;
+        }
+        if (dir != null && dirs.contains(dir)) {
+            dirs.remove(dir);
+            dir.removeFiles(this);
+        }
+    }
 
 }

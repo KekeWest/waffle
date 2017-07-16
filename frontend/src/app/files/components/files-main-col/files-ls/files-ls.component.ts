@@ -1,6 +1,6 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { Router, ActivatedRoute, Params } from "@angular/router";
-import { FilesActionService, FilesStoreService, FilesAction } from "app/common/services";
+import { FilesActionService, FilesStoreService, FilesAction, WaffleDispatcherService } from "app/common/services";
 import { Payload } from "app/common/base";
 import { _, moment } from "app";
 
@@ -13,13 +13,14 @@ export class FilesLsComponent implements OnInit, AfterViewInit {
 
   showFileList: boolean = false;
 
-  currentNodes: FilesAction.Node[];
+  childNodes: FilesAction.Node[];
 
   private _selectNodes: {[id: string]: FilesAction.Node} = {};
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
+    private waffleDispatcherService: WaffleDispatcherService,
     private filesActionService: FilesActionService,
     private filesStoreService: FilesStoreService
   ) { }
@@ -32,7 +33,17 @@ export class FilesLsComponent implements OnInit, AfterViewInit {
             this.hideFileList();
             break;
           case FilesStoreService.LS_EVENT:
-            this.setCurrentNodes();
+            this.setChildNodes();
+            break;
+        }
+      }
+    );
+
+    this.waffleDispatcherService.register(
+      (payload: Payload) => {
+        switch (payload.eventType) {
+          case FilesActionService.NEW_SPREAD_SHEET_EVENT:
+            this.updateFileList();
             break;
         }
       }
@@ -56,14 +67,18 @@ export class FilesLsComponent implements OnInit, AfterViewInit {
 
   private hideFileList() {
     this.showFileList = false;
-    this.currentNodes = this.filesStoreService.currentNodes;
+    this.childNodes = this.filesStoreService.childNodes;
     this._selectNodes = {};
   }
 
-  private setCurrentNodes() {
+  private setChildNodes() {
     this.showFileList = true;
-    this.currentNodes = this.filesStoreService.currentNodes;
+    this.childNodes = this.filesStoreService.childNodes;
     this._selectNodes = {};
+  }
+
+  private updateFileList() {
+    this.filesActionService.ls(this.filesStoreService.currentArea, this.filesStoreService.currentPath);
   }
 
   isFile(node: FilesAction.Node): boolean {

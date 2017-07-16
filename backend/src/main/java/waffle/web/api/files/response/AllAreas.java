@@ -1,4 +1,4 @@
-package waffle.web.api.files;
+package waffle.web.api.files.response;
 
 import java.io.Serializable;
 import java.util.List;

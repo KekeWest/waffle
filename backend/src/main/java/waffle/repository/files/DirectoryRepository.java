@@ -1,9 +1,14 @@
 package waffle.repository.files;
 
+import org.springframework.data.neo4j.annotation.Query;
 import org.springframework.data.neo4j.repository.Neo4jRepository;
+import org.springframework.data.repository.query.Param;
 
 import waffle.domain.db.node.files.Directory;
 
 public interface DirectoryRepository extends Neo4jRepository<Directory, String> {
+
+    @Query("MATCH (:User {name:{username}})-[:Member]->(:Area {name:{areaname}})-[:Ownership*]->(dir:Directory {dirId:{dirId}}) RETURN dir")
+    Directory getDirectoryByDirId(@Param("username") String username, @Param("areaname") String areaname, @Param("dirId") String dirId);
 
 }

@@ -28,7 +28,7 @@ export class FilenameValidator {
       if (nodes) {
         ns = nodes;
       } else {
-        ns = this.filesStoreService.currentNodes;
+        ns = this.filesStoreService.childNodes;
       }
       ns.forEach((node: FilesAction.Node) => {
         if (node.name === name) {

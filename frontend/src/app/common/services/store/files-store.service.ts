@@ -13,7 +13,9 @@ export class FilesStoreService extends Emitter<Payload> {
 
   private _currentPath: string;
 
-  private _currentNodes: FilesAction.Node[];
+  private _currentNode: FilesAction.Node;
+
+  private _childNodes: FilesAction.Node[];
 
   static EVENT_PREFIX: string = "FilesStoreService.";
   static GET_ALL_AREAS_EVENT: string = FilesStoreService.EVENT_PREFIX + "get-all-areas";
@@ -35,7 +37,7 @@ export class FilesStoreService extends Emitter<Payload> {
             this.onUnspecifiedPath();
             break;
           case FilesActionService.LS_EVENT:
-            this.setCurrentNodes(<FilesAction.LsResult>payload.data);
+            this.setCurrentNodeInfo(<FilesAction.Ls>payload.data);
             break;
         }
       }
@@ -54,8 +56,12 @@ export class FilesStoreService extends Emitter<Payload> {
     return this._currentPath;
   }
 
-  get currentNodes(): FilesAction.Node[] {
-    return this._currentNodes;
+  get currentNode(): FilesAction.Node {
+    return this._currentNode;
+  }
+
+  get childNodes(): FilesAction.Node[] {
+    return this._childNodes;
   }
 
   private setAreas(action: FilesAction.GetAllAreas) {
@@ -64,13 +70,14 @@ export class FilesStoreService extends Emitter<Payload> {
   }
 
   private onUnspecifiedPath() {
-    this._currentNodes = [];
+    this._childNodes = [];
     this._currentArea = null;
     this.emit({ eventType: FilesStoreService.ON_UNSPECIFIED_PATH_EVENT });
   }
 
-  private setCurrentNodes(action: FilesAction.LsResult) {
-    this._currentNodes = action.nodes;
+  private setCurrentNodeInfo(action: FilesAction.Ls) {
+    this._currentNode = action.currentNode;
+    this._childNodes = action.childNodes;
     this.route.queryParams.subscribe((params: Params) => {
       this._currentArea = params["areaName"];
       this._currentPath = "/" + s.trim(params["path"], "/");

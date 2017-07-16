@@ -1,6 +1,5 @@
 package waffle.domain.db.node.files;
 
-import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -12,14 +11,11 @@ import org.neo4j.ogm.annotation.GraphId;
 import org.neo4j.ogm.annotation.Index;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
-import org.neo4j.ogm.annotation.typeconversion.Convert;
 
-import waffle.config.neo4j.converter.LocalDateTimeConverter;
-
-@EqualsAndHashCode(of = {"dirId"})
+@EqualsAndHashCode(of = {"dirId"}, callSuper = false)
 @Data
 @NodeEntity
-public class Directory {
+public class Directory extends Node {
 
     public static final String ROOT_NAME = "/";
 
@@ -28,14 +24,6 @@ public class Directory {
 
     @Index(primary = true, unique = true)
     private String dirId = UUID.randomUUID().toString();
-
-    private String name;
-
-    @Convert(LocalDateTimeConverter.class)
-    private LocalDateTime updateDateTime;
-
-    @Convert(LocalDateTimeConverter.class)
-    private LocalDateTime createDateTime;
 
     @Relationship(type = "Ownership", direction = Relationship.INCOMING)
     private Set<Directory> parentDirs;
@@ -46,15 +34,36 @@ public class Directory {
     @Relationship(type = "Ownership", direction = Relationship.OUTGOING)
     private Set<File> files;
 
+    public void addParentDirectory(Directory dir) {
+        if (parentDirs == null) {
+            parentDirs = new HashSet<>();
+        }
+        if (dir != null && !parentDirs.contains(dir)) {
+            parentDirs.add(dir);
+            dir.addDirectories(this);
+        }
+    }
+
+    public void removeParentDirectory(Directory dir) {
+        if (parentDirs == null) {
+            return;
+        }
+        if (dir != null && parentDirs.contains(dir)) {
+            parentDirs.remove(dir);
+            dir.removeDirectories(this);
+        }
+    }
+
     public void addDirectories(Directory... ds) {
         if (dirs == null) {
             dirs = new HashSet<>();
         }
         for (Directory d : ds) {
-            if (d == null) {
+            if (d == null || dirs.contains(d)) {
                 continue;
             }
             dirs.add(d);
+            d.addParentDirectory(this);
         }
     }
 
@@ -63,10 +72,11 @@ public class Directory {
             return;
         }
         for (Directory d : ds) {
-            if (d == null) {
+            if (d == null || !dirs.contains(d)) {
                 continue;
             }
             dirs.remove(d);
+            d.removeParentDirectory(this);
         }
     }
 
@@ -75,10 +85,11 @@ public class Directory {
             files = new HashSet<>();
         }
         for (File f : fs) {
-            if (f == null) {
+            if (f == null || files.contains(f)) {
                 continue;
             }
             files.add(f);
+            f.addDirectory(this);
         }
     }
 
@@ -87,10 +98,11 @@ public class Directory {
             return;
         }
         for (File f : fs) {
-            if (f == null) {
+            if (f == null || !files.contains(f)) {
                 continue;
             }
             files.remove(f);
+            f.removeDirectory(this);
         }
     }
 

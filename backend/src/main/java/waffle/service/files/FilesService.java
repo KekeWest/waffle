@@ -1,4 +1,4 @@
-package waffle.service;
+package waffle.service.files;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -10,9 +10,11 @@ import org.neo4j.ogm.session.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import waffle.domain.db.node.files.Area;
 import waffle.domain.db.node.files.Directory;
+import waffle.domain.db.node.files.File;
 import waffle.domain.db.node.security.User;
 import waffle.repository.files.DirectoryRepository;
 import waffle.repository.security.UserRepository;
@@ -70,6 +72,20 @@ public class FilesService {
         }
 
         return directoryRepository.findOne(dirId);
+    }
+
+    @Transactional
+    public File createNewFile(String username, String areaname, String dirId, String filename, String fileBody) {
+        Directory dir = directoryRepository.getDirectoryByDirId(username, areaname, dirId);
+        if (dir == null) {
+            throw new NodeNotFoundException(dirId);
+        }
+
+        File file = new File();
+        file.setName(filename);
+        dir.addFiles(file);
+        directoryRepository.save(dir);
+        return file;
     }
 
 }

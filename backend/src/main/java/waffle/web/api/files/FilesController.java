@@ -10,13 +10,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import waffle.domain.db.node.files.Area;
 import waffle.domain.db.node.files.Directory;
-import waffle.service.FilesService;
+import waffle.domain.db.node.files.File;
+import waffle.service.files.FilesService;
+import waffle.web.api.files.response.AllAreas;
+import waffle.web.api.files.response.Ls;
+import waffle.web.api.files.response.NewNode;
+import waffle.web.api.files.response.Node;
 
 @RestController
 @RequestMapping("/api/files")
@@ -36,7 +43,7 @@ public class FilesController {
     }
 
     @GetMapping("/ls")
-    public LsResult ls(@RequestParam String areaname, @RequestParam String path, Authentication authentication) {
+    public Ls ls(@RequestParam String areaname, @RequestParam String path, Authentication authentication) {
         ArrayList<String> dirNameChain = new ArrayList<>(Arrays.asList(StringUtils.split(path, "/")));
         dirNameChain.removeIf((dirname) -> {
             return dirname.equals("");
@@ -45,35 +52,23 @@ public class FilesController {
 
         Directory dir = filesService.getDirectoryByPath(authentication.getName(), areaname, dirNameChain);
 
-        LsResult lsResult = new LsResult();
+        Ls ls = new Ls();
         if (dir.getDirs() != null) {
-            dir.getDirs().forEach(
-                    (d) -> {
-                        lsResult.getNodes().add(
-                                LsResult.Node.builder()
-                                        .name(d.getName())
-                                        .nodeId(d.getDirId())
-                                        .type("directory")
-                                        .updateDateTime(d.getUpdateDateTime())
-                                        .createDateTime(d.getCreateDateTime())
-                                        .build());
-                    });
+            dir.getDirs().forEach((d) -> ls.getChildNodes().add(Node.fromDirectory(d)));
         }
         if (dir.getFiles() != null) {
-            dir.getFiles().forEach(
-                    (f) -> {
-                        lsResult.getNodes().add(
-                                LsResult.Node.builder()
-                                        .name(f.getName())
-                                        .nodeId(f.getFileId())
-                                        .type("file")
-                                        .updateDateTime(f.getUpdateDateTime())
-                                        .createDateTime(f.getCreateDateTime())
-                                        .build());
-                    });
+            dir.getFiles().forEach((f) -> ls.getChildNodes().add(Node.fromFile(f)));
         }
+        ls.setCurrentNode(Node.fromDirectory(dir));
 
-        return lsResult;
+        return ls;
+    }
+
+    @PutMapping("/new/spread-sheet")
+    public NewNode newSpreadSheet(Authentication authentication, @RequestParam String areaname, @RequestParam String dirId,
+            @RequestParam String filename, @RequestBody String fileBody) {
+        File newFile = filesService.createNewFile(authentication.getName(), areaname, dirId, filename, fileBody);
+        return NewNode.builder().newNode(Node.fromFile(newFile)).build();
     }
 
 }

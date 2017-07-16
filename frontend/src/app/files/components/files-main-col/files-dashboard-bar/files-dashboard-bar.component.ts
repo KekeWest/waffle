@@ -1,5 +1,5 @@
 import { Component, OnInit, HostBinding, ViewChild, ElementRef } from '@angular/core';
-import { FilesStoreService } from "app/common/services";
+import { FilesStoreService, FilesActionService } from "app/common/services";
 import { Payload } from "app/common/base";
 import { ModalDirective } from "ngx-bootstrap";
 import { FormGroup, FormBuilder, Validators, AbstractControl } from "@angular/forms";
@@ -34,6 +34,7 @@ export class FilesDashboardBarComponent implements OnInit {
 
   constructor(
     private formBuilder: FormBuilder,
+    private filesActionService: FilesActionService,
     private filesStoreService: FilesStoreService,
     private filenameValidator: FilenameValidator
   ) { }
@@ -112,6 +113,7 @@ export class FilesDashboardBarComponent implements OnInit {
 
   onNewModalSubmit(event: Event) {
     event.preventDefault();
+    this.createName = this.newModalForm.value.name;
     this.hideNewModal();
 
     switch (this.newModalType) {
@@ -125,7 +127,11 @@ export class FilesDashboardBarComponent implements OnInit {
   }
 
   createSpreadSheet() {
-
+    this.filesActionService.newSpreadSheet(
+      this.filesStoreService.currentArea,
+      this.filesStoreService.currentNode.nodeId,
+      this.createName,
+      {});
   }
 
   createFolder() {

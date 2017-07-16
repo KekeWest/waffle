@@ -14,7 +14,7 @@
 <div class="table-body">
   <table class="table table-hover">
     <tbody>
-      <tr *ngFor="let node of currentNodes; let i=index;">
+      <tr *ngFor="let node of childNodes; let i=index;">
         <td class="check">
           <label [attr.for]="node.nodeId">
             <input type="checkbox" [id]="node.nodeId" [checked]="isSelectedNode(node)" (change)="changeSelectedNode(node)">

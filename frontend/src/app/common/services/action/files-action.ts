@@ -4,8 +4,13 @@ export module FilesAction {
     areas: string[];
   }
 
-  export interface LsResult {
-    nodes: Node[];
+  export interface Ls {
+    currentNode: Node;
+    childNodes: Node[];
+  }
+
+  export interface NewNode {
+    newNode: Node;
   }
 
   export interface Node {
