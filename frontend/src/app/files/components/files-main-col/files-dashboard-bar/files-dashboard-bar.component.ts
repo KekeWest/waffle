@@ -5,6 +5,7 @@ import { ModalDirective } from "ngx-bootstrap";
 import { FormGroup, FormBuilder, Validators, AbstractControl } from "@angular/forms";
 import { _ } from "app";
 import { FilenameValidator } from "app/common/validators";
+import { SpreadSheet, Sheet } from "app/spread-sheet";
 
 @Component({
   selector: 'wf-files-dashboard-bar',
@@ -117,8 +118,8 @@ export class FilesDashboardBarComponent implements OnInit {
     this.hideNewModal();
 
     switch (this.newModalType) {
-      case "folder":
-        this.createFolder();
+      case "directory":
+        this.createDirectory();
         break;
       case "spread-sheet":
         this.createSpreadSheet();
@@ -127,15 +128,19 @@ export class FilesDashboardBarComponent implements OnInit {
   }
 
   createSpreadSheet() {
+    var spreadSheet: SpreadSheet = new SpreadSheet(this.createName, { "sheet1": new Sheet("sheet1") }, ["sheet1"], "sheet1");
     this.filesActionService.newSpreadSheet(
       this.filesStoreService.currentArea,
       this.filesStoreService.currentNode.nodeId,
       this.createName,
-      {});
+      spreadSheet);
   }
 
-  createFolder() {
-
+  createDirectory() {
+    this.filesActionService.newDirectory(
+      this.filesStoreService.currentArea,
+      this.filesStoreService.currentNode.nodeId,
+      this.createName);
   }
 
 }

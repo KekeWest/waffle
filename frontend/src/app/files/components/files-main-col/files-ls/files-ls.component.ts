@@ -43,6 +43,7 @@ export class FilesLsComponent implements OnInit, AfterViewInit {
       (payload: Payload) => {
         switch (payload.eventType) {
           case FilesActionService.NEW_SPREAD_SHEET_EVENT:
+          case FilesActionService.NEW_DIRECTORY_EVENT:
             this.updateFileList();
             break;
         }

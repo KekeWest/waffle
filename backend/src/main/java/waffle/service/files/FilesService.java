@@ -1,5 +1,6 @@
 package waffle.service.files;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -12,6 +13,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import waffle.config.Initial.HomeDirectoryComponent;
 import waffle.domain.db.node.files.Area;
 import waffle.domain.db.node.files.Directory;
 import waffle.domain.db.node.files.File;
@@ -21,6 +23,9 @@ import waffle.repository.security.UserRepository;
 
 @Service
 public class FilesService {
+
+    @Autowired
+    private HomeDirectoryComponent homeDirectoryComponent;
 
     @Autowired
     private UserRepository userRepository;
@@ -74,18 +79,57 @@ public class FilesService {
         return directoryRepository.findOne(dirId);
     }
 
+    private void nodeNameCheck(String name, Directory currentDir) {
+        if (name.contains("/") || name.contains("\n")) {
+            throw new InvalidNodeNameException();
+        }
+
+        Directory cdir = directoryRepository.findOne(currentDir.getDirId());
+        if (cdir.getDirs() != null) {
+            for (Directory dir : cdir.getDirs()) {
+                if (name.equals(dir.getName())) {
+                    throw new InvalidNodeNameException();
+                }
+            }
+        }
+        if (cdir.getFiles() != null) {
+            for (File file : cdir.getFiles()) {
+                if (name.equals(file.getName())) {
+                    throw new InvalidNodeNameException();
+                }
+            }
+        }
+    }
+
     @Transactional
-    public File createNewFile(String username, String areaname, String dirId, String filename, String fileBody) {
+    public File createFile(String username, String areaname, String dirId, String filename, String fileBody) throws IOException {
         Directory dir = directoryRepository.getDirectoryByDirId(username, areaname, dirId);
         if (dir == null) {
             throw new NodeNotFoundException(dirId);
         }
+        nodeNameCheck(filename, dir);
 
         File file = new File();
         file.setName(filename);
         dir.addFiles(file);
         directoryRepository.save(dir);
+        homeDirectoryComponent.updateFile(file.getFileId(), fileBody);
         return file;
+    }
+
+    @Transactional
+    public Directory createDirectory(String username, String areaname, String dirId, String dirname) {
+        Directory dir = directoryRepository.getDirectoryByDirId(username, areaname, dirId);
+        if (dir == null) {
+            throw new NodeNotFoundException(dirId);
+        }
+        nodeNameCheck(dirname, dir);
+
+        Directory newDir = new Directory();
+        newDir.setName(dirname);
+        dir.addDirectories(newDir);
+        directoryRepository.save(dir);
+        return newDir;
     }
 
 }

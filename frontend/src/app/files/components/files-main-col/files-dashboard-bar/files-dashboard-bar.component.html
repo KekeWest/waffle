@@ -3,7 +3,7 @@
   </button>
   <ul *dropdownMenu class="dropdown-menu" role="menu">
     <li role="menuitem">
-      <a class="dropdown-item" (click)="showNewModal('folder')">
+      <a class="dropdown-item" (click)="showNewModal('directory')">
         <img class="icon" src="/assets/images/files/folder-icon.png">
         <span>Folder</span>
       </a>
@@ -36,7 +36,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <h4 *ngIf="newModalType === 'spread-sheet'" class="modal-title pull-left">Create New SpreadSheet</h4>
-        <h4 *ngIf="newModalType === 'folder'" class="modal-title pull-left">Create New Folder</h4>
+        <h4 *ngIf="newModalType === 'directory'" class="modal-title pull-left">Create New Folder</h4>
         <button type="button" class="close pull-right" aria-label="Close" (click)="hideNewModal()">
           <span aria-hidden="true">&times;</span>
         </button>

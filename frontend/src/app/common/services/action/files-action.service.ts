@@ -10,6 +10,7 @@ export class FilesActionService {
   static ON_UNSPECIFIED_PATH_EVENT: string = FilesActionService.EVENT_PREFIX + "on-unspecified-path";
   static LS_EVENT: string = FilesActionService.EVENT_PREFIX + "ls";
   static NEW_SPREAD_SHEET_EVENT: string = FilesActionService.EVENT_PREFIX + "new-spread-sheet";
+  static NEW_DIRECTORY_EVENT: string = FilesActionService.EVENT_PREFIX + "new-directory";
 
   constructor(
     private apiService: ApiService,
@@ -74,7 +75,27 @@ export class FilesActionService {
       (error: Response) => {
         this.errorActionService.serverSystemError(error);
       }
-      );
+    );
+  }
+
+  newDirectory(areaName: string, dirId: string, dirname: string) {
+    this.apiService.put("files/new/directory", null,
+    {
+      areaname: areaName,
+      dirId: dirId,
+      dirname: dirname
+    }).subscribe(
+      (res: Response) => {
+        var json: FilesAction.NewNode = res.json();
+        this.waffleDispatcherService.emit({
+          eventType: FilesActionService.NEW_DIRECTORY_EVENT,
+          data: json
+        });
+      },
+      (error: Response) => {
+        this.errorActionService.serverSystemError(error);
+      }
+    );
   }
 
 }

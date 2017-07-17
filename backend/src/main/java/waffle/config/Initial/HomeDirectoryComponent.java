@@ -1,10 +1,13 @@
 package waffle.config.Initial;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 
-import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
+import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -17,11 +20,10 @@ public class HomeDirectoryComponent {
     @Autowired
     private WaffleProperties waffleProperties;
 
-    @Getter
-    private String spreadSheetDir;
+    private String fileDir;
 
     public void init() {
-        spreadSheetDir = waffleProperties.getHomeDir() + "/SpreadSheet/";
+        fileDir = waffleProperties.getHomeDir() + "/files/";
         checkHomeDirectoryExistence();
     }
 
@@ -37,16 +39,26 @@ public class HomeDirectoryComponent {
             }
         }
 
-        File spreadSheetDirectory = new File(spreadSheetDir);
-        if (!spreadSheetDirectory.exists()) {
+        File filesDirectory = new File(fileDir);
+        if (!filesDirectory.exists()) {
             try {
-                spreadSheetDirectory.mkdirs();
-                log.info("create spreadsheet directory. (" + spreadSheetDirectory.getAbsolutePath() + ")");
+                filesDirectory.mkdirs();
+                log.info("create spreadsheet directory. (" + filesDirectory.getAbsolutePath() + ")");
             } catch (Exception e) {
                 log.error("create spreadsheet directory failed.", e);
                 throw e;
             }
         }
+    }
+
+    public void updateFile(String fileId, String fileBody) throws IOException {
+        File file = new File(fileDir + "/" + fileId);
+        FileUtils.write(file, fileBody, StandardCharsets.UTF_8);
+    }
+
+    public void removeFile(String fileId) throws IOException {
+        File file = new File(fileDir + "/" + fileId);
+        Files.delete(file.toPath());
     }
 
 }
