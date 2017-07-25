@@ -24,7 +24,7 @@
           <img class="icon" src="/assets/images/files/folder-icon.png">
           <span>{{node.name}}</span>
         </td>
-        <td *ngIf="isFile(node)" class="name">
+        <td *ngIf="isFile(node)" [routerLink]="['/spread-sheet']" [queryParams]="getSpreadSheetParam(node)" class="name">
           <img class="icon" src="/assets/images/files/file-icon.png">
           <span>{{node.name}}</span>
         </td>

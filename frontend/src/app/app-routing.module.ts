@@ -4,6 +4,7 @@ import { MeStoreService } from "app/common/services";
 import { FilesComponent } from "app/files/components/files.component";
 import { LoginComponent } from "app/login/components/login.component";
 import { FilesLsComponent } from "app/files/components/files-main-col/files-ls/files-ls.component";
+import { SpreadSheetComponent } from "app/spread-sheet/components/spread-sheet.component";
 
 const routes: Routes = [
   {
@@ -13,7 +14,10 @@ const routes: Routes = [
     path: 'login', component: LoginComponent
   },
   {
-    path: 'files', component: FilesComponent, canActivate: [MeStoreService], children: []
+    path: 'files', component: FilesComponent, canActivate: [MeStoreService]
+  },
+  {
+    path: 'spread-sheet', component: SpreadSheetComponent, canActivate: [MeStoreService]
   }
 ];
 

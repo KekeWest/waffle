@@ -15,7 +15,7 @@ export class FilesLsComponent implements OnInit, AfterViewInit {
 
   childNodes: FilesAction.Node[];
 
-  private _selectNodes: {[id: string]: FilesAction.Node} = {};
+  private _selectNodes: { [id: string]: FilesAction.Node } = {};
 
   constructor(
     private route: ActivatedRoute,
@@ -59,7 +59,7 @@ export class FilesLsComponent implements OnInit, AfterViewInit {
         return;
       }
       var path: string = params["path"];
-      if (_.isEmpty(path) ) {
+      if (_.isEmpty(path)) {
         path = "";
       }
       this.filesActionService.ls(areaName, path);
@@ -98,7 +98,7 @@ export class FilesLsComponent implements OnInit, AfterViewInit {
     }
   }
 
-  getNextDirParam(node: FilesAction.Node): {areaName: string, path: string} {
+  getNextDirParam(node: FilesAction.Node): { areaName: string, path: string } {
     var path: string;
     if (this.filesStoreService.currentPath === "/") {
       path = "/" + node.name;
@@ -110,6 +110,10 @@ export class FilesLsComponent implements OnInit, AfterViewInit {
       areaName: this.filesStoreService.currentArea,
       path: path
     };
+  }
+
+  getSpreadSheetParam(node: FilesAction.Node): { id: string } {
+    return { id: node.nodeId };
   }
 
   isSelectedNode(node: FilesAction.Node): boolean {

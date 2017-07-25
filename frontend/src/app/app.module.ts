@@ -4,6 +4,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 
 import { TabsModule, BsDropdownModule, ModalModule } from 'ngx-bootstrap';
+import { StompService } from 'ng2-stomp-service';
 
 import { AppRoutingModule } from "app/app-routing.module";
 
@@ -78,6 +79,7 @@ import { FilenameValidator } from "app/common/validators";
     ModalModule.forRoot()
   ],
   providers: [
+    StompService,
     ApiService,
     WaffleDispatcherService,
     ErrorActionService,
