@@ -26,7 +26,7 @@ public class Node implements Serializable {
     public static Node fromFile(File file) {
         return Node.builder()
                 .name(file.getName())
-                .nodeId(file.getFileId())
+                .nodeId(file.getNodeId())
                 .type("file")
                 .updateDateTime(file.getUpdateDateTime())
                 .createDateTime(file.getCreateDateTime())
@@ -36,7 +36,7 @@ public class Node implements Serializable {
     public static Node fromDirectory(Directory dir) {
         return Node.builder()
                 .name(dir.getName())
-                .nodeId(dir.getDirId())
+                .nodeId(dir.getNodeId())
                 .type("directory")
                 .updateDateTime(dir.getUpdateDateTime())
                 .createDateTime(dir.getCreateDateTime())

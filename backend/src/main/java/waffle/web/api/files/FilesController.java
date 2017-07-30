@@ -75,19 +75,19 @@ public class FilesController {
     @PutMapping("/new/spread-sheet")
     public NewNode newSpreadSheet(Authentication authentication,
             @RequestParam @NotEmpty String areaname,
-            @RequestParam @NotEmpty String dirId,
+            @RequestParam @NotEmpty String nodeId,
             @RequestParam @NotEmpty String filename,
             @RequestBody String fileBody) throws IOException {
-        File newFile = filesService.createFile(authentication.getName(), areaname, dirId, filename, fileBody);
+        File newFile = filesService.createFile(authentication.getName(), areaname, nodeId, filename, fileBody);
         return NewNode.builder().newNode(Node.fromFile(newFile)).build();
     }
 
     @PutMapping("/new/directory")
     public NewNode newDirectory(Authentication authentication,
             @RequestParam @NotEmpty String areaname,
-            @RequestParam @NotEmpty String dirId,
+            @RequestParam @NotEmpty String nodeId,
             @RequestParam @NotEmpty String dirname) throws IOException {
-        Directory newDir = filesService.createDirectory(authentication.getName(), areaname, dirId, dirname);
+        Directory newDir = filesService.createDirectory(authentication.getName(), areaname, nodeId, dirname);
         return NewNode.builder().newNode(Node.fromDirectory(newDir)).build();
     }
 

@@ -2,28 +2,19 @@ package waffle.domain.db.node.files;
 
 import java.util.HashSet;
 import java.util.Set;
-import java.util.UUID;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import org.neo4j.ogm.annotation.GraphId;
-import org.neo4j.ogm.annotation.Index;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 
-@EqualsAndHashCode(of = {"dirId"}, callSuper = false)
+@EqualsAndHashCode(of = {}, callSuper = true)
 @Data
 @NodeEntity
 public class Directory extends Node {
 
     public static final String ROOT_NAME = "/";
-
-    @GraphId
-    private Long id;
-
-    @Index(primary = true, unique = true)
-    private String dirId = UUID.randomUUID().toString();
 
     @Relationship(type = "Ownership", direction = Relationship.INCOMING)
     private Set<Directory> parentDirs;

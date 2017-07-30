@@ -58,25 +58,18 @@ public class FilesService {
         querybr.append("MATCH (:User {name:{username}})-[:Member]->(:Area {name:{areaname}})");
 
         for (int i = 0; i < dirNameChain.size(); i++) {
-            querybr.append("-[:Ownership]->(dir");
-            querybr.append(i);
-            querybr.append(":Directory {name:{dirname");
-            querybr.append(i);
-            querybr.append("}})");
-
+            querybr.append("-[:Ownership]->(dir").append(i).append(":Directory {name:{dirname").append(i).append("}})");
             parameters.put("dirname" + String.valueOf(i), dirNameChain.get(i));
         }
 
-        querybr.append(" RETURN dir");
-        querybr.append(dirNameChain.size() - 1);
-        querybr.append(".dirId");
+        querybr.append(" RETURN dir").append(dirNameChain.size() - 1).append(".nodeId");
 
-        String dirId = session.queryForObject(String.class, querybr.toString(), parameters);
-        if (dirId == null) {
+        String nodeId = session.queryForObject(String.class, querybr.toString(), parameters);
+        if (nodeId == null) {
             return null;
         }
 
-        return directoryRepository.findOne(dirId);
+        return directoryRepository.findOne(nodeId);
     }
 
     private void nodeNameCheck(String name, Directory currentDir) {
@@ -84,7 +77,7 @@ public class FilesService {
             throw new InvalidNodeNameException();
         }
 
-        Directory cdir = directoryRepository.findOne(currentDir.getDirId());
+        Directory cdir = directoryRepository.findOne(currentDir.getNodeId());
         if (cdir.getDirs() != null) {
             for (Directory dir : cdir.getDirs()) {
                 if (name.equals(dir.getName())) {
@@ -102,10 +95,10 @@ public class FilesService {
     }
 
     @Transactional
-    public File createFile(String username, String areaname, String dirId, String filename, String fileBody) throws IOException {
-        Directory dir = directoryRepository.getDirectoryByDirId(username, areaname, dirId);
+    public File createFile(String username, String areaname, String nodeId, String filename, String fileBody) throws IOException {
+        Directory dir = directoryRepository.getDirectoryByNodeId(username, areaname, nodeId);
         if (dir == null) {
-            throw new NodeNotFoundException(dirId);
+            throw new NodeNotFoundException(nodeId);
         }
         nodeNameCheck(filename, dir);
 
@@ -113,15 +106,15 @@ public class FilesService {
         file.setName(filename);
         dir.addFiles(file);
         directoryRepository.save(dir);
-        homeDirectoryComponent.updateFile(file.getFileId(), fileBody);
+        homeDirectoryComponent.updateFile(file.getNodeId(), fileBody);
         return file;
     }
 
     @Transactional
-    public Directory createDirectory(String username, String areaname, String dirId, String dirname) {
-        Directory dir = directoryRepository.getDirectoryByDirId(username, areaname, dirId);
+    public Directory createDirectory(String username, String areaname, String nodeId, String dirname) {
+        Directory dir = directoryRepository.getDirectoryByNodeId(username, areaname, nodeId);
         if (dir == null) {
-            throw new NodeNotFoundException(dirId);
+            throw new NodeNotFoundException(nodeId);
         }
         nodeNameCheck(dirname, dir);
 

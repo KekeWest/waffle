@@ -57,12 +57,12 @@ export class FilesActionService {
       );
   }
 
-  newSpreadSheet(areaName: string, dirId: string, filename: string, spreadSheet: any) {
+  newSpreadSheet(areaName: string, nodeId: string, filename: string, spreadSheet: any) {
     this.apiService.put("files/new/spread-sheet", 
     spreadSheet,
     {
       areaname: areaName,
-      dirId: dirId,
+      nodeId: nodeId,
       filename: filename
     }).subscribe(
       (res: Response) => {
@@ -78,11 +78,11 @@ export class FilesActionService {
     );
   }
 
-  newDirectory(areaName: string, dirId: string, dirname: string) {
+  newDirectory(areaName: string, nodeId: string, dirname: string) {
     this.apiService.put("files/new/directory", null,
     {
       areaname: areaName,
-      dirId: dirId,
+      nodeId: nodeId,
       dirname: dirname
     }).subscribe(
       (res: Response) => {
