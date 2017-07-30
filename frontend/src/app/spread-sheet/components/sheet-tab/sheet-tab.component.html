@@ -1,4 +1,4 @@
-<div class="create-sheet" (click)="createNewSheet()">
+<div class="create-sheet" *ngIf="isLoadedSpreadSheet" (click)="createNewSheet()">
   <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
 </div>
 <div class="tabset-wrapper">

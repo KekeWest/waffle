@@ -1,4 +1,4 @@
-import { SelectedCellPosition } from "app/spread-sheet";
+import { SelectedCellPosition, SpreadSheet } from "app/spread-sheet";
 
 export module SpreadSheetAction {
 
@@ -9,6 +9,10 @@ export module SpreadSheetAction {
   export interface SelectCell {
     sheetName: string;
     selectedCellPos: SelectedCellPosition;
+  }
+
+  export interface LoadSpreadSheet {
+    spreadSheet: SpreadSheet;
   }
 
 }

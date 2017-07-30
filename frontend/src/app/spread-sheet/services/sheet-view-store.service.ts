@@ -35,7 +35,6 @@ export class SheetViewStoreService extends Emitter<Payload> {
     private spreadSheetStoreService: SpreadSheetStoreService
   ) {
     super();
-    this._sheet = this.spreadSheetStoreService.selectedSheet;
 
     this.spreadSheetDispatcherService.register(
       (payload: Payload) => {
@@ -64,19 +63,24 @@ export class SheetViewStoreService extends Emitter<Payload> {
     );
   }
 
-  set sheet(sheet: Sheet) {
-    this._sheet = sheet;
-  }
-
   get sheetName(): string {
+    if (!this.isLoadedSheet()) {
+      return null;
+    }
     return this._sheet.name;
   }
 
   get sheetViewColumnList(): number[] {
+    if (!this.isLoadedSheet()) {
+      return [];
+    }
     return this._sheet.sheetView.sheetViewColumnList;
   }
 
   get sheetViewRowList(): number[] {
+    if (!this.isLoadedSheet()) {
+      return [];
+    }
     return this._sheet.sheetView.sheetViewRowList;
   }
 
@@ -97,18 +101,30 @@ export class SheetViewStoreService extends Emitter<Payload> {
   }
 
   get viewScrollTop(): number {
+    if (!this.isLoadedSheet()) {
+      return 0;
+    }
     return this._sheet.sheetView.viewScrollTop;
   }
 
   get viewScrollLeft(): number {
+    if (!this.isLoadedSheet()) {
+      return 0;
+    }
     return this._sheet.sheetView.viewScrollLeft;
   }
 
   get areaWidth(): number {
+    if (!this.isLoadedSheet()) {
+      return 0;
+    }
     return this._sheet.sheetView.areaWidth;
   }
 
   get areaHeight(): number {
+    if (!this.isLoadedSheet()) {
+      return 0;
+    }
     return this._sheet.sheetView.areaHeight;
   }
 
@@ -121,15 +137,31 @@ export class SheetViewStoreService extends Emitter<Payload> {
   }
 
   get sheetViewTop(): number {
+    if (!this.isLoadedSheet()) {
+      return 0;
+    }
     return this._sheet.sheetView.sheetViewTop;
   }
 
   get sheetViewLeft(): number {
+    if (!this.isLoadedSheet()) {
+      return 0;
+    }
     return this._sheet.sheetView.sheetViewLeft;
   }
 
   get selectedCellPos(): SelectedCellPosition {
+    if (!this.isLoadedSheet()) {
+      return null;
+    }
     return this._sheet.sheetView.selectedCellPosition;
+  }
+
+  isLoadedSheet(): boolean {
+    if (!this._sheet) {
+      return false;
+    }
+    return true;
   }
 
   getColumn(colIndex: number): Column {
@@ -209,6 +241,10 @@ export class SheetViewStoreService extends Emitter<Payload> {
   private changeSheetViewSize(action: SheetViewAction.ChangeSheetViewSize) {
     this._viewWidth = action.width;
     this._viewHeight = action.height;
+
+    if (!this.isLoadedSheet()) {
+      return;
+    }
     
     if (!this._sheet.sheetView.areaHeight || !this._sheet.sheetView.areaWidth) {
       this.initAreaRect();
@@ -477,7 +513,8 @@ export class SheetViewStoreService extends Emitter<Payload> {
   }
 
   private selectSheet(action: SpreadSheetAction.SelectSheet) {
-    this._sheet = this.spreadSheetStoreService.getSheet(action.sheetName);
+    this.spreadSheetDispatcherService.waitFor([this.spreadSheetStoreService.spreadSheetDispatcherId]);
+    this._sheet = this.spreadSheetStoreService.selectedSheet;
     
     if (!this._sheet.sheetView.areaHeight || !this._sheet.sheetView.areaWidth) {
       this.initAreaRect();

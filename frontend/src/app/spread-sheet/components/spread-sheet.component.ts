@@ -30,6 +30,7 @@ export class SpreadSheetComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.spreadSheetActionService.loadSpreadSheet();
   }
 
 }

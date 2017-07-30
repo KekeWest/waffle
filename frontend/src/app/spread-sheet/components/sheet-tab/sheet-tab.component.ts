@@ -13,7 +13,9 @@ import { CreateNewSheetActionService } from "app/spread-sheet/services/command-a
 })
 export class SheetTabComponent implements OnInit, AfterViewChecked {
 
-  sheetOrder: string[];
+  isLoadedSpreadSheet: boolean = false;
+
+  sheetOrder: string[] = [];
 
   private _needScroll: boolean = false;
 
@@ -25,7 +27,15 @@ export class SheetTabComponent implements OnInit, AfterViewChecked {
   ) { }
 
   ngOnInit() {
-    this.sheetOrder = this.spreadSheetStoreService.sheetOrder;
+    this.spreadSheetStoreService.register(
+      (payload: Payload) => {
+        switch (payload.eventType) {
+          case SpreadSheetStoreService.LOAD_SPREADSHEET_EVENT:
+            this.init();
+            break;
+        }
+      }
+    );
   }
 
   ngAfterViewChecked() {
@@ -34,6 +44,12 @@ export class SheetTabComponent implements OnInit, AfterViewChecked {
       (<HTMLElement>this.el.nativeElement).querySelector("tabset").scrollLeft = width;
       this._needScroll = false;
     }
+  }
+
+  init() {
+    this.sheetOrder = this.spreadSheetStoreService.sheetOrder;
+    this.isLoadedSpreadSheet = true;
+    this.spreadSheetActionService.selectSheet(this.spreadSheetStoreService.selectedSheetName);
   }
 
   createNewSheet() {
