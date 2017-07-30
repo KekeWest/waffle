@@ -28,6 +28,10 @@ export class DashboardHeaderComponent implements OnInit {
     );
   }
 
+  isActive(): boolean {
+    return this.meStoreService.active;
+  }
+
   onLogout() {
     this.meActionService.logout();
   }
