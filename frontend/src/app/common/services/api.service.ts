@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Http, Headers, Response } from "@angular/http";
 import { environment } from "environments/environment";
 import { Observable } from "rxjs/Observable";
+import 'rxjs/add/operator/delay';
 
 @Injectable()
 export class ApiService {
@@ -12,9 +13,10 @@ export class ApiService {
 
   get(
     url: string,
-    params?: string | URLSearchParams | {[key: string]: any | any[];} | null
-    ): Observable<Response> {
-    return this.http.get(
+    params?: string | URLSearchParams | { [key: string]: any | any[]; } | null
+  ): Observable<Response> {
+    var response: Observable<Response> =
+    this.http.get(
       environment.apiUrlRoot + url,
       {
         params: params,
@@ -24,14 +26,17 @@ export class ApiService {
         withCredentials: true
       }
     );
+
+    return Observable.from(response).delay(environment.apiResponseDelay);
   }
 
   post(
-    url: string, 
-    jsonObject: any, 
-    params?: string | URLSearchParams | {[key: string]: any | any[];} | null
-    ): Observable<Response> {
-    return this.http.post(
+    url: string,
+    jsonObject: any,
+    params?: string | URLSearchParams | { [key: string]: any | any[]; } | null
+  ): Observable<Response> {
+    var response: Observable<Response> =
+    this.http.post(
       environment.apiUrlRoot + url,
       JSON.stringify(jsonObject),
       {
@@ -43,25 +48,30 @@ export class ApiService {
         withCredentials: true
       }
     );
+
+    return Observable.from(response).delay(environment.apiResponseDelay);
   }
 
   put(
-    url: string, 
-    jsonObject: any, 
-    params?: string | URLSearchParams | {[key: string]: any | any[];} | null
+    url: string,
+    jsonObject: any,
+    params?: string | URLSearchParams | { [key: string]: any | any[]; } | null
   ): Observable<Response> {
-    return this.http.put(
-      environment.apiUrlRoot + url,
-      JSON.stringify(jsonObject),
-      {
-        params: params,
-        headers: new Headers({
-          'Content-Type': 'application/json',
-          'X-Requested-With': 'XMLHttpRequest'
-        }),
-        withCredentials: true
-      }
-    );
+    var response: Observable<Response> =
+      this.http.put(
+        environment.apiUrlRoot + url,
+        JSON.stringify(jsonObject),
+        {
+          params: params,
+          headers: new Headers({
+            'Content-Type': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest'
+          }),
+          withCredentials: true
+        }
+      );
+
+    return Observable.from(response).delay(environment.apiResponseDelay);
   }
 
 }

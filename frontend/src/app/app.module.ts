@@ -37,6 +37,7 @@ import { MomentPipe } from './common/pipes/moment.pipe';
 import { EmptyPipe } from './common/pipes/empty.pipe';
 import { FilesDashboardBarComponent } from './files/components/files-main-col/files-dashboard-bar/files-dashboard-bar.component';
 import { FilenameValidator } from "app/common/validators";
+import { LoadingMaskComponent } from './common/components/loading-mask/loading-mask.component';
 
 @NgModule({
   declarations: [
@@ -67,6 +68,7 @@ import { FilenameValidator } from "app/common/validators";
     MomentPipe,
     EmptyPipe,
     FilesDashboardBarComponent,
+    LoadingMaskComponent,
   ],
   imports: [
     BrowserModule,

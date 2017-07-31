@@ -3,6 +3,7 @@ import { Router, ActivatedRoute, Params } from "@angular/router";
 import { FilesActionService, FilesStoreService, FilesAction, WaffleDispatcherService } from "app/common/services";
 import { Payload } from "app/common/base";
 import { _, moment } from "app";
+import { LoadingMaskComponent } from "app/common/components/loading-mask/loading-mask.component";
 
 @Component({
   selector: 'wf-files-ls',
@@ -62,6 +63,10 @@ export class FilesLsComponent implements OnInit, AfterViewInit {
       if (_.isEmpty(path)) {
         path = "";
       }
+      this.waffleDispatcherService.emit({ 
+        eventType: LoadingMaskComponent.UPDATE_STATUS_EVENT,
+        data: { name: "files-main-col", show: true }
+      });
       this.filesActionService.ls(areaName, path);
     });
   }
@@ -76,6 +81,10 @@ export class FilesLsComponent implements OnInit, AfterViewInit {
     this.showFileList = true;
     this.childNodes = this.filesStoreService.childNodes;
     this._selectNodes = {};
+    this.waffleDispatcherService.emit({ 
+      eventType: LoadingMaskComponent.UPDATE_STATUS_EVENT,
+      data: { name: "files-main-col", show: false }
+    });
   }
 
   private updateFileList() {
