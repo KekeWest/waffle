@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { Emitter, Payload } from "app/common/base";
 import { SpreadSheet, Sheet, Column, Row, Cell, RGBAColor, SelectedCellPosition } from "app/spread-sheet";
 import { SpreadSheetDispatcherService, SpreadSheetAction, SpreadSheetActionService } from "app/spread-sheet/services";
+import { WaffleDispatcherService } from "app/common/services";
+import { LoadingMaskComponent } from "app/common/components/loading-mask/loading-mask.component";
 
 @Injectable()
 export class SpreadSheetStoreService extends Emitter<Payload> {
@@ -13,7 +15,10 @@ export class SpreadSheetStoreService extends Emitter<Payload> {
 
   private _spreadSheet: SpreadSheet;
 
-  constructor(private spreadSheetDispatcherService: SpreadSheetDispatcherService) {
+  constructor(
+    private waffleDispatcherService: WaffleDispatcherService,
+    private spreadSheetDispatcherService: SpreadSheetDispatcherService
+  ) {
     super();
     this.spreadSheetDispatcherId = this.spreadSheetDispatcherService.register(
       (payload: Payload) => {
@@ -58,6 +63,10 @@ export class SpreadSheetStoreService extends Emitter<Payload> {
   setSpreadSheet(action: SpreadSheetAction.LoadSpreadSheet) {
     this._spreadSheet = action.spreadSheet;
     this.emit({ eventType: SpreadSheetStoreService.LOAD_SPREADSHEET_EVENT });
+    this.waffleDispatcherService.emit({ 
+      eventType: LoadingMaskComponent.UPDATE_STATUS_EVENT,
+      data: { name: "spread-sheet", show: false }
+    });
   }
 
   getSheet(sheetName: string): Sheet {

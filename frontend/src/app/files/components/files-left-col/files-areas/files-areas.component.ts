@@ -1,7 +1,8 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
-import { FilesActionService, FilesStoreService } from "app/common/services";
+import { FilesActionService, FilesStoreService, WaffleDispatcherService } from "app/common/services";
 import { Payload } from "app/common/base";
 import { ActivatedRoute, Router } from "@angular/router";
+import { LoadingMaskComponent } from "app/common/components/loading-mask/loading-mask.component";
 
 @Component({
   selector: 'wf-files-areas',
@@ -15,6 +16,7 @@ export class FilesAreasComponent implements OnInit, AfterViewInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
+    private waffleDispatcherService: WaffleDispatcherService,
     private filesActionService: FilesActionService,
     private filesStoreService: FilesStoreService
   ) { }
@@ -32,11 +34,19 @@ export class FilesAreasComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
+    this.waffleDispatcherService.emit({ 
+      eventType: LoadingMaskComponent.UPDATE_STATUS_EVENT,
+      data: { name: "files-areas", show: true }
+    });
     this.filesActionService.getAllAreas();
   }
 
   updateAreas() {
     this.areas = this.filesStoreService.areas;
+    this.waffleDispatcherService.emit({ 
+      eventType: LoadingMaskComponent.UPDATE_STATUS_EVENT,
+      data: { name: "files-areas", show: false }
+    });
   }
 
   onSelectArea(areaName: string) {

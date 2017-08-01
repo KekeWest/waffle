@@ -5,7 +5,6 @@
   top: 0;
   left: 0;
   z-index: 99999;
-  background-color: #fff;
 }
 
 .loading-wrapper {
@@ -22,7 +21,6 @@
 .sk-cube-grid .sk-cube {
   width: 33%;
   height: 33%;
-  background-color: #4fa7da;
   float: left;
   -webkit-animation: sk-cubeGridScaleDelay 1.3s infinite ease-in-out;
           animation: sk-cubeGridScaleDelay 1.3s infinite ease-in-out; 
