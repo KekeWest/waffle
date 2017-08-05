@@ -1,0 +1,183 @@
+package waffle.service.shared.edit;
+
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+
+import javax.annotation.PostConstruct;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
+
+import lombok.Data;
+import lombok.Synchronized;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.event.EventListener;
+import org.springframework.messaging.Message;
+import org.springframework.messaging.MessagingException;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
+import org.springframework.stereotype.Service;
+import org.springframework.web.socket.messaging.SessionDisconnectEvent;
+
+@Service
+public class SpreadSheetEditUsersService {
+
+    @Autowired
+    private SimpMessagingTemplate simpMessagingTemplate;
+
+    private ObjectWriter writer;
+
+    private ConcurrentHashMap<String, EditUsers> usersMap = new ConcurrentHashMap<>();
+    private ConcurrentHashMap<String, HashSet<String>> edittingNodeIdsMap = new ConcurrentHashMap<>();
+
+
+    @PostConstruct
+    public void init() {
+        ObjectMapper mapper = new ObjectMapper();
+        writer = mapper.writerFor(EditUsers.class);
+    }
+
+    @Synchronized
+    public void join(String nodeId, Message<String> message) throws MessagingException, JsonProcessingException {
+        StompHeaderAccessor sha = StompHeaderAccessor.wrap(message);
+        EditUser user = new EditUser();
+        user.setSessionId(sha.getSessionId());
+        user.setUserName(sha.getUser().getName());
+
+        EditUsers users = usersMap.get(nodeId);
+        if (users == null) {
+            users = new EditUsers();
+            usersMap.put(nodeId, users);
+        }
+        users.addUser(user);
+
+        HashSet<String> edittingNodeIds = edittingNodeIdsMap.get(user.getSessionId());
+        if (edittingNodeIds == null) {
+            edittingNodeIds = new HashSet<>();
+            edittingNodeIdsMap.put(user.getSessionId(), edittingNodeIds);
+        }
+        edittingNodeIds.add(nodeId);
+
+        sendEditUsers(nodeId, users);
+    }
+
+    @Synchronized
+    public void leave(String nodeId, Message<String> message) throws MessagingException, JsonProcessingException {
+        StompHeaderAccessor sha = StompHeaderAccessor.wrap(message);
+
+        EditUsers users = usersMap.get(nodeId);
+        if (users != null) {
+            users.removeUser(sha.getSessionId());
+            if (users.size() == 0) {
+                usersMap.remove(nodeId);
+            }
+        }
+
+        HashSet<String> edittingNodeIds = edittingNodeIdsMap.get(sha.getSessionId());
+        if (edittingNodeIds != null) {
+            edittingNodeIds.remove(nodeId);
+            if (edittingNodeIds.size() == 0) {
+                edittingNodeIdsMap.remove(sha.getSessionId());
+            }
+        }
+
+        sendEditUsers(nodeId, users);
+    }
+
+    @Synchronized
+    public void leave(String sessionId) throws MessagingException, JsonProcessingException {
+        HashSet<String> edittingNodeIds = edittingNodeIdsMap.get(sessionId);
+        if (edittingNodeIds == null) {
+            return;
+        }
+
+        for (String nodeId : edittingNodeIds) {
+            EditUsers users = usersMap.get(nodeId);
+            if (users == null) {
+                continue;
+            }
+            users.removeUser(sessionId);
+            if (users.size() == 0) {
+                usersMap.remove(nodeId);
+            }
+            sendEditUsers(nodeId, users);
+        }
+
+        edittingNodeIdsMap.remove(sessionId);
+    }
+
+    @EventListener
+    public void onSessionDisconnect(SessionDisconnectEvent event) throws MessagingException, JsonProcessingException {
+        StompHeaderAccessor sha = StompHeaderAccessor.wrap(event.getMessage());
+        leave(sha.getSessionId());
+    }
+
+    @Synchronized
+    public int getUserCount(String nodeId) {
+        EditUsers users = usersMap.get(nodeId);
+        if (users == null) {
+            return 0;
+        }
+        return users.size();
+    }
+
+    @Synchronized
+    public Set<String> getUserNames(String nodeId) {
+        EditUsers users = usersMap.get(nodeId);
+        if (users == null) {
+            return null;
+        }
+        return users.getUserNames();
+    }
+
+    private void sendEditUsers(String nodeId, EditUsers editUsers) throws MessagingException, JsonProcessingException {
+        Map<String, Object> headers = new HashMap<>();
+        headers.put("method", "setEditUsers");
+        simpMessagingTemplate.convertAndSend("/topic/shared-edit/control/" + nodeId, writer.writeValueAsString(editUsers), headers);
+    }
+
+
+    @Data
+    private static class EditUser {
+
+        private String sessionId;
+
+        private String userName;
+
+    }
+
+
+    private static class EditUsers {
+
+        private ConcurrentHashMap<String, EditUser> userMap = new ConcurrentHashMap<>();
+
+        public void addUser(EditUser user) {
+            userMap.put(user.getSessionId(), user);
+        }
+
+        public void removeUser(String sessionId) {
+            userMap.remove(sessionId);
+        }
+
+        public int size() {
+            return userMap.size();
+        }
+
+        public Set<String> getUserNames() {
+            HashSet<String> userNames = new HashSet<>();
+            userMap.forEach((String key, EditUser user) -> {
+                if (key != null) {
+                    userNames.add(key);
+                }
+            });
+            return userNames;
+        }
+
+    }
+
+}

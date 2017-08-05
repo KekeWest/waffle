@@ -51,13 +51,18 @@ public class HomeDirectoryComponent {
         }
     }
 
-    public void updateFile(String fileId, String fileBody) throws IOException {
-        File file = new File(fileDir + "/" + fileId);
+    public String getFile(String nodeId) throws IOException {
+        File file = new File(fileDir + "/" + nodeId);
+        return FileUtils.readFileToString(file, StandardCharsets.UTF_8);
+    }
+
+    public void updateFile(String nodeId, String fileBody) throws IOException {
+        File file = new File(fileDir + "/" + nodeId);
         FileUtils.write(file, fileBody, StandardCharsets.UTF_8);
     }
 
-    public void removeFile(String fileId) throws IOException {
-        File file = new File(fileDir + "/" + fileId);
+    public void removeFile(String nodeId) throws IOException {
+        File file = new File(fileDir + "/" + nodeId);
         Files.delete(file.toPath());
     }
 
