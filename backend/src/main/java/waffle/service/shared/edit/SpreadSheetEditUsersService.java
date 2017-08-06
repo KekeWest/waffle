@@ -9,15 +9,16 @@ import java.util.concurrent.ConcurrentHashMap;
 import javax.annotation.PostConstruct;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 
 import lombok.Data;
+import lombok.Getter;
 import lombok.Synchronized;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
-import org.springframework.messaging.Message;
 import org.springframework.messaging.MessagingException;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
@@ -39,15 +40,14 @@ public class SpreadSheetEditUsersService {
     @PostConstruct
     public void init() {
         ObjectMapper mapper = new ObjectMapper();
-        writer = mapper.writerFor(EditUsers.class);
+        writer = mapper.writerFor(new TypeReference<Map<String, EditUser>>() {});
     }
 
     @Synchronized
-    public void join(String nodeId, Message<String> message) throws MessagingException, JsonProcessingException {
-        StompHeaderAccessor sha = StompHeaderAccessor.wrap(message);
+    public void join(String nodeId, String sessionId, String userName) throws MessagingException, JsonProcessingException {
         EditUser user = new EditUser();
-        user.setSessionId(sha.getSessionId());
-        user.setUserName(sha.getUser().getName());
+        user.setSessionId(sessionId);
+        user.setUserName(userName);
 
         EditUsers users = usersMap.get(nodeId);
         if (users == null) {
@@ -62,29 +62,6 @@ public class SpreadSheetEditUsersService {
             edittingNodeIdsMap.put(user.getSessionId(), edittingNodeIds);
         }
         edittingNodeIds.add(nodeId);
-
-        sendEditUsers(nodeId, users);
-    }
-
-    @Synchronized
-    public void leave(String nodeId, Message<String> message) throws MessagingException, JsonProcessingException {
-        StompHeaderAccessor sha = StompHeaderAccessor.wrap(message);
-
-        EditUsers users = usersMap.get(nodeId);
-        if (users != null) {
-            users.removeUser(sha.getSessionId());
-            if (users.size() == 0) {
-                usersMap.remove(nodeId);
-            }
-        }
-
-        HashSet<String> edittingNodeIds = edittingNodeIdsMap.get(sha.getSessionId());
-        if (edittingNodeIds != null) {
-            edittingNodeIds.remove(nodeId);
-            if (edittingNodeIds.size() == 0) {
-                edittingNodeIdsMap.remove(sha.getSessionId());
-            }
-        }
 
         sendEditUsers(nodeId, users);
     }
@@ -138,7 +115,7 @@ public class SpreadSheetEditUsersService {
     private void sendEditUsers(String nodeId, EditUsers editUsers) throws MessagingException, JsonProcessingException {
         Map<String, Object> headers = new HashMap<>();
         headers.put("method", "setEditUsers");
-        simpMessagingTemplate.convertAndSend("/topic/shared-edit/control/" + nodeId, writer.writeValueAsString(editUsers), headers);
+        simpMessagingTemplate.convertAndSend("/topic/shared-edit/control/" + nodeId, writer.writeValueAsString(editUsers.getUserMap()), headers);
     }
 
 
@@ -154,6 +131,7 @@ public class SpreadSheetEditUsersService {
 
     private static class EditUsers {
 
+        @Getter
         private ConcurrentHashMap<String, EditUser> userMap = new ConcurrentHashMap<>();
 
         public void addUser(EditUser user) {

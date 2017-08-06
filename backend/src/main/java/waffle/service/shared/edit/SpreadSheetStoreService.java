@@ -7,9 +7,7 @@ import java.util.Set;
 
 import org.apache.commons.lang3.RandomUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.messaging.Message;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.stereotype.Service;
 
 import waffle.config.Initial.HomeDirectoryComponent;
@@ -26,15 +24,14 @@ public class SpreadSheetStoreService {
     @Autowired
     private HomeDirectoryComponent homeDirectoryComponent;
 
-    public void getSpreadSheet(String nodeId, Message<String> message) throws IOException {
-        StompHeaderAccessor sha = StompHeaderAccessor.wrap(message);
+    public void getSpreadSheet(String nodeId, String requestUserName) throws IOException {
         int userCount = spreadSheetEditUsersService.getUserCount(nodeId);
         if (userCount == 0) {
             return;
         } else if (userCount == 1) {
-            sendSpreadSheet(nodeId, sha.getUser().getName());
+            sendSpreadSheet(nodeId, requestUserName);
         } else {
-            requestSpreadSheet(nodeId, sha.getUser().getName());
+            requestSpreadSheet(nodeId, requestUserName);
         }
     }
 
@@ -65,19 +62,14 @@ public class SpreadSheetStoreService {
                 headers);
     }
 
-    public void relaySpreadSheet(String nodeId, Message<String> message) {
-        String relayUser = (String) message.getHeaders().get("relayUser");
-        if (relayUser == null) {
-            return;
-        }
-
+    public void relaySpreadSheet(String nodeId, String relayUserName, String spreadSheet) {
         Map<String, Object> headers = new HashMap<>();
         headers.put("method", "getSpreadSheet");
 
         simpMessagingTemplate.convertAndSendToUser(
-                relayUser,
+                relayUserName,
                 "/topic/shared-edit/control/" + nodeId,
-                message.getPayload(),
+                spreadSheet,
                 headers);
     }
 
