@@ -69,6 +69,10 @@ export class SpreadSheetStoreService extends Emitter<Payload> {
     });
   }
 
+  getSpreadSheet(): SpreadSheet {
+    return this._spreadSheet;
+  }
+
   getSheet(sheetName: string): Sheet {
     return this._spreadSheet.sheets[sheetName];
   }

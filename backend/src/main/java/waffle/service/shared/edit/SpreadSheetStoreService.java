@@ -24,21 +24,21 @@ public class SpreadSheetStoreService {
     @Autowired
     private HomeDirectoryComponent homeDirectoryComponent;
 
-    public void getSpreadSheet(String nodeId, String requestUserName) throws IOException {
+    public void requestSpreadSheet(String nodeId, String requestUserName) throws IOException {
         int userCount = spreadSheetEditUsersService.getUserCount(nodeId);
         if (userCount == 0) {
             return;
         } else if (userCount == 1) {
             sendSpreadSheet(nodeId, requestUserName);
         } else {
-            requestSpreadSheet(nodeId, requestUserName);
+            relaySpreadSheet(nodeId, requestUserName);
         }
     }
 
     private void sendSpreadSheet(String nodeId, String userName) throws IOException {
         String spreadSheet = homeDirectoryComponent.getFile(nodeId);
         Map<String, Object> headers = new HashMap<>();
-        headers.put("method", "getSpreadSheet");
+        headers.put("method", "sendSpreadSheet");
 
         simpMessagingTemplate.convertAndSendToUser(
                 userName,
@@ -47,27 +47,29 @@ public class SpreadSheetStoreService {
                 headers);
     }
 
-    private void requestSpreadSheet(String nodeId, String userName) {
+    private void relaySpreadSheet(String nodeId, String requestUserName) {
         Set<String> userNames = spreadSheetEditUsersService.getUserNames(nodeId);
+        userNames.remove(requestUserName);
         int requestNum = RandomUtils.nextInt(0, userNames.size());
 
         Map<String, Object> headers = new HashMap<>();
-        headers.put("method", "requestSpreadSheet");
-        headers.put("requestUser", userName);
+        headers.put("method", "relaySpreadSheet");
+        headers.put("requestUser", requestUserName);
 
         simpMessagingTemplate.convertAndSendToUser(
                 (String) userNames.toArray()[requestNum],
                 "/topic/shared-edit/control/" + nodeId,
-                null,
+                "{}",
                 headers);
     }
 
-    public void relaySpreadSheet(String nodeId, String relayUserName, String spreadSheet) {
+    public void sendSpreadSheet(String nodeId, String requestUserName, String spreadSheet, String fromUserName) {
         Map<String, Object> headers = new HashMap<>();
-        headers.put("method", "getSpreadSheet");
+        headers.put("method", "sendSpreadSheet");
+        headers.put("fromUser", fromUserName);
 
         simpMessagingTemplate.convertAndSendToUser(
-                relayUserName,
+                requestUserName,
                 "/topic/shared-edit/control/" + nodeId,
                 spreadSheet,
                 headers);

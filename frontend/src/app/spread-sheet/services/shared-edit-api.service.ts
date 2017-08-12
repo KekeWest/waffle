@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Client, over, Message } from "stompjs";
 import { ActivatedRoute, Params } from "@angular/router";
 import { _ } from "app";
-import { SpreadSheetActionService } from "app/spread-sheet/services";
+import { SpreadSheetActionService, SpreadSheetStoreService } from "app/spread-sheet/services";
 import { SpreadSheet } from "app/spread-sheet";
 
 @Injectable()
@@ -27,11 +27,13 @@ export class SharedEditApiService {
 
   constructor(
     private route: ActivatedRoute,
-    private spreadSheetActionService: SpreadSheetActionService
+    private spreadSheetActionService: SpreadSheetActionService,
+    private SpreadSheetStoreService: SpreadSheetStoreService
   ) {
     this.controlMethodHandler = {
       setEditUsers: this.setEditUsers,
-      getSpreadSheet: this.getSpreadSheet
+      sendSpreadSheet: this.sendSpreadSheet,
+      relaySpreadSheet: this.relaySpreadSheet
     };
   }
 
@@ -73,7 +75,7 @@ export class SharedEditApiService {
       console.log(message.body);
     });
 
-    this.stompClient.send(SharedEditApiService.API_ROOT + "join/" + this.nodeId);
+    this.stompClient.send(SharedEditApiService.API_ROOT + "join/" + this.nodeId, {}, "{}");
   }
 
   private setEditUsers(message: Message) {
@@ -84,12 +86,21 @@ export class SharedEditApiService {
   }
 
   private requestSpreadSheet() {
-    this.stompClient.send(SharedEditApiService.API_ROOT + "/get-spreadsheet/" + this.nodeId);
+    this.stompClient.send(SharedEditApiService.API_ROOT + "request-spreadsheet/" + this.nodeId, {}, "{}");
   }
 
-  private getSpreadSheet(message: Message) {
+  private sendSpreadSheet(message: Message) {
     var spreadSheet: SpreadSheet = new SpreadSheet().fromJSON(JSON.parse(message.body));
     this.spreadSheetActionService.setSpreadSheet(spreadSheet);
+  }
+
+  private relaySpreadSheet(message: Message) {
+    var headers: {} = {};
+    headers["requestUser"] = message.headers["requestUser"];
+    this.stompClient.send(
+      SharedEditApiService.API_ROOT + "send-spreadsheet/" + this.nodeId, 
+      headers,
+      JSON.stringify(this.SpreadSheetStoreService.getSpreadSheet()));
   }
 
 }

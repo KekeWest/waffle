@@ -26,7 +26,7 @@ public class SharedEditController {
     private SpreadSheetStoreService spreadSheetStoreService;
 
     @MessageMapping("join/{nodeId}")
-    public void join(@DestinationVariable String nodeId, Message<byte[]> message) throws MessagingException, JsonProcessingException {
+    public void join(@DestinationVariable String nodeId, Message<String> message) throws MessagingException, JsonProcessingException {
         StompHeaderAccessor sha = StompHeaderAccessor.wrap(message);
         spreadSheetEditUsersService.join(
                 nodeId,
@@ -34,20 +34,22 @@ public class SharedEditController {
                 sha.getUser().getName());
     }
 
-    @MessageMapping("get-spreadsheet/{nodeId}")
-    public void getSpreatSheet(@DestinationVariable String nodeId, Message<byte[]> message) throws IOException {
+    @MessageMapping("request-spreadsheet/{nodeId}")
+    public void requestSpreatSheet(@DestinationVariable String nodeId, Message<String> message) throws IOException {
         StompHeaderAccessor sha = StompHeaderAccessor.wrap(message);
-        spreadSheetStoreService.getSpreadSheet(
+        spreadSheetStoreService.requestSpreadSheet(
                 nodeId,
                 sha.getUser().getName());
     }
 
-    @MessageMapping("relay-spreadsheet/{nodeId}")
-    public void relaySpreadSheet(@DestinationVariable String nodeId, Message<String> message) {
-        spreadSheetStoreService.relaySpreadSheet(
+    @MessageMapping("send-spreadsheet/{nodeId}")
+    public void sendSpreadSheet(@DestinationVariable String nodeId, Message<String> message) {
+        StompHeaderAccessor sha = StompHeaderAccessor.wrap(message);
+        spreadSheetStoreService.sendSpreadSheet(
                 nodeId,
-                (String) message.getHeaders().get("relayUser"),
-                message.getPayload());
+                sha.getFirstNativeHeader("requestUser"),
+                message.getPayload(),
+                sha.getUser().getName());
     }
 
 }

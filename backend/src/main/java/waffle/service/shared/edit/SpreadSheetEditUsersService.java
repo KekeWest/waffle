@@ -150,7 +150,7 @@ public class SpreadSheetEditUsersService {
             HashSet<String> userNames = new HashSet<>();
             userMap.forEach((String key, EditUser user) -> {
                 if (key != null) {
-                    userNames.add(key);
+                    userNames.add(user.getUserName());
                 }
             });
             return userNames;
