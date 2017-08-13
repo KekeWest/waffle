@@ -1,26 +1,34 @@
 import { Injectable } from '@angular/core';
-import { SpreadSheetDispatcherService, CommandStoreService } from "app/spread-sheet/services";
-import { Command, SheetEditCommand } from "app/spread-sheet/services/command-actions/command";
+import { SpreadSheetDispatcherService, EditCommandStoreService, SharedEditApiService } from "app/spread-sheet/services";
+import { EditCommand, EditCommandActionService } from "app/spread-sheet/services/command-actions";
 import { _ } from "app";
 import { Sheet } from "app/spread-sheet";
 
 @Injectable()
-export class CreateNewSheetActionService {
+export class CreateNewSheetActionService extends EditCommandActionService {
 
   constructor(
-    private spreadSheetDispatcherService: SpreadSheetDispatcherService
-  ) { }
+    protected spreadSheetDispatcherService: SpreadSheetDispatcherService,
+    protected sharedEditApiService: SharedEditApiService
+  ) {
+    super(spreadSheetDispatcherService, sharedEditApiService);
+  }
+
+  get commandName(): string {
+    return "CreateNewSheetCommand";
+  }
+
+  deserializeEditCommand(editCommandJsonStr: string): EditCommand {
+    return new CreateNewSheetCommand().fromJSON(JSON.parse(editCommandJsonStr));
+  }
 
   createNewSheet() {
-    this.spreadSheetDispatcherService.emit({
-      eventType: SheetEditCommand.EDIT_EVENT,
-      data: new CreateNewSheetCommand()
-    });
+    this.sendEditCommand(new CreateNewSheetCommand());
   }
 
 }
 
-class CreateNewSheetCommand extends SheetEditCommand {
+class CreateNewSheetCommand extends EditCommand {
 
   private static SHEET_NAME_PREFIX: string = "Sheet";
 
@@ -56,7 +64,7 @@ class CreateNewSheetCommand extends SheetEditCommand {
     this._spreadSheet.sheets[this.sheetName] = new Sheet(this.sheetName);
   }
 
-  generateNewSheetName(): string {
+  private generateNewSheetName(): string {
     var nextSheetCount: number = this._spreadSheet.sheetOrder.length + 1;
     var sheetName: string = CreateNewSheetCommand.SHEET_NAME_PREFIX + nextSheetCount;
     while(0 <= this._spreadSheet.sheetOrder.indexOf(sheetName)) {
@@ -64,6 +72,22 @@ class CreateNewSheetCommand extends SheetEditCommand {
       sheetName = CreateNewSheetCommand.SHEET_NAME_PREFIX + nextSheetCount;
     }
     return sheetName;
+  }
+
+  toJSON(): any {
+    return this;
+  }
+
+  fromJSON(json: any): CreateNewSheetCommand {
+    if (!json) {
+      return null;
+    }
+
+    var command: CreateNewSheetCommand = new CreateNewSheetCommand();
+    command.sheetName = json.sheetName;
+    command.newSheetIndex = json.newSheetIndex;
+
+    return command;
   }
 
 }

@@ -1,8 +1,7 @@
 import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
-import { SpreadSheetDispatcherService, SpreadSheetActionService, SpreadSheetStoreService, CommandStoreService, SheetViewDispatcherService, SheetViewActionService, SheetViewStoreService } from "app/spread-sheet/services";
+import { SpreadSheetDispatcherService, SpreadSheetActionService, SpreadSheetStoreService, EditCommandStoreService, SheetViewDispatcherService, SheetViewActionService, SheetViewStoreService, SharedEditApiService } from "app/spread-sheet/services";
 import { Sheet } from "app/spread-sheet";
 import { Payload } from "app/common/base";
-import { SharedEditApiService } from "app/spread-sheet/services/shared-edit-api.service";
 
 @Component({
   selector: 'wf-spread-sheet',
@@ -16,7 +15,7 @@ import { SharedEditApiService } from "app/spread-sheet/services/shared-edit-api.
     SheetViewDispatcherService,
     SheetViewActionService,
     SheetViewStoreService,
-    CommandStoreService
+    EditCommandStoreService
   ]
 })
 export class SpreadSheetComponent implements OnInit, OnDestroy {
@@ -29,7 +28,7 @@ export class SpreadSheetComponent implements OnInit, OnDestroy {
     private sheetViewActionService: SheetViewActionService,
     private sheetViewDispatcherService: SheetViewDispatcherService,
     private sheetViewStoreService: SheetViewStoreService,
-    private commandStoreService: CommandStoreService
+    private editCommandStoreService: EditCommandStoreService
   ) { }
 
   ngOnInit() {

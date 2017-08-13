@@ -12,6 +12,7 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.stereotype.Controller;
 
+import waffle.service.shared.edit.EditCommandService;
 import waffle.service.shared.edit.SpreadSheetEditUsersService;
 import waffle.service.shared.edit.SpreadSheetStoreService;
 
@@ -21,6 +22,9 @@ public class SharedEditController {
 
     @Autowired
     private SpreadSheetEditUsersService spreadSheetEditUsersService;
+
+    @Autowired
+    private EditCommandService editCommandService;
 
     @Autowired
     private SpreadSheetStoreService spreadSheetStoreService;
@@ -37,19 +41,26 @@ public class SharedEditController {
     @MessageMapping("request-spreadsheet/{nodeId}")
     public void requestSpreatSheet(@DestinationVariable String nodeId, Message<String> message) throws IOException {
         StompHeaderAccessor sha = StompHeaderAccessor.wrap(message);
-        spreadSheetStoreService.requestSpreadSheet(
-                nodeId,
-                sha.getUser().getName());
+        spreadSheetStoreService.requestSpreadSheet(nodeId, sha.getUser().getName());
     }
 
-    @MessageMapping("send-spreadsheet/{nodeId}")
-    public void sendSpreadSheet(@DestinationVariable String nodeId, Message<String> message) {
+    @MessageMapping("provide-spreadsheet/{nodeId}")
+    public void provideSpreadSheet(@DestinationVariable String nodeId, Message<String> message) {
         StompHeaderAccessor sha = StompHeaderAccessor.wrap(message);
-        spreadSheetStoreService.sendSpreadSheet(
+        spreadSheetStoreService.provideSpreadSheet(
                 nodeId,
                 sha.getFirstNativeHeader("requestUser"),
                 message.getPayload(),
                 sha.getUser().getName());
+    }
+
+    @MessageMapping("send-edit-command/{nodeId}")
+    public void sendEditCommand(@DestinationVariable String nodeId, Message<String> message) {
+        StompHeaderAccessor sha = StompHeaderAccessor.wrap(message);
+        editCommandService.broadcastEditCommand(
+                nodeId,
+                sha.getFirstNativeHeader("commandName"),
+                message.getPayload());
     }
 
 }

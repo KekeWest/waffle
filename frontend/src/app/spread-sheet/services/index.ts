@@ -6,4 +6,5 @@ export * from './sheet-view-action.service';
 export * from './sheet-view-store.service';
 export * from './sheet-view-action';
 export * from './spread-sheet-action';
-export * from './command-store.service';
+export * from './edit-command-store.service';
+export * from './shared-edit-api.service';

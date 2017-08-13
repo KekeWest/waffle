@@ -1,7 +1,7 @@
 import { Component, OnInit, AfterViewChecked, ElementRef } from '@angular/core';
 import { SpreadSheetStoreService, SpreadSheetActionService } from "app/spread-sheet/services";
 import { Payload } from "app/common/base";
-import { CreateNewSheetActionService } from "app/spread-sheet/services/command-actions";
+import { CreateNewSheetActionService } from "app/spread-sheet/services/command-actions/sheet";
 
 @Component({
   selector: 'wf-sheet-tab',

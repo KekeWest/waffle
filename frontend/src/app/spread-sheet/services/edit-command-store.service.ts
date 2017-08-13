@@ -1,15 +1,15 @@
 import { Injectable } from '@angular/core';
 import { SpreadSheetStoreService, SpreadSheetDispatcherService, SpreadSheetActionService } from "app/spread-sheet/services";
 import { Payload } from "app/common/base";
-import { SheetEditCommand, Command } from "app/spread-sheet/services/command-actions";
+import { EditCommand, EditCommandActionService } from "app/spread-sheet/services/command-actions";
 import { _ } from "app";
 
 @Injectable()
-export class CommandStoreService {
+export class EditCommandStoreService {
 
-  private _undoCommandStack: Command[] = [];
+  private _undoCommandStack: EditCommand[] = [];
 
-  private _redoCommandStack: Command[] = [];
+  private _redoCommandStack: EditCommand[] = [];
 
   constructor(
     private spreadSheetDispatcherService: SpreadSheetDispatcherService,
@@ -19,8 +19,8 @@ export class CommandStoreService {
     this.spreadSheetDispatcherService.register(
       (payload: Payload) => {
         switch (payload.eventType) {
-          case SheetEditCommand.EDIT_EVENT:
-            this.invokeSheetEditCommand(<SheetEditCommand>payload.data);
+          case EditCommandActionService.EDIT_EVENT:
+            this.invokeEditCommand(<EditCommand>payload.data);
             break;
           case SpreadSheetActionService.UNDO_EVENT:
             this.undo();
@@ -33,7 +33,7 @@ export class CommandStoreService {
     );
   }
 
-  private invokeSheetEditCommand(command: SheetEditCommand) {
+  private invokeEditCommand(command: EditCommand) {
     command.spreadSheet = this.spreadSheetStoreService.spreadSheet;
     command.spreadSheetActionService = this.spreadSheetActionService;
     command.invoke();
@@ -46,7 +46,7 @@ export class CommandStoreService {
     if (_.isEmpty(this._undoCommandStack)) {
       return;
     }
-    var command: Command = this._undoCommandStack.pop();
+    var command: EditCommand = this._undoCommandStack.pop();
     command.undo();
     this._redoCommandStack.push(command);
   }
@@ -55,7 +55,7 @@ export class CommandStoreService {
     if (_.isEmpty(this._redoCommandStack)) {
       return;
     }
-    var command: Command = this._redoCommandStack.pop();
+    var command: EditCommand = this._redoCommandStack.pop();
     command.redo();
     this._undoCommandStack.push(command);
   }

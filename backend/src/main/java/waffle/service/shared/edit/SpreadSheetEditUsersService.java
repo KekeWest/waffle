@@ -31,6 +31,9 @@ public class SpreadSheetEditUsersService {
     @Autowired
     private SimpMessagingTemplate simpMessagingTemplate;
 
+    @Autowired
+    private EditCommandService editCommandService;
+
     private ObjectWriter writer;
 
     private ConcurrentHashMap<String, EditUsers> usersMap = new ConcurrentHashMap<>();
@@ -53,6 +56,7 @@ public class SpreadSheetEditUsersService {
         if (users == null) {
             users = new EditUsers();
             usersMap.put(nodeId, users);
+            editCommandService.startEditCount(nodeId);
         }
         users.addUser(user);
 
@@ -63,7 +67,7 @@ public class SpreadSheetEditUsersService {
         }
         edittingNodeIds.add(nodeId);
 
-        sendEditUsers(nodeId, users);
+        broadcastEditUsers(nodeId, users);
     }
 
     @Synchronized
@@ -81,8 +85,9 @@ public class SpreadSheetEditUsersService {
             users.removeUser(sessionId);
             if (users.size() == 0) {
                 usersMap.remove(nodeId);
+                editCommandService.endEditCount(nodeId);
             }
-            sendEditUsers(nodeId, users);
+            broadcastEditUsers(nodeId, users);
         }
 
         edittingNodeIdsMap.remove(sessionId);
@@ -112,9 +117,9 @@ public class SpreadSheetEditUsersService {
         return users.getUserNames();
     }
 
-    private void sendEditUsers(String nodeId, EditUsers editUsers) throws MessagingException, JsonProcessingException {
+    private void broadcastEditUsers(String nodeId, EditUsers editUsers) throws MessagingException, JsonProcessingException {
         Map<String, Object> headers = new HashMap<>();
-        headers.put("method", "setEditUsers");
+        headers.put("event", "updateEditUsers");
         simpMessagingTemplate.convertAndSend("/topic/shared-edit/control/" + nodeId, writer.writeValueAsString(editUsers.getUserMap()), headers);
     }
 
